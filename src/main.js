@@ -4,17 +4,32 @@ const projects = [
   {
     name: "mairu",
     href: "https://github.com/enekos/mairu",
-    description: "context synthesis, autonomous navigation",
+    description: "autonomous agent framework — context synthesis & tool use in Go",
+  },
+  {
+    name: "marrow",
+    href: "https://github.com/enekos/marrow",
+    description: "local-first hybrid search for Markdown repos — FTS5 + vector similarity in SQLite",
+  },
+  {
+    name: "iratxo",
+    href: "https://github.com/enekos/iratxo",
+    description: "executable NLP rules as WASM plugins — YAML to portable IR, run anywhere",
+  },
+  {
+    name: "tartalo",
+    href: "https://github.com/enekos/tartalo",
+    description: "statically-typed scripting language — compiles to POSIX sh or native binaries",
   },
   {
     name: "gizapedia",
     href: "https://gizapedia.org",
-    description: "ontologies of social dynamics",
+    description: "open encyclopedia cataloguing social and behavioral patterns in Basque",
   },
   {
     name: "ikusmira",
     href: "https://ikusmira.org",
-    description: "cultural observation protocols",
+    description: "cultural observation archive — visual and textual field notes in Spanish",
   },
 ];
 
