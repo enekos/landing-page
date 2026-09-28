@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy · Taula</title>
+<meta name="description" content="What Taula does and does not collect. In short: one licence check, and nothing else leaves your Mac unless you ask it to.">
+<link rel="canonical" href="https://hirusta.io/taula/privacy/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Taula">
+<meta property="og:title" content="Privacy · Taula">
+<meta property="og:description" content="What Taula does and does not collect. In short: one licence check, and nothing else leaves your Mac unless you ask it to.">
+<meta property="og:url" content="https://hirusta.io/taula/privacy/">
+<meta property="og:image" content="https://hirusta.io/taula/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Privacy · Taula">
+<meta name="twitter:description" content="What Taula does and does not collect. In short: one licence check, and nothing else leaves your Mac unless you ask it to.">
+<meta name="twitter:image" content="https://hirusta.io/taula/og.png">
+<meta name="theme-color" content="#F3F4F6">
+<link rel="icon" href="/taula/favicon.svg" type="image/svg+xml">
+<link rel="alternate" type="application/rss+xml" title="Taula release notes" href="https://hirusta.io/taula/changelog.xml">
+<link rel="preload" href="/taula/fonts/bricolage.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/taula/fonts/instrument.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/taula/site.css">
+<style>.policy{padding:0 0 clamp(72px,10vw,140px)}.policy .prose{gap:16px}.policy h2{font-size:1.45rem;margin-top:18px}</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Taula","item":"https://hirusta.io/taula/"},{"@type":"ListItem","position":2,"name":"Privacy","item":"https://hirusta.io/taula/privacy/"}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="brand" href="/taula/" aria-label="Taula home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#215CCC"/><stop offset="1" stop-color="#732EA8"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#g1)"/><rect x="14" y="16" width="36" height="32" rx="3" fill="none" stroke="#fff" stroke-width="2.6"/><rect x="14" y="16" width="36" height="10" rx="3" fill="#fff" fill-opacity=".92"/><path d="M26 26v22M38 26v22M14 37h36" stroke="#fff" stroke-width="2.6"/></svg> taula</a>
+    <nav class="nav-links" aria-label="Site">
+      <div class="menu">
+        <button type="button" aria-haspopup="true" aria-expanded="false">Product <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="m4 6 4 4 4-4"/></svg></button>
+        <div class="drop">
+          <a href="/taula/data-grid/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 10v10M15 10v10"/></svg><b>Data grid</b><span>Browse and edit, with a review step before anything is written.</span></a>
+          <a href="/taula/query-editor/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M14 5l-4 14"/></svg><b>Query editor</b><span>Schema-aware autocomplete, ghost text, plans, a ⌘K bar.</span></a>
+          <a href="/taula/assistant/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></svg><b>Assistant</b><span>A local model that reads freely and writes only with approval.</span></a>
+          <a href="/taula/mcp/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m7 9 3 3-3 3M12 15h5"/></svg><b>For agents</b><span>An MCP server over your saved connections, read-only by default.</span></a>
+          <a href="/taula/safety/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="m9 12 2 2 4-4"/></svg><b>Safety net</b><span>Guardrails, change journal, snapshots, diffs, backups.</span></a>
+          <a href="/taula/databases/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg><b>Databases</b><span>PostgreSQL, SQLite and Cloudflare D1, side by side.</span></a>
+        </div>
+      </div>
+      <a href="/taula/pricing/">Pricing</a>
+      <a href="/taula/docs/">Docs</a><a href="/taula/articles/">Articles</a>
+      <a href="/taula/changelog/">Changelog</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn btn-ghost" href="/taula/account/">Downloads</a>
+      <a class="btn btn-ink" href="/taula/?early=taula" data-early="taula">Early access</a>
+      <details class="mnav">
+        <summary aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg></summary>
+        <nav aria-label="Site">
+          <small>Product</small>
+          <a href="/taula/data-grid/">Data grid</a><a href="/taula/query-editor/">Query editor</a><a href="/taula/assistant/">Assistant</a><a href="/taula/mcp/">For agents</a><a href="/taula/safety/">Safety net</a><a href="/taula/databases/">Databases</a>
+          <small>More</small>
+          <a href="/taula/pricing/">Pricing</a><a href="/taula/compare/">Compare</a><a href="/taula/docs/">Docs</a><a href="/taula/articles/">Articles</a><a href="/taula/changelog/">Changelog</a><a href="/taula/support/">Support</a>
+        </nav>
+      </details>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+<div class="page-head">
+  <div class="wrap">
+    <h1>Privacy</h1>
+    <p class="lede">Taula is a desktop app that talks to your databases. The only thing it tells us is that your licence is still yours.</p>
+    <p class="meta">Last updated 13 September 2026</p>
+  </div>
+</div>
+
+<div class="policy">
+  <div class="wrap">
+    <div class="prose">
+      <h2>What we collect</h2>
+      <p>Taula has no account, no analytics, no telemetry and no crash reporting. It makes exactly one kind of request to us: the licence check described below. Nothing about your databases, your queries, your schema or your files is part of it.</p>
+      <p>The other record we hold is on your download page, where signing in with a licence key leaves a line per download. Both are described below.</p>
+
+      <h2>Activating Taula</h2>
+      <p>A licence covers a fixed number of Macs, so the first run asks for your key and registers the Mac against it. That request carries five things: the key, a name for the computer (the one in System Settings, so you can tell your Macs apart on your account page), its model identifier such as <code>Mac16,8</code>, the macOS version and the Taula version.</p>
+      <p>It also carries a device fingerprint, which is a SHA-256 hash of your Mac&rsquo;s hardware UUID with a fixed salt. The hardware UUID itself never leaves your Mac, and the hash cannot be turned back into it. It exists so that re-activating the same Mac takes the same seat instead of a new one.</p>
+      <p>After that, Taula repeats the check about once a day. Each check refreshes the same record and stores a truncated IP address such as <code>83.45.&bull;.&bull;</code> and the country Cloudflare reports, exactly as a download does. If we cannot be reached, Taula keeps working offline for fourteen days and then asks to be connected once.</p>
+      <p>You can see every Mac on your licence, and release any of them, on your <a href="/taula/account/">account page</a>, or from Settings &rarr; Licence inside the app. Releasing deletes nothing we would otherwise keep &mdash; it frees the seat and locks that Mac until a key is entered again.</p>
+      <p>If a licence is refunded or revoked, the next check fails and Taula locks. That is the point of the check, and it is the only thing it decides.</p>
+
+      <h2>Where your data lives</h2>
+      <p>Connections, query history, snippets, the change journal, assistant transcripts and settings are plain files in the Application Support folder of your Mac. Passwords, API tokens and keys are stored in the macOS Keychain. None of it is synced or uploaded by Taula.</p>
+      <p>Your databases are reached directly from your Mac over the connection you configured, or through an SSH tunnel you configured. Query results are shown to you and kept only as long as the window is open, except where you export them yourself.</p>
+
+      <h2>The assistant</h2>
+      <p>The assistant runs on a llama.cpp server on your own machine. Prompts, your schema and any rows it reads stay on that machine. The model file is downloaded once from its public host on first use; that download is the only network request the local assistant makes.</p>
+      <p>If you choose to add an Anthropic API key in Settings, the assistant, ghost text and inline edit send your prompts and schema context to Anthropic. That data is handled under Anthropic's terms, not ours. Remove the key to stop.</p>
+
+      <h2>The MCP server</h2>
+      <p>taula-mcp exposes your saved connections to agents you wire up on your own Mac, over standard input and output. It listens on no network port and sends nothing anywhere. It is read-only unless you start it with writes enabled. Whatever an agent does with the results is governed by that agent's own policy.</p>
+
+      <h2>Buying Taula</h2>
+      <p>Purchases are handled by <a href="https://polar.sh">Polar</a>, acting as merchant of record. Polar takes the payment, handles VAT, issues your licence key and emails it to you, all under <a href="https://polar.sh/legal/privacy">their own privacy policy</a>. Your card details never reach us and we never see them.</p>
+      <p>What reaches us is the email address on the order and the licence key record behind it, so that we can recognise your key on the download page and answer support requests. We do not sell or share it. If you refund the order, Polar tells us and the licence stops working.</p>
+
+      <h2>Your download page</h2>
+      <p>Downloads and updates are tied to your licence, so the download area keeps a small record against it: the email address you bought with, when the licence was created, and one line per download with the version, the time, a truncated IP address such as <code>83.45.•.•</code>, the country Cloudflare reports, and the browser or app that asked. Nothing else.</p>
+      <p>Your licence key itself is never stored. We keep a keyed hash of it, so a copy of our database does not hand anyone a working key, and the last five characters so you can recognise which key you are using.</p>
+      <p>Why the record exists: to show you the downloads on your own account page, and to notice a key that has escaped into the wild. It is not analytics, it is not sold or shared, and it is never joined to anything you do inside the app, because the app tells us nothing beyond the licence check above.</p>
+      <p>Signing in sets one cookie. It is strictly functional — no tracking, no third parties — and signing out deletes it. Downloads are served from a link signed to your licence that stops working after five minutes.</p>
+      <p>Ask us and we will show you every row we hold for your licence, or delete them. Deleting the download history does not affect your licence.</p>
+
+      <h2>Changes</h2>
+      <p>If any of the above changes, this page changes with it and the date at the top moves.</p>
+
+      <h2>Questions</h2>
+      <p>Write to [contact email].</p>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="cols">
+      <div class="about">
+        <a class="brand" href="/taula/" aria-label="Taula home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#215CCC"/><stop offset="1" stop-color="#732EA8"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#g1)"/><rect x="14" y="16" width="36" height="32" rx="3" fill="none" stroke="#fff" stroke-width="2.6"/><rect x="14" y="16" width="36" height="10" rx="3" fill="#fff" fill-opacity=".92"/><path d="M26 26v22M38 26v22M14 37h36" stroke="#fff" stroke-width="2.6"/></svg> taula</a>
+        <p>A native macOS database manager for PostgreSQL, SQLite and Cloudflare D1, with a local assistant and an MCP server for your coding agent.</p>
+      </div>
+      <div><h5>Product</h5><ul>
+        <li><a href="/taula/data-grid/">Data grid</a></li><li><a href="/taula/query-editor/">Query editor</a></li><li><a href="/taula/assistant/">Assistant</a></li>
+        <li><a href="/taula/mcp/">For agents</a></li><li><a href="/taula/safety/">Safety net</a></li><li><a href="/taula/databases/">Databases</a></li>
+      </ul></div>
+      <div><h5>Resources</h5><ul>
+        <li><a href="/taula/docs/">Documentation</a></li><li><a href="/taula/articles/">Articles</a></li><li><a href="/taula/compare/">How Taula compares</a></li><li><a href="/taula/changelog/">Changelog</a></li>
+        <li><a href="/taula/support/">Support</a></li><li><a href="/taula/privacy/">Privacy</a></li><li><a href="/taula/llms.txt">llms.txt</a></li>
+      </ul></div>
+      <div><h5>Get Taula</h5><ul>
+        <li><a href="/taula/?early=taula" data-early="taula">Request early access</a></li><li><a href="/taula/account/">Your downloads</a></li>
+        <li><a href="/taula/pricing/#requirements">Requirements</a></li><li><a href="/taula/changelog.xml">Release notes RSS</a></li>
+      </ul></div>
+    </div>
+    <div class="fine">
+      <span>Taula is Basque for table. Requires macOS 15 or later.</span>
+      <span>One licence check, no telemetry: your databases never leave your Mac.</span>
+    </div>
+  </div>
+</footer>
+<script src="/taula/site.js" defer></script>
+
+<script src="/early-access.js" defer></script>
+</body>
+</html>

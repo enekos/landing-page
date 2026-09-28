@@ -1,544 +1,347 @@
 import "./style.css";
-import {
-  homeNodes,
-  homeClusters,
-  manifestoNodes,
-  origin,
-  flatText,
-} from "./data.js";
-import {
-  addTask,
-  cipherGlyph,
-  clamp,
-  createField,
-  decode,
-  reducedMotion,
-} from "./engine.js";
+import { homeNodes, homeClusters } from "./data.js";
+import { addTask, cipherGlyph, clamp, decode, reducedMotion } from "./engine.js";
 import { dossiers, hasDossier } from "./projects.js";
 import { createDossier } from "./dossier.js";
+import { apps, windowFor } from "./apps.js";
+import { gizaScene, ikusScene, initArchives } from "./archives.js";
 
 const NAME = "Eneko Sarasola";
+const EMAIL = "enekos@duck.com";
+
+const node = (label) => homeNodes.find((n) => n.label === label);
+const inCluster = (name) => homeNodes.filter((n) => n.clusterName === name);
+const why = node("why").lines;
+const socials = inCluster("signal");
+
+const arrow = `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>`;
+const out = `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5"/></svg>`;
+
+const mark = `<img class="mark" src="/giraffe.png" alt="" width="36" height="36">`;
 
 const app = document.querySelector("#app");
 
-const pad2 = (n) => String(n).padStart(2, "0");
-
 app.innerHTML = `
-  <canvas id="home-canvas" aria-hidden="true"></canvas>
-  <div class="grain" aria-hidden="true"></div>
-  <div class="veil" aria-hidden="true"></div>
-  <div class="veil-card" aria-hidden="true"></div>
+<a class="skip" href="#main">Skip to content</a>
+<div class="prog" aria-hidden="true"></div>
 
-  <main class="field" id="home">
-    <header class="latent-hud latent-hud--top">
-      <p class="whisper">web / ai / natural language developer</p>
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="${NAME}, top of page">${mark}<span>Eneko Sarasola</span></a>
+    <nav class="nav-links" aria-label="Sections">
+      <a href="#apps">Apps</a><a href="#archives">Archives</a><a href="#contact">Contact</a>
+    </nav>
+    <a class="btn btn-ink btn-sm" href="#apps">Mac apps</a>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="hero" id="top">
+  <canvas class="field" id="field" aria-hidden="true"></canvas>
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <p class="whisper">web / ai / natural language developer · barcelona</p>
       <h1 class="name" id="name" aria-label="${NAME}"></h1>
-      <div class="latent-readout" aria-hidden="true">
-        <span data-home="vec">vec ⟨0.00, 0.00⟩</span>
-        <span data-home="cluster">cluster —</span>
-        <span data-home="idx">node 01 / ${pad2(homeNodes.length)}</span>
+      <p class="lede">${node("eneko").lines[0]} And three native Mac apps for the work in between.</p>
+      <div class="cta-row">
+        <a class="btn btn-ink" href="#apps">See the Mac apps ${arrow}</a>
+        <a class="btn btn-ghost" href="#archives">Read the archives</a>
       </div>
+      <p class="readout" aria-hidden="true"><span data-vec>vec ⟨0.00, 0.00⟩</span><span data-cluster>cluster self</span></p>
+    </div>
 
-      <nav class="corner-nav" aria-label="Views">
-        <button type="button" data-open="index">index</button>
-        <span class="corner-nav__sep" aria-hidden="true">/</span>
-        <button type="button" data-open="manifesto">manifesto</button>
-      </nav>
-    </header>
-
-    <article class="latent-card" id="home-card" aria-live="polite">
-      <p class="latent-card__tag" aria-hidden="true"></p>
-      <div class="latent-card__body"></div>
-      <p class="latent-card__near" aria-hidden="true"></p>
-    </article>
-
-    <nav class="latent-nav" aria-label="Move through the index">
-      <button data-home-nav="prev" type="button" aria-label="Previous point">◂</button>
-      <span class="latent-nav__thread" aria-hidden="true">follow the thread</span>
-      <button data-home-nav="next" type="button" aria-label="Next point">▸</button>
-    </nav>
-
-    <canvas class="latent-map" id="home-map" aria-hidden="true"></canvas>
-
-    <p class="latent-hint" aria-hidden="true">
-      drag to drift · <kbd>⏎</kbd> open · <kbd>space</kbd> re-project
-    </p>
-  </main>
-
-  <div class="sr-only">
-    <p>${NAME} — software engineer and natural language processing enthusiast, Barcelona. Maintainer of gizapedia.org, an open encyclopedia of the human and social sciences in Basque, and of ikusmira.org, a Spanish-language educational archive. Email: enekos [at] duck.com.</p>
-    <ul>
-      ${homeNodes
-    .filter((n) => n.href)
-    .map((n) => `<li><a href="${n.href}">${n.label}</a> — ${flatText(n.lines)}</li>`)
-    .join("")}
-    </ul>
-    ${Object.entries(dossiers)
-    .map(([slug, d]) => `
-      <section>
-        <h2><a href="#p/${slug}">${slug}</a></h2>
-        <p>${d.tagline}</p>
-        <p>${d.what}</p>
-        <p>${d.why}</p>
-      </section>`)
-    .join("")}
+    <div class="dock" aria-label="Mac apps">
+      <p class="dock-k">New · native macOS</p>
+      ${apps.map((a, i) => `
+      <a class="dock-app" href="#app-${a.slug}" style="--i:${i}">
+        ${a.icon}
+        <span class="dock-app__t"><b>${a.name}</b><span>${a.kind}</span></span>
+        <span class="dock-app__p">${a.price}<small>once</small></span>
+      </a>`).join("")}
+    </div>
   </div>
+  <a class="scroll-cue" href="#apps" aria-label="Scroll to the apps"><span></span></a>
+</section>
 
-  <div id="index-sheet" class="sheet" role="dialog" aria-modal="true" aria-label="Index" hidden>
-    <div class="sheet-inner">
-      <header class="sheet-head">
-        <span class="sheet-title">index</span>
-        <span class="sheet-sub">the same space, flattened</span>
-        <button class="sheet-close" type="button" aria-label="Close index">✕</button>
-      </header>
-      <div class="sheet-body">
-        ${Object.values(homeClusters)
-    .map((cl) => {
-      const items = homeNodes.filter((n) => n.clusterName === cl.name);
-      if (!items.length) return "";
-      return `
-            <section class="sheet-group" style="--hue:${cl.hue}">
-              <h2>${cl.name}</h2>
-              <ul>
-                ${items
-          .map((n) => {
-            const inner = `<span class="sheet-key">${n.label}</span><span class="sheet-val">${flatText(n.lines)}</span>`;
-            if (n.kind === "portal") return `<li><a class="sheet-row" href="#manifesto">${inner}</a></li>`;
-            // Anything with a dossier keeps you inside the site; the outbound
-            // link lives on the dossier, one level in.
-            if (hasDossier(n.label)) {
-              return `<li><a class="sheet-row sheet-row--in" href="#p/${n.label}">${inner}</a></li>`;
-            }
-            return n.href
-              ? `<li><a class="sheet-row" href="${n.href}" target="_blank" rel="noreferrer">${inner}</a></li>`
-              : `<li><span class="sheet-row">${inner}</span></li>`;
-          })
-          .join("")}
-              </ul>
-            </section>`;
-    })
-    .join("")}
-      </div>
+<section class="apps" id="apps" aria-labelledby="apps-h">
+  <div class="wrap">
+    <div class="head" data-reveal>
+      <span class="eyebrow">Mac apps</span>
+      <h2 id="apps-h">Three native tools. Paid once, yours to keep.</h2>
+      <p class="lede">Swift, no Electron, no account, no telemetry. Each one replaces a slow app, a browser tab or a subscription you already resent.</p>
     </div>
   </div>
 
-  <div id="manifesto-overlay" class="latent" role="dialog" aria-modal="true"
-    aria-label="Manifesto — a latent space of fragments" hidden>
-    <canvas id="latent-canvas" aria-hidden="true"></canvas>
-    <div class="latent-grain" aria-hidden="true"></div>
-    <div class="latent-card-glow" aria-hidden="true"></div>
-
-    <header class="latent-hud latent-hud--top">
-      <div class="latent-title">
-        <span class="latent-title__k">manifesto</span>
-        <span class="latent-title__v">on mind &amp; substrate</span>
+  <div class="show">
+      <div class="steps">
+        ${apps.map((a, i) => `
+        <article class="step${i === 0 ? " on" : ""}" id="app-${a.slug}" data-app="${a.slug}">
+          <div class="step-id">${a.icon}<div><h3 class="step-name">${a.name}</h3><span class="tag">${a.kind}</span></div>
+            <span class="step-n">0${i + 1} / 0${apps.length}</span></div>
+          <p class="step-head">${a.headline}</p>
+          <p class="step-lede">${a.lede}</p>
+          <div class="win win--inline" aria-hidden="true">${windowFor(a.slug)}</div>
+          <ul class="points">
+            ${a.points.map(([k, v]) => `<li><b>${k}</b><span>${v}</span></li>`).join("")}
+          </ul>
+          <dl class="facts">
+            <div><dt>Price</dt><dd>${a.price} once</dd></div>
+            <div><dt>Runs on</dt><dd>${a.requires}</dd></div>
+            <div><dt>Instead of</dt><dd>${a.replaces}</dd></div>
+          </dl>
+          <div class="cta-row">
+            <a class="btn btn-ink" href="/?early=${a.slug}" data-early="${a.slug}">Request early access</a>
+            <a class="btn btn-ghost" href="${a.href}">Full tour ${arrow}</a>
+          </div>
+          <p class="etym">${a.etym}</p>
+        </article>`).join("")}
       </div>
-      <div class="latent-readout" aria-hidden="true">
-        <span data-readout="vec">vec ⟨0.00, 0.00⟩</span>
-        <span data-readout="cluster">cluster —</span>
-        <span data-readout="idx">node 00 / ${pad2(manifestoNodes.length)}</span>
+
+      <div class="stage" aria-hidden="true">
+        <div class="stage-glow"></div>
+        ${apps.map((a, i) => `<div class="win win--stage${i === 0 ? " on" : ""}" data-win="${a.slug}">${windowFor(a.slug)}</div>`).join("")}
+        <div class="stage-dots">${apps.map((a, i) => `<i class="${i === 0 ? "on" : ""}" data-dot="${a.slug}"></i>`).join("")}</div>
       </div>
-    </header>
+  </div>
 
-    <button class="latent-close" type="button" aria-label="Close manifesto">✕</button>
-
-    <article class="latent-card" aria-live="polite">
-      <p class="latent-card__tag" aria-hidden="true"></p>
-      <div class="latent-card__body"></div>
-      <p class="latent-card__near" aria-hidden="true"></p>
-    </article>
-
-    <nav class="latent-nav" aria-label="Navigate fragments">
-      <button data-nav="prev" type="button" aria-label="Previous fragment">◂</button>
-      <span class="latent-nav__thread" aria-hidden="true">follow the thread</span>
-      <button data-nav="next" type="button" aria-label="Next fragment">▸</button>
-    </nav>
-
-    <canvas id="latent-map" class="latent-map" aria-hidden="true"></canvas>
-
-    <p class="latent-hint" aria-hidden="true">drag to drift · scroll to zoom · <kbd>◂</kbd> <kbd>▸</kbd> follow the thread</p>
-
-    <div class="sr-only">
-      ${manifestoNodes.map((f) => flatText(f.lines)).join(" ")}
+  <div class="terms">
+    <div class="wrap">
+      <div class="terms-grid" data-stagger>
+        <div data-reveal><b>Pay once</b><span>No subscription, no renewal. Every future update is included.</span></div>
+        <div data-reveal><b>Three Macs</b><span>One licence runs on three of your machines at a time.</span></div>
+        <div data-reveal><b>No account</b><span>The licence key arrives by email. The key is the whole account.</span></div>
+        <div data-reveal><b>14-day refund</b><span>No trial build to expire on you. If it is not for you, write and get your money back.</span></div>
+      </div>
     </div>
   </div>
+</section>
+
+<section class="archives" id="archives" aria-labelledby="archives-h">
+  <div class="wrap">
+    <div class="head" data-reveal>
+      <span class="eyebrow">Archives</span>
+      <h2 id="archives-h">Two encyclopedias, written and kept by one person.</h2>
+      <p class="lede">A language without reference works loses arguments it should win. These are the work with readers, not just repositories.</p>
+    </div>
+
+    <article class="arch arch--giza" style="--hue:${node("gizapedia").hue}">
+      <div class="arch-copy" data-reveal>
+        <p class="arch-k"><span class="live"></span>live · in Basque</p>
+        <h3>gizapedia</h3>
+        <p class="arch-tag">${dossiers.gizapedia.tagline}</p>
+        <p class="arch-p">Philosophy, politics, economics, sociology and statistics: long-form, cited articles and a dictionary that grows every day. Hugo builds the site; a Rust pass lints and transforms 21,000 pages before it does.</p>
+        <div class="stats">
+          <div><b class="count" data-to="8099">8,099</b><span>articles</span></div>
+          <div><b class="count" data-to="11012">11,012</b><span>dictionary entries</span></div>
+          <div><b class="count" data-to="21000">21,000</b><span>pages built</span></div>
+        </div>
+        <div class="cta-row">
+          <a class="btn btn-ink" href="https://gizapedia.org" target="_blank" rel="noreferrer">gizapedia.org ${out}</a>
+          <a class="btn btn-ghost" href="#p/gizapedia">How it is built</a>
+        </div>
+      </div>
+
+      <div class="arch-visual">${gizaScene()}</div>
+    </article>
+
+    <article class="arch arch--ikus" style="--hue:${node("ikusmira").hue}">
+      <div class="arch-copy" data-reveal>
+        <p class="arch-k"><span class="live"></span>live · in Spanish</p>
+        <h3>ikusmira</h3>
+        <p class="arch-tag">${dossiers.ikusmira.tagline}</p>
+        <p class="arch-p">An educational archive with study routes, ten-minute book cards and a reading a day. Every article is classified in your own browser by a wasm rule engine: no inference call, no backend, nothing about what you read leaves the page.</p>
+        <div class="stats">
+          <div><b class="count" data-to="4429">4,429</b><span>articles</span></div>
+          <div><b class="count" data-to="25">25</b><span>study routes</span></div>
+          <div><b class="count" data-to="104">104</b><span>essential books</span></div>
+          <div><b>0</b><span>inference calls</span></div>
+        </div>
+        <div class="cta-row">
+          <a class="btn btn-ink" href="https://ikusmira.org" target="_blank" rel="noreferrer">ikusmira.org ${out}</a>
+          <a class="btn btn-ghost" href="#p/ikusmira">How it is built</a>
+        </div>
+      </div>
+
+      <div class="arch-visual">${ikusScene()}</div>
+    </article>
+  </div>
+</section>
+
+<section class="why" id="why" aria-labelledby="why-h">
+  <div class="wrap">
+    <span class="eyebrow" id="why-h">Why it is built this way</span>
+    <div class="why-lines">
+      ${why.map((l) => {
+    const [head, ...rest] = l.split(", because ");
+    return `<p class="why-line">${`<b>${head},</b> because ${rest.join(", because ")}`
+      .split(" ").map((w) => `<span class="w">${w}</span>`).join(" ")}</p>`;
+  }).join("")}
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contact" aria-labelledby="contact-h">
+  <div class="wrap contact-grid">
+    <div data-reveal>
+      <span class="eyebrow">About</span>
+      <h2 id="contact-h">Reach out. I answer.</h2>
+      <p class="lede">${node("barcelona").lines[0]} ${node("analog").lines[0]}</p>
+    </div>
+    <div class="contact-card" data-reveal>
+      <p class="contact-k">email</p>
+      <p class="contact-mail">enekos <span>[at]</span> duck.com</p>
+      <button class="btn btn-ink" type="button" id="copy">Copy address</button>
+      <ul class="socials">
+        ${socials.map((n) => `<li><a href="${n.href}" target="_blank" rel="noreferrer"><b>${n.label}</b><span>${n.lines[0]}</span>${out}</a></li>`).join("")}
+      </ul>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <span>${mark} Eneko Sarasola · Barcelona</span>
+    <span class="foot-apps">${apps.map((a) => `<a href="${a.href}">${a.name}</a>`).join("")}<a href="https://gizapedia.org" target="_blank" rel="noreferrer">gizapedia</a><a href="https://ikusmira.org" target="_blank" rel="noreferrer">ikusmira</a></span>
+  </div>
+</footer>
 `;
 
-// ---------------------------------------------------------------------------
-//  Cards
-//
-//  Both fields render the same card in the middle of the screen; only the
-//  typography of the body changes with the kind of point you are standing on.
-// ---------------------------------------------------------------------------
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const vh = () => window.innerHeight;
 
-function makeCard(root) {
-  const tagEl = root.querySelector(".latent-card__tag");
-  const bodyEl = root.querySelector(".latent-card__body");
-  const nearEl = root.querySelector(".latent-card__near");
-  let cancel = () => {};
+const canvas = $("#field");
+const ctx = canvas.getContext("2d");
+const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
+const dust = Array.from({ length: 70 }, (_, i) => ({
+  x: (Math.sin(i * 91.7) * 0.5 + 0.5) * 1800 - 900,
+  y: (Math.sin(i * 47.3 + 2) * 0.5 + 0.5) * 1500 - 750,
+  r: 0.8 + (i % 3) * 0.5,
+  hue: homeNodes[i % homeNodes.length].hue,
+}));
+let fw = 0;
+let fh = 0;
+let dpr = 1;
+let heroOut = 0;
 
-  return function render(node, build) {
-    cancel();
+function sizeField() {
+  dpr = Math.min(window.devicePixelRatio || 1, 2);
+  fw = canvas.clientWidth;
+  fh = canvas.clientHeight;
+  canvas.width = fw * dpr;
+  canvas.height = fh * dpr;
+}
 
-    tagEl.textContent = `${node.clusterName} · ⟨${(node.x / 700).toFixed(2)}, ${(node.y / 700).toFixed(2)}⟩`;
-    tagEl.style.setProperty("--hue", node.hue);
+function drawField(now) {
+  if (heroOut >= 1) return;
+  const t = reducedMotion ? 0 : now * 0.00012;
+  pointer.x += (pointer.tx - pointer.x) * 0.05;
+  pointer.y += (pointer.ty - pointer.y) * 0.05;
 
-    bodyEl.className = `latent-card__body k-${node.kind}`;
-    bodyEl.style.setProperty("--hue", node.hue);
-    bodyEl.textContent = "";
+  const wide = fw > 900;
+  const s = Math.min(fw / (wide ? 2300 : 1500), fh / 1700);
+  const cx = fw * (wide ? 0.66 : 0.5) - pointer.x * 30;
+  const cy = fh * 0.5 - pointer.y * 24;
+  const spread = 1 + heroOut * 0.9;
 
-    const queue = [];
-    const line = (text, tag = "span", cls = "") => {
-      const el = document.createElement(tag);
-      el.className = `lx${cls ? ` ${cls}` : ""}`;
-      el.textContent = text;
-      queue.push({ el, text });
-      return el;
-    };
-
-    build(bodyEl, line, node);
-
-    queue.forEach((q, i) => { q.delay = i * 110; });
-    cancel = decode(queue);
-
-    nearEl.innerHTML = node.neighbors
-      .map((nb) => `<span class="near-sim">${nb.sim.toFixed(2)}</span>`)
-      .join('<span class="near-dot">·</span>');
-
-    root.classList.remove("in");
-    void root.offsetWidth; // restart the entrance
-    root.classList.add("in");
+  const at = (n, i) => {
+    const wob = reducedMotion ? 0 : 14;
+    const x = n.x + Math.sin(t * 7 + i * 1.3) * wob;
+    const y = n.y + Math.cos(t * 6 + i * 0.9) * wob;
+    return [cx + x * s * spread, cy + y * s * spread];
   };
-}
 
-// --- manifesto bodies (unchanged shapes) -----------------------------------
-function manifestoBody(body, line, node) {
-  if (node.kind === "couplets") {
-    for (const pair of node.lines) {
-      const row = document.createElement("p");
-      row.className = "cx-row";
-      row.appendChild(line(pair[0], "span", "cx-a"));
-      row.appendChild(line(pair[1], "span", "cx-b"));
-      body.appendChild(row);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, fw, fh);
+  ctx.globalAlpha = 1 - heroOut;
+
+  for (const d of dust) {
+    const [x, y] = at(d, d.r * 10);
+    ctx.fillStyle = `hsla(${d.hue} 50% 45% / .25)`;
+    ctx.beginPath();
+    ctx.arc(x, y, d.r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  const pos = homeNodes.map(at);
+  ctx.lineWidth = 1;
+  homeNodes.forEach((n, i) => {
+    for (const nb of n.neighbors) {
+      const [x2, y2] = pos[nb.node.i];
+      ctx.strokeStyle = `hsla(${n.hue} 45% 45% / ${0.08 + nb.sim * 0.14})`;
+      ctx.beginPath();
+      ctx.moveTo(pos[i][0], pos[i][1]);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
     }
-    return;
-  }
-  const cls = node.kind === "stack" ? "sx-row" : "px-row";
-  for (const l of node.lines) {
-    const p = document.createElement("p");
-    p.className = cls;
-    p.appendChild(line(l));
-    body.appendChild(p);
-  }
-}
+  });
 
-// --- home bodies ------------------------------------------------------------
-let copyTimer = 0;
-
-function homeBody(body, line, node) {
-  if (node.kind === "entry") {
-    if (node.eyebrow) {
-      const brow = document.createElement("p");
-      brow.className = "entry-eyebrow";
-      brow.appendChild(line(node.eyebrow));
-      body.appendChild(brow);
+  ctx.font = `500 11px "JetBrains Mono", monospace`;
+  homeNodes.forEach((n, i) => {
+    const [x, y] = pos[i];
+    const r = n.flagship ? 5 : n.kind === "entry" ? 3.4 : 2.6;
+    ctx.fillStyle = `hsla(${n.hue} 60% 50% / .14)`;
+    ctx.beginPath();
+    ctx.arc(x, y, r * 3.2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = `hsl(${n.hue} 55% 44%)`;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fill();
+    if (fw > 700) {
+      ctx.fillStyle = `hsla(${n.hue} 30% 30% / .55)`;
+      ctx.fillText(n.label, x + r + 6, y + 4);
     }
+  });
+  ctx.globalAlpha = 1;
+}
 
-    const name = document.createElement("p");
-    name.className = "entry-name";
-    name.appendChild(line(node.label));
-    body.appendChild(name);
+sizeField();
+addTask(drawField);
 
-    const desc = document.createElement("p");
-    desc.className = "entry-desc";
-    desc.appendChild(line(node.lines[0]));
-    body.appendChild(desc);
-
-    const actions = document.createElement("p");
-    actions.className = "entry-actions";
-
-    // A project reads its own dossier first; the repo is one step further out.
-    // A social handle has nothing to read, so its link is the only action.
-    if (hasDossier(node.label)) {
-      const read = document.createElement("button");
-      read.type = "button";
-      read.className = "entry-link";
-      read.textContent = "read the dossier";
-      read.addEventListener("click", () => openDossier(node.label));
-      actions.appendChild(read);
-    }
-
-    const a = document.createElement("a");
-    a.className = "entry-link entry-link--quiet";
-    a.href = node.href;
-    a.target = "_blank";
-    a.rel = "noreferrer";
-    a.textContent = `${node.href.replace(/^https?:\/\//, "")} ↗`;
-    actions.appendChild(a);
-
-    body.appendChild(actions);
-    return;
+const readVec = $("[data-vec]");
+const readCluster = $("[data-cluster]");
+window.addEventListener("pointermove", (e) => {
+  pointer.tx = e.clientX / window.innerWidth - 0.5;
+  pointer.ty = e.clientY / window.innerHeight - 0.5;
+  if (heroOut > 0.6) return;
+  const x = pointer.tx * 2;
+  const y = pointer.ty * 2;
+  readVec.textContent = `vec ⟨${x.toFixed(2)}, ${y.toFixed(2)}⟩`;
+  let best = homeClusters.self;
+  let bd = Infinity;
+  for (const c of Object.values(homeClusters)) {
+    const d = Math.hypot(c.c[0] / 700 - x, c.c[1] / 700 - y);
+    if (d < bd) { bd = d; best = c; }
   }
+  readCluster.textContent = `cluster ${best.name}`;
+}, { passive: true });
 
-  if (node.kind === "contact") {
-    const addr = document.createElement("p");
-    addr.className = "entry-name entry-mail";
-    addr.appendChild(line(node.lines[0]));
-    body.appendChild(addr);
-
-    const note = document.createElement("p");
-    note.className = "entry-desc";
-    note.appendChild(line(node.note));
-    body.appendChild(note);
-
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "entry-link";
-    btn.textContent = "copy address";
-    btn.addEventListener("click", () => {
-      navigator.clipboard?.writeText("enekos@duck.com").then(() => {
-        btn.textContent = "copied";
-        clearTimeout(copyTimer);
-        copyTimer = setTimeout(() => { btn.textContent = "copy address"; }, 1800);
-      }).catch(() => { btn.textContent = "enekos@duck.com"; });
-    });
-    body.appendChild(btn);
-    return;
-  }
-
-  if (node.kind === "portal") {
-    const title = document.createElement("p");
-    title.className = "portal-name";
-    title.appendChild(line("manifesto"));
-    body.appendChild(title);
-
-    const sub = document.createElement("p");
-    sub.className = "entry-desc";
-    sub.appendChild(line(node.lines[0]));
-    body.appendChild(sub);
-
-    const note = document.createElement("p");
-    note.className = "portal-note";
-    note.appendChild(line(node.note));
-    body.appendChild(note);
-
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "entry-link";
-    btn.textContent = "enter ↗";
-    btn.addEventListener("click", openManifesto);
-    body.appendChild(btn);
-    return;
-  }
-
-  const cls = node.kind === "stack" ? "sx-row" : "px-row";
-  for (const l of node.lines) {
-    const p = document.createElement("p");
-    p.className = cls;
-    p.appendChild(line(l));
-    body.appendChild(p);
-  }
-}
-
-// ---------------------------------------------------------------------------
-//  Home field
-// ---------------------------------------------------------------------------
-
-const homeCardEl = document.querySelector("#home-card");
-const renderHomeCard = makeCard(homeCardEl);
-const homeVec = document.querySelector('[data-home="vec"]');
-const homeCluster = document.querySelector('[data-home="cluster"]');
-const homeIdx = document.querySelector('[data-home="idx"]');
-const nameEl = document.querySelector("#name");
-
-const WIDE = "(min-width: 900px)";
-
-const home = createField({
-  canvas: document.querySelector("#home-canvas"),
-  map: document.querySelector("#home-map"),
-  cardEl: homeCardEl,
-  nodes: homeNodes,
-  labels: true,
-  reprojectable: true,
-  openZoom: 0.3,
-  focusZoom: 0.66,
-  measure: () => [window.innerWidth, window.innerHeight],
-  // Wide: the point sits left of centre and the card reads to its right.
-  // Narrow: the point rides above the card instead. Either way the light and
-  // the prose never share the same pixels.
-  anchor: () => (window.matchMedia(WIDE).matches ? [0.32, 0.5] : [0.5, 0.27]),
-  onFocus(node) {
-    renderHomeCard(node, homeBody);
-    homeCluster.textContent = `cluster ${node.clusterName}`;
-    homeIdx.textContent = `node ${pad2(node.i + 1)} / ${pad2(homeNodes.length)}`;
-    nameEl.style.setProperty("--hue", node.hue);
-  },
-  onActivate(node) {
-    if (hasDossier(node.label)) openDossier(node.label);
-    else if (node.href) window.open(node.href, "_blank", "noreferrer");
-    else if (node.kind === "portal") openManifesto();
-  },
-  onReadout(x, y) {
-    const vec = `vec ⟨${x.toFixed(2)}, ${y.toFixed(2)}⟩`;
-    if (homeVec.textContent !== vec) homeVec.textContent = vec;
-  },
-  onAnneal() {
-    renderHomeCard(home.current(), homeBody);
-  },
+const nameEl = $("#name");
+const chars = NAME.split(" ").flatMap((word) => {
+  const w = document.createElement("span");
+  w.className = "name-word";
+  nameEl.appendChild(w);
+  nameEl.appendChild(document.createTextNode(" "));
+  return [...word].map((ch) => {
+    const span = document.createElement("span");
+    span.className = "name-char";
+    span.textContent = ch;
+    w.appendChild(span);
+    return { span, ch, until: 0 };
+  });
 });
-
-// ---------------------------------------------------------------------------
-//  Manifesto field — same engine, same numbers, same look.
-// ---------------------------------------------------------------------------
-
-const overlay = document.querySelector("#manifesto-overlay");
-const renderFragment = makeCard(overlay.querySelector(".latent-card"));
-const readVec = overlay.querySelector('[data-readout="vec"]');
-const readCluster = overlay.querySelector('[data-readout="cluster"]');
-const readIdx = overlay.querySelector('[data-readout="idx"]');
-
-const manifesto = createField({
-  canvas: document.querySelector("#latent-canvas"),
-  map: document.querySelector("#latent-map"),
-  nodes: manifestoNodes,
-  measure: () => [overlay.clientWidth, overlay.clientHeight],
-  onFocus(node) {
-    renderFragment(node, manifestoBody);
-    readCluster.textContent = `cluster ${node.clusterName}`;
-    readIdx.textContent = `node ${pad2(node.i + 1)} / ${pad2(manifestoNodes.length)}`;
-  },
-  onReadout(x, y) {
-    const vec = `vec ⟨${x.toFixed(2)}, ${y.toFixed(2)}⟩`;
-    if (readVec.textContent !== vec) readVec.textContent = vec;
-  },
-});
-
-const manifestoOpen = () => !overlay.hidden;
-
-function openManifesto() {
-  if (manifestoOpen()) return;
-  overlay.hidden = false;
-  home.stop(); // fully occluded — nothing behind the overlay is worth a frame
-  manifesto.start(0);
-  requestAnimationFrame(() => overlay.classList.add("is-open"));
-  overlay.querySelector(".latent-close").focus();
-  setHash("manifesto");
-}
-
-function closeManifesto() {
-  if (!manifestoOpen()) return;
-  overlay.classList.remove("is-open");
-  setHash("");
-  const done = () => {
-    overlay.hidden = true;
-    manifesto.stop();
-    overlay.removeEventListener("transitionend", done);
-  };
-  if (reducedMotion) done();
-  else overlay.addEventListener("transitionend", done);
-  home.start(home.view.focus, true);
-  document.querySelector('[data-open="manifesto"]').focus();
-}
-
-// ---------------------------------------------------------------------------
-//  Index sheet — the same content, flattened into a list for anyone who would
-//  rather read than travel.
-// ---------------------------------------------------------------------------
-
-const sheet = document.querySelector("#index-sheet");
-const sheetOpen = () => !sheet.hidden;
-
-function openIndex() {
-  if (sheetOpen()) return;
-  sheet.hidden = false;
-  requestAnimationFrame(() => sheet.classList.add("is-open"));
-  sheet.querySelector(".sheet-close").focus();
-  setHash("index");
-}
-
-function closeIndex() {
-  if (!sheetOpen()) return;
-  sheet.classList.remove("is-open");
-  setHash("");
-  const done = () => {
-    sheet.hidden = true;
-    sheet.removeEventListener("transitionend", done);
-  };
-  if (reducedMotion) done();
-  else sheet.addEventListener("transitionend", done);
-  document.querySelector('[data-open="index"]').focus();
-}
-
-// ---------------------------------------------------------------------------
-//  Dossiers — one addressable page per project, at /#p/<slug>.
-//
-//  These exist so a repository's README can point at something that explains
-//  the project without asking the reader to fly a camera around first.
-// ---------------------------------------------------------------------------
-
-const dossier = createDossier({
-  onOpen: (slug) => setHash(`p/${slug}`),
-  onClose: () => {
-    // Only clear the hash if it still points here — closing on the way to
-    // another view must not undo the hash that view has already set.
-    if (location.hash.slice(1).startsWith("p/")) setHash("");
-    // The field was left exactly where it was; pick the loop back up rather
-    // than flying the camera home.
-    home.resume();
-    // Hand focus back to whatever is standing in for the dossier out here.
-    const back = homeCardEl.querySelector("button.entry-link")
-      || document.querySelector('[data-open="index"]');
-    back?.focus();
-  },
-});
-
-function openDossier(slug) {
-  if (!hasDossier(slug)) return;
-  closeIndex();
-  closeManifesto();
-  const wasClosed = !dossier.isOpen();
-  if (!dossier.open(slug)) return;
-  // Fully occluded by an opaque sheet, and a dossier is a minutes-long read —
-  // not worth a frame.
-  if (wasClosed) home.stop();
-  setHash(`p/${slug}`);
-}
-
-function closeDossier() {
-  dossier.close();
-}
-
-// ---------------------------------------------------------------------------
-//  The name
-//
-//  It resolves out of cipher on arrival, and afterwards it holds — until you
-//  drift. The further the camera travels from the self cluster, the more often
-//  a character slips back into noise. The identity in the corner is only as
-//  stable as your distance from it.
-// ---------------------------------------------------------------------------
-
-const chars = [...NAME].map((ch) => {
-  const span = document.createElement("span");
-  span.className = "name-char";
-  span.textContent = ch === " " ? " " : ch;
-  nameEl.appendChild(span);
-  return { span, ch, until: 0 };
-});
+let drift = 0;
 
 function startName() {
-  if (reducedMotion) return; // the name simply is what it is
-
-  const movable = chars.filter((c) => c.ch !== " ");
+  if (reducedMotion) return;
+  const movable = chars;
   decode(movable.map((c, i) => ({ el: c.span, text: c.ch, delay: 90 + i * 55 })));
 
   let next = 0;
   addTask((now) => {
-    // distance from the origin of the self cluster, normalised
-    const dx = home.cam.x - origin[0];
-    const dy = home.cam.y - origin[1];
-    const drift = clamp(Math.hypot(dx, dy) / 1500, 0, 1);
-    nameEl.style.setProperty("--drift", drift.toFixed(2));
-
     for (const c of chars) {
       if (c.until && now > c.until) {
         c.until = 0;
@@ -546,11 +349,9 @@ function startName() {
         c.span.classList.remove("slipped");
       }
     }
-
     if (now < next) return;
     next = now + 400 + Math.random() * 1100;
-    if (Math.random() > 0.05 + drift * 0.4) return;
-
+    if (Math.random() > 0.05 + drift * 0.5) return;
     const c = movable[(Math.random() * movable.length) | 0];
     if (c.until) return;
     c.span.textContent = cipherGlyph();
@@ -559,120 +360,138 @@ function startName() {
   });
 }
 
-if (document.fonts?.ready) document.fonts.ready.then(startName);
+if (document.fonts?.ready) document.fonts.ready.then(() => { sizeField(); startName(); });
 else window.addEventListener("load", startName);
 
-// ---------------------------------------------------------------------------
-//  Wiring
-// ---------------------------------------------------------------------------
+const prog = $(".prog");
+const nav = $("#nav");
+const hero = $(".hero");
+const whyLines = $(".why-lines");
+const whyWords = $$(".why .w");
+const archScroll = initArchives($("#archives"));
 
-document.querySelector('[data-open="index"]').addEventListener("click", openIndex);
-document.querySelector('[data-open="manifesto"]').addEventListener("click", openManifesto);
-sheet.querySelector(".sheet-close").addEventListener("click", closeIndex);
-sheet.addEventListener("click", (e) => { if (e.target === sheet) closeIndex(); });
-overlay.querySelector(".latent-close").addEventListener("click", closeManifesto);
+function onScroll() {
+  const y = window.scrollY;
+  const max = document.documentElement.scrollHeight - vh();
+  prog.style.transform = `scaleX(${max > 0 ? y / max : 0})`;
+  nav.classList.toggle("stuck", y > 8);
 
-overlay.querySelector('[data-nav="prev"]').addEventListener("click", () => manifesto.prev());
-overlay.querySelector('[data-nav="next"]').addEventListener("click", () => manifesto.next());
-document.querySelector('[data-home-nav="prev"]').addEventListener("click", () => home.prev());
-document.querySelector('[data-home-nav="next"]').addEventListener("click", () => home.next());
+  heroOut = clamp(y / (hero.offsetHeight * 0.9), 0, 1);
+  hero.style.setProperty("--out", heroOut.toFixed(3));
+  drift = clamp(y / (vh() * 3), 0, 1);
 
-window.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") {
-    if (dossier.isOpen()) closeDossier();
-    else if (sheetOpen()) closeIndex();
-    else if (manifestoOpen()) closeManifesto();
-    return;
-  }
-  // Both are scrolls, not fields — the arrow keys belong to the page.
-  if (sheetOpen() || dossier.isOpen()) return;
+  archScroll(vh());
 
-  const field = manifestoOpen() ? manifesto : home;
-  if (e.key === "ArrowRight" || e.key === "ArrowDown") {
-    e.preventDefault();
-    field.next();
-    return;
-  }
-  if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
-    e.preventDefault();
-    field.prev();
-    return;
-  }
-  if (manifestoOpen()) return;
+  const r = whyLines.getBoundingClientRect();
+  const wp = reducedMotion ? 1 : clamp((vh() * 0.8 - r.top) / (r.height + vh() * 0.1), 0, 1);
+  const lit = Math.round(wp * whyWords.length);
+  whyWords.forEach((w, i) => w.classList.toggle("lit", i < lit));
+}
 
-  const typing = /^(INPUT|TEXTAREA|BUTTON|A)$/.test(document.activeElement?.tagName || "");
-  if (e.code === "Space" && !typing) {
-    e.preventDefault();
-    home.reproject();
-  } else if (e.key === "Enter" && !typing) {
-    // Opening a view hands focus to its close button, and Enter's own default
-    // action would then click it — the dossier would open and shut in a frame.
-    e.preventDefault();
-    // Same rule as a click: a project reads its dossier first, and only a point
-    // with nothing to read here sends you off the site.
-    const n = home.current();
-    if (hasDossier(n.label)) openDossier(n.label);
-    else if (n.href) window.open(n.href, "_blank", "noreferrer");
-    else if (n.kind === "portal") openManifesto();
-  } else if (e.key === "i") {
-    openIndex();
-  }
-});
+let scrollQueued = false;
+const queue = () => {
+  if (scrollQueued) return;
+  scrollQueued = true;
+  requestAnimationFrame(() => { scrollQueued = false; onScroll(); });
+};
+window.addEventListener("scroll", queue, { passive: true });
+onScroll();
 
-// Mobile browsers fire resize every time the URL bar slides. Rebuilding both
-// canvases and every label sprite for a 60px height change is pure jank, so
-// only a real change in the viewport counts.
-let lastW = window.innerWidth;
-let lastH = window.innerHeight;
-let resizePending = false;
+const stage = $(".stage");
+const steps = $$(".step");
+const wins = $$("[data-win]");
+const stageDots = $$("[data-dot]");
+const setApp = (slug) => {
+  steps.forEach((s) => s.classList.toggle("on", s.dataset.app === slug));
+  wins.forEach((w) => w.classList.toggle("on", w.dataset.win === slug));
+  stageDots.forEach((d) => d.classList.toggle("on", d.dataset.dot === slug));
+  stage.dataset.app = slug;
+};
+const stepIO = new IntersectionObserver((entries) => {
+  for (const e of entries) if (e.isIntersecting) setApp(e.target.dataset.app);
+}, { rootMargin: "-45% 0px -45% 0px" });
+steps.forEach((s) => stepIO.observe(s));
+setApp(apps[0].slug);
 
-window.addEventListener("resize", () => {
-  const w = window.innerWidth;
-  const h = window.innerHeight;
-  if (w === lastW && Math.abs(h - lastH) < 120) return;
-  lastW = w;
-  lastH = h;
-  if (resizePending) return;
-  resizePending = true;
-  requestAnimationFrame(() => {
-    resizePending = false;
-    home.resize();
-    if (manifestoOpen()) manifesto.resize();
+const fmt = new Intl.NumberFormat("en-US");
+function count(el) {
+  const to = Number(el.dataset.to);
+  if (reducedMotion) return;
+  const t0 = performance.now();
+  const stop = addTask((now) => {
+    const p = clamp((now - t0) / 1400, 0, 1);
+    el.textContent = fmt.format(Math.round(to * (1 - (1 - p) ** 4)));
+    if (p >= 1) stop();
   });
+}
+
+const revealIO = new IntersectionObserver((entries) => {
+  for (const e of entries) {
+    if (!e.isIntersecting) continue;
+    e.target.classList.add("in");
+    $$(".count", e.target).forEach(count);
+    revealIO.unobserve(e.target);
+  }
+}, { rootMargin: "0px 0px -12% 0px" });
+$$("[data-reveal], .arch-visual, .step").forEach((el) => revealIO.observe(el));
+$$("[data-stagger]").forEach((g) => [...g.children].forEach((c, i) => c.style.setProperty("--d", `${i * 90}ms`)));
+
+const copyBtn = $("#copy");
+let copyTimer = 0;
+copyBtn.addEventListener("click", () => {
+  navigator.clipboard?.writeText(EMAIL).then(() => {
+    copyBtn.textContent = "Copied";
+    clearTimeout(copyTimer);
+    copyTimer = setTimeout(() => { copyBtn.textContent = "Copy address"; }, 1800);
+  }).catch(() => { copyBtn.textContent = EMAIL; });
 });
 
-// Labels are measured in a font that may not have arrived yet.
-document.fonts?.ready.then(() => home.resize());
+let returnFocus = null;
+const dossier = createDossier({
+  onOpen: (slug) => setHash(`p/${slug}`),
+  onClose: () => {
+    if (location.hash.slice(1).startsWith("p/")) setHash("");
+    document.documentElement.classList.remove("locked");
+    returnFocus?.focus({ preventScroll: true });
+  },
+});
 
-// Both regions are linkable: /#manifesto lands straight in the cloud.
-let hashLock = false;
+function openDossier(slug) {
+  if (!hasDossier(slug)) return;
+  if (!dossier.isOpen()) returnFocus = document.activeElement;
+  if (!dossier.open(slug)) return;
+  document.documentElement.classList.add("locked");
+  setHash(`p/${slug}`);
+}
 
 function setHash(value) {
-  const next = value ? `#${value}` : " ";
   if (location.hash.slice(1) === value) return;
-  hashLock = true;
-  history.replaceState(null, "", value ? next : location.pathname + location.search);
-  hashLock = false;
+  history.replaceState(null, "", value ? `#${value}` : location.pathname + location.search);
 }
 
 function applyHash() {
-  if (hashLock) return;
   const h = location.hash.slice(1);
-
-  // /#p/<slug> is the linkable form a repo README points at.
-  if (h.startsWith("p/")) {
-    const slug = h.slice(2);
-    if (hasDossier(slug)) { openDossier(slug); return; }
-  }
-
-  closeDossier();
-  if (h === "manifesto") { closeIndex(); openManifesto(); }
-  else if (h === "index") { closeManifesto(); openIndex(); }
-  else { closeIndex(); closeManifesto(); }
+  if (h.startsWith("p/") && hasDossier(h.slice(2))) openDossier(h.slice(2));
+  else if (dossier.isOpen()) dossier.close();
 }
 
+document.addEventListener("click", (e) => {
+  const a = e.target.closest('a[href^="#p/"]');
+  if (!a) return;
+  e.preventDefault();
+  openDossier(a.getAttribute("href").slice(3));
+});
 window.addEventListener("hashchange", applyHash);
+window.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && dossier.isOpen()) dossier.close();
+});
 
-// Arrive wide on the whole projection, then fall towards the self cluster.
-home.start(0);
+let lastW = window.innerWidth;
+window.addEventListener("resize", () => {
+  if (window.innerWidth === lastW) return;
+  lastW = window.innerWidth;
+  sizeField();
+  onScroll();
+});
+
 if (location.hash) applyHash();

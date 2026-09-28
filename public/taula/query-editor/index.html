@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Query editor · Taula</title>
+<meta name="description" content="A SQL editor for PostgreSQL, SQLite and D1 with schema-aware autocomplete, ghost-text completions from a local model, several result sets per run, EXPLAIN as a tree, a visual query builder and a ⌘K command bar.">
+<link rel="canonical" href="https://hirusta.io/taula/query-editor/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Taula">
+<meta property="og:title" content="Query editor · Taula">
+<meta property="og:description" content="A SQL editor for PostgreSQL, SQLite and D1 with schema-aware autocomplete, ghost-text completions from a local model, several result sets per run, EXPLAIN as a tree, a visual query builder and a ⌘K command bar.">
+<meta property="og:url" content="https://hirusta.io/taula/query-editor/">
+<meta property="og:image" content="https://hirusta.io/taula/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Query editor · Taula">
+<meta name="twitter:description" content="A SQL editor for PostgreSQL, SQLite and D1 with schema-aware autocomplete, ghost-text completions from a local model, several result sets per run, EXPLAIN as a tree, a visual query builder and a ⌘K command bar.">
+<meta name="twitter:image" content="https://hirusta.io/taula/og.png">
+<meta name="theme-color" content="#F3F4F6">
+<link rel="icon" href="/taula/favicon.svg" type="image/svg+xml">
+<link rel="alternate" type="application/rss+xml" title="Taula release notes" href="https://hirusta.io/taula/changelog.xml">
+<link rel="preload" href="/taula/fonts/bricolage.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/taula/fonts/instrument.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/taula/site.css">
+
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Taula","item":"https://hirusta.io/taula/"},{"@type":"ListItem","position":2,"name":"Query editor","item":"https://hirusta.io/taula/query-editor/"}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="brand" href="/taula/" aria-label="Taula home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#215CCC"/><stop offset="1" stop-color="#732EA8"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#g1)"/><rect x="14" y="16" width="36" height="32" rx="3" fill="none" stroke="#fff" stroke-width="2.6"/><rect x="14" y="16" width="36" height="10" rx="3" fill="#fff" fill-opacity=".92"/><path d="M26 26v22M38 26v22M14 37h36" stroke="#fff" stroke-width="2.6"/></svg> taula</a>
+    <nav class="nav-links" aria-label="Site">
+      <div class="menu">
+        <button type="button" aria-haspopup="true" aria-expanded="false" class="here">Product <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="m4 6 4 4 4-4"/></svg></button>
+        <div class="drop">
+          <a href="/taula/data-grid/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 10v10M15 10v10"/></svg><b>Data grid</b><span>Browse and edit, with a review step before anything is written.</span></a>
+          <a href="/taula/query-editor/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M14 5l-4 14"/></svg><b>Query editor</b><span>Schema-aware autocomplete, ghost text, plans, a ⌘K bar.</span></a>
+          <a href="/taula/assistant/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></svg><b>Assistant</b><span>A local model that reads freely and writes only with approval.</span></a>
+          <a href="/taula/mcp/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m7 9 3 3-3 3M12 15h5"/></svg><b>For agents</b><span>An MCP server over your saved connections, read-only by default.</span></a>
+          <a href="/taula/safety/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="m9 12 2 2 4-4"/></svg><b>Safety net</b><span>Guardrails, change journal, snapshots, diffs, backups.</span></a>
+          <a href="/taula/databases/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg><b>Databases</b><span>PostgreSQL, SQLite and Cloudflare D1, side by side.</span></a>
+        </div>
+      </div>
+      <a href="/taula/pricing/">Pricing</a>
+      <a href="/taula/docs/">Docs</a><a href="/taula/articles/">Articles</a>
+      <a href="/taula/changelog/">Changelog</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn btn-ghost" href="/taula/account/">Downloads</a>
+      <a class="btn btn-ink" href="/taula/?early=taula" data-early="taula">Early access</a>
+      <details class="mnav">
+        <summary aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg></summary>
+        <nav aria-label="Site">
+          <small>Product</small>
+          <a href="/taula/data-grid/">Data grid</a><a href="/taula/query-editor/">Query editor</a><a href="/taula/assistant/">Assistant</a><a href="/taula/mcp/">For agents</a><a href="/taula/safety/">Safety net</a><a href="/taula/databases/">Databases</a>
+          <small>More</small>
+          <a href="/taula/pricing/">Pricing</a><a href="/taula/compare/">Compare</a><a href="/taula/docs/">Docs</a><a href="/taula/articles/">Articles</a><a href="/taula/changelog/">Changelog</a><a href="/taula/support/">Support</a>
+        </nav>
+      </details>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+<div class="page-head">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="/taula/">Product</a><span>Query editor</span></nav>
+    <h1>An editor that has read your schema.</h1>
+    <p class="lede">Autocomplete that knows which table you are in, dimmed completions from a model on your Mac, several result sets per run, and a command bar that takes SQL directly. The editor is where most of the day goes, so it gets most of the care.</p>
+    <div class="cta-row"><a class="btn btn-ink" href="/taula/?early=taula" data-early="taula">Request early access</a><a class="btn btn-ghost" href="/taula/docs/#query">Read the docs</a></div>
+  </div>
+</div>
+<div class="stage-only"><div class="win" data-state="query" data-win role="img" aria-label="Taula query editor with a highlighted SQL statement, a ghost-text completion at the caret, and a result grid below"></div></div>
+
+<section class="sec" aria-labelledby="complete-h">
+  <div class="wrap two top">
+    <div class="row-copy">
+      <span class="eyebrow">Completion</span>
+      <h2 id="complete-h">Two kinds of completion, one keystroke each.</h2>
+      <p><b>The popup</b> is deterministic. After <code>FROM</code> it lists tables; after <code>alias.</code> it lists that table's columns; anywhere else it mixes keywords, objects and your snippets with fuzzy matching. It opens on its own at three characters, or on demand.</p>
+      <p><b>The ghost text</b> is a local model's guess at the rest of the line, drawn dimmed at the caret. <kbd>Tab</kbd> accepts, <kbd>Esc</kbd> dismisses. It never enters the document until you say so, and it waits half a second after you stop typing so it does not fight you.</p>
+      <p><a class="link" href="/taula/assistant/">How the local model works</a></p>
+    </div>
+    <div class="spec one">
+      <div><h3>Inline edit</h3><kbd>⌘I</kbd><p>Select some SQL, describe the change, get a preview with Apply. "Make this a LEFT JOIN and add the customer email."</p></div>
+      <div><h3>Ask, then insert</h3><kbd>⌘K ?</kbd><p>Type a question mark in the command bar and a plain-language request becomes SQL, inline. Use it, or open it in a tab.</p></div>
+      <div><h3>Fix from the error</h3><p>When a statement fails, the assistant gets the live error message and the statement, and offers a corrected version.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec band" aria-labelledby="run-h">
+  <div class="wrap">
+    <div class="head">
+      <div><span class="eyebrow">Running</span><h2 id="run-h" style="margin-top:14px">Scripts, not just statements.</h2></div>
+      <p class="lede">Paste a migration and run it. Taula splits on statement boundaries with a splitter that respects quotes, comments and dollar-quoting, and shows one result set per statement.</p>
+    </div>
+    <div class="spec">
+      <div><h3>Run all, or just the selection</h3><kbd>⌘⏎ / ⌘E</kbd><p>Test one statement out of a script without commenting the rest out.</p></div>
+      <div><h3>Tabs per session</h3><kbd>⌘T</kbd><p>Each tab keeps its own editor, result and timing. Sessions keep their tabs.</p></div>
+      <div><h3>Cancel a running query</h3><p><code>sqlite3_interrupt</code> on SQLite; <code>pg_cancel_backend</code> over a side connection on Postgres.</p></div>
+      <div><h3>EXPLAIN as a tree</h3><p>EXPLAIN and EXPLAIN ANALYZE rendered as an indented plan for Postgres, and the query plan for SQLite in the same shape.</p></div>
+      <div><h3>History that survives restarts</h3><p>The last 200 statements per connection, searchable from the command bar.</p></div>
+      <div><h3>Snippets</h3><p>Name a query, find it by fuzzy match from anywhere, insert it into the completion popup.</p></div>
+      <div><h3>Guardrails in the editor</h3><p>UPDATE or DELETE without a WHERE, TRUNCATE and DROP TABLE ask first. <a href="/taula/safety/">More on the safety net.</a></p></div>
+      <div><h3>Export results</h3><p>Any result set to CSV or JSON, or copied as INSERT statements.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" aria-labelledby="cmd-h">
+  <div class="wrap two">
+    <div class="row-copy">
+      <span class="eyebrow">Command bar</span>
+      <h2 id="cmd-h">One bar, everything in it.</h2>
+      <p><kbd>⌘K</kbd> opens a fuzzy search over tables, columns, server objects, snippets, query history, databases, connections and actions. Subsequence matching with a bonus for word starts, so <code>ord it</code> finds <code>order_items</code>.</p>
+      <ul>
+        <li><b>Type SQL straight into it.</b> A statement runs inline and shows its rows without opening a tab.</li>
+        <li><b>Actions live there too.</b> Insert a row, snapshot a table, open the journal, switch database.</li>
+        <li><b>Same engine as the editor.</b> The completion engine behind the popup powers the bar, so both know your schema.</li>
+      </ul>
+    </div>
+    <div class="win" data-state="command" data-win data-narrow role="img" aria-label="Taula command bar open over the grid, listing tables, a snippet, a history item and actions matching 'ord'" style="font-size:10px"></div>
+  </div>
+</section>
+
+<section class="sec band" aria-labelledby="qb-h">
+  <div class="wrap two top">
+    <div class="row-copy">
+      <span class="eyebrow">Query builder</span>
+      <h2 id="qb-h">When you would rather click the join.</h2>
+      <p>Pick a table, tick columns, add aggregates and sort. Joins are suggested from the foreign keys and stay editable. Filters, DISTINCT and LIMIT round it out, and the generated SQL sits in a pane you can copy into a tab. Builder specs can be saved per connection and reopened later.</p>
+    </div>
+    <div class="row-copy">
+      <span class="eyebrow">Relations</span>
+      <h2>See the shape of the schema.</h2>
+      <p>The Relations tab draws every table as a box and every foreign key as an edge. Click a table to focus what it references and what references it; double-click to open it in the grid. It is the fastest way to learn a database you did not design.</p>
+      <p><a class="link" href="/taula/safety/#diff">Schema diff and data diff</a></p>
+    </div>
+  </div>
+</section>
+
+<section class="sec" aria-labelledby="qkeys-h">
+  <div class="wrap">
+    <div class="head stack"><span class="eyebrow">Keyboard</span><h2 id="qkeys-h">Shortcuts you will actually use.</h2></div>
+    <div class="keys">
+      <div><span>Run the tab</span><kbd>⌘⏎</kbd></div>
+      <div><span>Run the selection only</span><kbd>⌘E</kbd></div>
+      <div><span>New query tab</span><kbd>⌘T</kbd></div>
+      <div><span>Command bar</span><kbd>⌘K</kbd></div>
+      <div><span>Inline AI edit</span><kbd>⌘I</kbd></div>
+      <div><span>Assistant sidebar</span><kbd>⌘L</kbd></div>
+      <div><span>Accept ghost text</span><kbd>Tab</kbd></div>
+      <div><span>Force the completion popup</span><kbd>F5</kbd></div>
+    </div>
+    <p style="margin-top:20px;color:var(--ink-3);font-size:.92rem">The full list is in the <a href="/taula/docs/#shortcuts" style="color:var(--blue)">docs</a>.</p>
+  </div>
+</section>
+<section class="cta-band" aria-labelledby="cta-h"><div class="wrap">
+  <h2 id="cta-h">Ready when you are.</h2>
+  <p class="lede">One payment, every update, no subscription. Download the DMG, add a connection, and you are reading rows in under a minute.</p>
+  <div class="cta-row"><a class="btn btn-ink" href="/taula/?early=taula" data-early="taula">Request early access</a><a class="btn btn-ghost" href="/taula/account/">Already bought? Sign in</a></div>
+</div></section>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="cols">
+      <div class="about">
+        <a class="brand" href="/taula/" aria-label="Taula home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#215CCC"/><stop offset="1" stop-color="#732EA8"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#g1)"/><rect x="14" y="16" width="36" height="32" rx="3" fill="none" stroke="#fff" stroke-width="2.6"/><rect x="14" y="16" width="36" height="10" rx="3" fill="#fff" fill-opacity=".92"/><path d="M26 26v22M38 26v22M14 37h36" stroke="#fff" stroke-width="2.6"/></svg> taula</a>
+        <p>A native macOS database manager for PostgreSQL, SQLite and Cloudflare D1, with a local assistant and an MCP server for your coding agent.</p>
+      </div>
+      <div><h5>Product</h5><ul>
+        <li><a href="/taula/data-grid/">Data grid</a></li><li><a href="/taula/query-editor/">Query editor</a></li><li><a href="/taula/assistant/">Assistant</a></li>
+        <li><a href="/taula/mcp/">For agents</a></li><li><a href="/taula/safety/">Safety net</a></li><li><a href="/taula/databases/">Databases</a></li>
+      </ul></div>
+      <div><h5>Resources</h5><ul>
+        <li><a href="/taula/docs/">Documentation</a></li><li><a href="/taula/articles/">Articles</a></li><li><a href="/taula/compare/">How Taula compares</a></li><li><a href="/taula/changelog/">Changelog</a></li>
+        <li><a href="/taula/support/">Support</a></li><li><a href="/taula/privacy/">Privacy</a></li><li><a href="/taula/llms.txt">llms.txt</a></li>
+      </ul></div>
+      <div><h5>Get Taula</h5><ul>
+        <li><a href="/taula/?early=taula" data-early="taula">Request early access</a></li><li><a href="/taula/account/">Your downloads</a></li>
+        <li><a href="/taula/pricing/#requirements">Requirements</a></li><li><a href="/taula/changelog.xml">Release notes RSS</a></li>
+      </ul></div>
+    </div>
+    <div class="fine">
+      <span>Taula is Basque for table. Requires macOS 15 or later.</span>
+      <span>One licence check, no telemetry: your databases never leave your Mac.</span>
+    </div>
+  </div>
+</footer>
+<script src="/taula/site.js" defer></script>
+<script src="/taula/win.js" defer></script>
+<script src="/early-access.js" defer></script>
+</body>
+</html>

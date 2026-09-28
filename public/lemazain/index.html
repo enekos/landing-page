@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>lemazain — a native Kubernetes IDE for macOS</title>
+<meta name="description" content="lemazain is a native macOS Kubernetes IDE. Live tables for every kind including CRDs, a Problems view that finds crash loops and stuck rollouts across the cluster, logs, shell, YAML and Helm, with production contexts read-only by default. One small binary, no Electron.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="lemazain">
+<meta property="og:title" content="lemazain — a native Kubernetes IDE for macOS">
+<meta property="og:description" content="Live tables for every kind, a cluster-wide Problems view, logs, shell, YAML and Helm. Native Swift, no Electron, production read-only by default.">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#F3F4F6">
+<link rel="icon" href="/lemazain/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="/lemazain/fonts/bricolage.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/lemazain/fonts/instrument.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/lemazain/site.css">
+<link rel="stylesheet" href="/lemazain/win.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[
+{"@type":"SoftwareApplication","name":"lemazain","operatingSystem":"macOS 14 or later","applicationCategory":"DeveloperApplication","offers":{"@type":"Offer","price":"39","priceCurrency":"EUR","url":"https://hirusta.io/lemazain/pricing/"},"description":"A native macOS Kubernetes IDE with live resource tables for every kind including CRDs, a cluster-wide Problems view, logs, exec shell, YAML editing, Helm releases and port forwarding.","featureList":["Live tables for every resource kind, including CRDs, from the API server's Table projection","Watch updates applied in place, no relisting","Problems view: crash loops, image pulls, OOM kills, stuck rollouts, unready nodes, failed jobs, unbound claims","Query language: ns:, label=value, node:, is:problem, negation","Streaming logs across all containers with level filter","Exec shell over the native WebSocket protocol","YAML view, edit and apply","Helm releases decoded without the helm binary","Production contexts read-only by default, RBAC preflight, typed delete confirmation","Command palette over kinds, objects, namespaces, contexts and actions"]},
+{"@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"Does it work with EKS, GKE and AKS?","acceptedAnswer":{"@type":"Answer","text":"Yes. lemazain reads your kubeconfig and runs the same exec credential plugins kubectl does, so gke-gcloud-auth-plugin, aws eks get-token and kubelogin all work. Bearer tokens, token files, client certificates and impersonation are supported too."}},
+  {"@type":"Question","name":"Can it change my cluster by accident?","acceptedAnswer":{"@type":"Answer","text":"Contexts that look like production open read-only, and unlocking them asks first. Every delete confirms, and on production or for more than three objects you type the confirmation. Actions your credentials cannot perform are greyed out using a SelfSubjectAccessReview."}},
+  {"@type":"Question","name":"Does it send anything anywhere?","acceptedAnswer":{"@type":"Answer","text":"Only the licence check: your key and five fields about the Mac, never anything about your clusters. No analytics, no telemetry."}},
+  {"@type":"Question","name":"What does the name mean?","acceptedAnswer":{"@type":"Answer","text":"Lemazain is Basque for helmsman, which is what the Greek kybernetes, the root of Kubernetes, means."}}
+]}
+]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="prog" aria-hidden="true"></div>
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="brand" href="/lemazain/" aria-label="lemazain home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#215CCC"/><stop offset="1" stop-color="#732EA8"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#g1)"/><g fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round"><circle cx="32" cy="32" r="11"/><path d="M32 10v11M32 43v11M10 32h11M43 32h11M16.4 16.4l7.8 7.8M39.8 39.8l7.8 7.8M16.4 47.6l7.8-7.8M39.8 24.2l7.8-7.8"/></g><circle cx="32" cy="32" r="3.6" fill="#fff"/></svg> lemazain</a>
+    <nav class="nav-links" aria-label="Site">
+      <a href="/lemazain/#features">Tour</a>
+      <a href="/lemazain/#scale">Scale</a>
+      <a href="/lemazain/#safety">Safety</a>
+      <a href="/lemazain/pricing/">Pricing</a>
+      <a href="/lemazain/#faq">FAQ</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn btn-ghost" href="/lemazain/account/">Downloads</a>
+      <a class="btn btn-ink" href="/lemazain/?early=lemazain" data-early="lemazain">Early access</a>
+      <details class="mnav">
+        <summary aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg></summary>
+        <nav aria-label="Site">
+          <a href="/lemazain/#features">Tour</a><a href="/lemazain/#scale">Scale</a><a href="/lemazain/#safety">Safety</a><a href="/lemazain/pricing/">Pricing</a><a href="/lemazain/account/">Downloads</a><a href="/lemazain/support/">Support</a><a href="/lemazain/#faq">FAQ</a>
+        </nav>
+      </details>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-copy">
+      <h1>Kubernetes at cluster scale, native on your Mac.</h1>
+      <p class="lede">lemazain is a Kubernetes IDE that stays fast when the cluster is big. Live tables for every kind, one screen that shows what is broken, and production locked until you say otherwise.</p>
+    </div>
+    <div class="hero-aside">
+      <div class="cta-row">
+        <a class="btn btn-ink" href="/lemazain/?early=lemazain" data-early="lemazain">Request early access</a>
+        <a class="btn btn-ghost" href="/lemazain/account/">Already bought? Sign in</a>
+      </div>
+      <div class="facts">
+        <span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 5.5h12M3 3h10a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/></svg>macOS 14 or later</span>
+        <span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 8h10M8 3v10"/></svg>Swift, no Electron</span>
+        <span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 1.5"/></svg>Pay once, keep every update</span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-stage">
+    <div class="kwin" data-kwin data-cycle data-state="pods" role="img" aria-label="lemazain showing a live pod table, a filter for problems, the inspector, streaming logs, the command palette and the Problems view"></div>
+  </div>
+</section>
+
+<section class="show" id="features">
+  <div class="wrap">
+    <div class="intro" data-reveal>
+      <h2>One window for the whole fleet.</h2>
+      <p class="lede">Everything kubectl can list, rendered the way kubectl prints it, and kept live. Scroll through a normal incident.</p>
+    </div>
+    <div class="show-grid">
+      <div class="steps" id="steps">
+        <span class="rail" aria-hidden="true"></span>
+        <article class="step on" data-state="pods">
+          <span class="tag">Live tables</span>
+          <h3>Every kind, including the CRDs you forgot you had.</h3>
+          <p>The sidebar is built from the cluster's own discovery, and rows come from the API server's Table projection, so a Kafka topic or a cert-manager Certificate gets the same columns <kbd>kubectl get</kbd> shows. A watch updates rows in place as pods come and go.</p>
+        </article>
+        <article class="step" data-state="filter">
+          <span class="tag">Filter</span>
+          <h3>Ask for exactly the rows you mean.</h3>
+          <p><code>ns:payments</code>, <code>app=web</code>, <code>tier!=db</code>, <code>node:pool-b</code>, <code>is:problem</code>, <code>-job</code>. Terms combine, the counts on the health chips follow along, and a single keystroke narrows twelve thousand pods to the three that matter.</p>
+        </article>
+        <article class="step" data-state="problems">
+          <span class="tag">Problems</span>
+          <h3>What is broken, across every namespace, on one screen.</h3>
+          <p>Crash loops, image pull failures, OOM kills, pods stuck pending or terminating, rollouts past their deadline, unready or pressured nodes, failed jobs and unbound claims, grouped by cause with a sentence on what usually fixes each one. Every row opens the object.</p>
+        </article>
+        <article class="step" data-state="inspect">
+          <span class="tag">Inspector</span>
+          <h3>Follow the chain without typing a name.</h3>
+          <p>Containers with live usage, conditions, rollout state, decoded Secrets, the pods behind a Service. The owner is a link: pod to ReplicaSet to Deployment, and a node opens the pods scheduled on it.</p>
+        </article>
+        <article class="step" data-state="logs">
+          <span class="tag">Logs</span>
+          <h3>All containers, interleaved, with the errors in red.</h3>
+          <p>Stream one container or every container of the pod in time order, filter by text or level, and see matches highlighted. Follow pauses the moment you scroll up and resumes with one click. <em>Previous</em> shows the run that crashed.</p>
+        </article>
+        <article class="step" data-state="palette">
+          <span class="tag">⌘K</span>
+          <h3>Jump to anything.</h3>
+          <p>Kinds, loaded objects, namespaces, contexts, problems and actions on the selection, ranked as you type. <kbd>&gt;</kbd> for actions, <kbd>#</kbd> for namespaces, <kbd>@</kbd> for contexts, <kbd>!</kbd> for problems, and <kbd>:</kbd> for k9s-style commands like <code>:deploy payments app=web @eu-prod</code>.</p>
+        </article>
+        <article class="step" data-state="guard">
+          <span class="tag">Guardrails</span>
+          <h3>Production is read-only until you unlock it.</h3>
+          <p>Contexts that look like production open locked, tinted red, and ask before they unlock. Deleting on production, or more than three objects anywhere, makes you type what you are about to do.</p>
+        </article>
+      </div>
+      <div class="stage">
+        <div class="kwin" data-kwin data-state="pods" id="stage-win" role="img" aria-label="lemazain walking through live tables, filters, problems, the inspector, logs, the palette and the production guard"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" aria-labelledby="deeper-h">
+  <div class="wrap">
+    <div class="head">
+      <div data-reveal><span class="eyebrow">Toolbox</span><h2 id="deeper-h" style="margin-top:14px">The things you open a terminal for.</h2></div>
+      <p class="lede">Built in, native, and wired to the same context and namespace scope as the table you are looking at.</p>
+    </div>
+    <div class="cards" data-stagger>
+      <div class="card" data-reveal><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="5" cy="5" r="2"/><circle cx="19" cy="5" r="2"/><circle cx="12" cy="19" r="2"/><path d="M6.5 6.5 11 17.5M17.5 6.5 13 17.5M7 5h10"/></svg><h3>XRay</h3><p>Deployment to ReplicaSet to Pod to container, with the ConfigMaps, Secrets and claims each pod uses, and the Services behind an Ingress. A missing backend or a crashing pod colours the whole branch.</p></div>
+      <div class="card" data-reveal><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 12h4l2-6 4 12 2-6h6"/></svg><h3>Pulses</h3><p>A live tile for every kind with the healthy and faulty split and a trend line, sampled every fifteen seconds. Watch a rollout settle, or not.</p></div>
+      <div class="card" data-reveal><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="7" rx="1.5"/><rect x="3" y="13" width="18" height="7" rx="1.5"/><path d="M7 7.5h.01M7 16.5h.01"/></svg><h3>Node shell and drain</h3><p>Root on a node you cannot SSH into, through a helper pod that cleans itself up. Drain through the Eviction API, so disruption budgets hold.</p></div>
+      <div class="card" data-reveal><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m7 9 3 3-3 3M12 15h5"/></svg><h3>Shell</h3><p>Exec over the v5 channel protocol, implemented natively. Distroless images say so plainly instead of failing with an OCI error, and a quick bar runs the usual first commands.</p></div>
+      <div class="card" data-reveal><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M14 5l-4 14"/></svg><h3>YAML</h3><p>View, edit and apply like <kbd>kubectl edit</kbd>, with no smart quotes, a warning when the object changed under you, and a refusal to retarget kind, version or namespace.</p></div>
+      <div class="card" data-reveal><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3 20 7.5v9L12 21l-8-4.5v-9z"/><path d="m4 7.5 8 4.5 8-4.5M12 12v9"/></svg><h3>Helm</h3><p>Releases decoded straight from their secrets, values and rendered manifest side by side. No helm binary required.</p></div>
+      <div class="card" data-reveal><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 9h13l-3-3M20 15H7l3 3"/></svg><h3>Port forward</h3><p>From any pod or service, onto a free local port it picks for you, with a status list, restart and open-in-browser.</p></div>
+      <div class="card" data-reveal><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 10v10M15 10v10"/></svg><h3>Bulk actions</h3><p>Select many rows and restart, cordon, copy or delete them together. Scale, rollout restart, run a CronJob now, suspend its schedule.</p></div>
+      <div class="card" data-reveal><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M8 4h8M9 4v5l-5 9a1.5 1.5 0 0 0 1.3 2.2h13.4A1.5 1.5 0 0 0 20 18l-5-9V4"/></svg><h3>kubectl, on the clipboard</h3><p>Every row copies its <kbd>get -o yaml</kbd>, <kbd>describe</kbd>, <kbd>logs -f</kbd>, <kbd>exec -it</kbd> and rollout commands with the right context and namespace, for when a real TTY is what you need.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec band" id="scale" aria-labelledby="scale-h">
+  <div class="wrap">
+    <div class="head">
+      <div data-reveal><span class="eyebrow">Scale</span><h2 id="scale-h" style="margin-top:14px">Fast on the cluster you actually have.</h2></div>
+      <p class="lede">The table is an AppKit table view that only draws the rows on screen. Watches arrive in the Table format and patch rows in place, so a rollout of four hundred pods costs a few row updates, not four hundred relists.</p>
+    </div>
+    <div class="strip" data-stagger>
+      <div data-reveal><b><span class="count" data-to="136">136</span> kinds</b><span>discovered on a 78-node GKE cluster, 71 of them custom resources, each with server-defined columns.</span></div>
+      <div data-reveal><b>0 relists</b><span>when rows change. Watch events carry their table cells and update the row they belong to.</span></div>
+      <div data-reveal><b>~1 s</b><span>to page in a thousand pods with full objects, first rows on screen after the first page.</span></div>
+      <div data-reveal><b>O(1)</b><span>per-row usage lookups, so live CPU and memory columns cost nothing extra with thousands of pods.</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="term-band" id="safety" aria-labelledby="safety-h">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow" style="color:#9AA1AF">Safety</span>
+      <h2 id="safety-h" style="margin-top:14px">It asks before it touches anything that matters.</h2>
+      <p class="lede">A GUI makes destructive things one click away. lemazain puts them back behind a decision.</p>
+      <ul>
+        <li><b>Production opens read-only.</b> Context names, clusters and servers that look like prod start locked and tinted red. Unlocking asks.</li>
+        <li><b>RBAC preflight.</b> A SelfSubjectAccessReview per view greys out what your credentials cannot do, with the reason in the tooltip.</li>
+        <li><b>Typed confirmation.</b> Deleting on production, or more than three objects, needs the name or the count typed back.</li>
+        <li><b>Pinned trust.</b> TLS is checked against the CA in your kubeconfig only, never the system store. Skipped verification is shown in the top bar, always.</li>
+      </ul>
+    </div>
+    <pre class="term" aria-label="Output of lemazain probe"><span class="p">$</span> lemazain probe
+context <span class="y">eu-staging</span>
+  auth   exec gke-gcloud-auth-plugin
+  lock   looksLikeProduction=false → opens unlocked
+  <span class="g">✓</span> /version → v1.35.8
+  <span class="g">✓</span> discovery → 136 listable kinds, 71 custom
+  <span class="g">✓</span> Table(pods) → 200 rows; Name, Ready, Status…
+  <span class="g">✓</span> watch(pods, as=Table) → DELETED runner-r46c4
+      with 9 cells, rows update in place
+  <span class="g">✓</span> paged list(pods) → 998 rows in 1.16s
+  <span class="g">✓</span> access review → can delete pods: true
+  <span class="g">✓</span> metrics → 78 nodes, 86019m CPU, 271Gi
+  <span class="g">✓</span> logs · exec · YAML round trip
+<span class="c">core OK — read-only, nothing was changed</span></pre>
+  </div>
+</section>
+
+<section class="price-s" id="pricing">
+  <div class="wrap">
+    <div class="price-copy" data-reveal="left">
+      <h2>One price. No subscription, no seats.</h2>
+      <p class="lede">You buy a tool, you own the tool. Every update is included, and the download comes straight from us.</p>
+    </div>
+    <div class="price-card" data-reveal="scale">
+      <div class="big"><b>€39</b><span>once</span></div>
+      <ul class="inc">
+        <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8.5l3 3 7-7"/></svg>Three Macs, one licence</li>
+        <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8.5l3 3 7-7"/></svg>Every future update</li>
+        <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8.5l3 3 7-7"/></svg>Every cluster in your kubeconfig</li>
+        <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8.5l3 3 7-7"/></svg>Problems, XRay, Pulses, logs, shell and Helm</li>
+      </ul>
+      <div class="cta-row">
+        <a class="btn btn-blue" href="/lemazain/?early=lemazain" data-early="lemazain">Request early access</a>
+        <a class="btn btn-ghost" href="/lemazain/account/">Already bought? Sign in</a>
+      </div>
+      <small>Requires macOS 14 or later. Payment is handled by Polar. Your licence key arrives by email right after payment and unlocks your download page.</small>
+    </div>
+  </div>
+</section>
+
+<section class="faq" id="faq">
+  <div class="wrap">
+    <div><h2>Questions</h2></div>
+    <div>
+      <details>
+        <summary>Does it work with EKS, GKE and AKS?</summary>
+        <p>Yes. lemazain reads your kubeconfig and runs the same exec credential plugins kubectl does, so gke-gcloud-auth-plugin, <code>aws eks get-token</code> and kubelogin all work. Bearer tokens, token files, client certificates, basic auth and impersonation are supported too.</p>
+      </details>
+      <details>
+        <summary>How is it different from Lens or k9s?</summary>
+        <p>It is a native Mac app, so it opens instantly and idles at a fraction of an Electron app's memory. Unlike k9s it is a window you can point at, with an inspector, a Problems view and multi-select. Like both, it reads the kubeconfig you already have.</p>
+      </details>
+      <details>
+        <summary>Can it change my cluster by accident?</summary>
+        <p>Production-looking contexts open read-only and ask before they unlock. Every delete confirms, and on production or for more than three objects you type the confirmation. Actions your credentials cannot perform are greyed out before you click them.</p>
+      </details>
+      <details>
+        <summary>Is the shell a real terminal?</summary>
+        <p>Not yet: it runs commands one per line with no PTY, which covers most debugging. For vim or top, the toolbar copies the exact <code>kubectl exec -it</code> command to paste into your terminal.</p>
+      </details>
+      <details>
+        <summary>Does it send anything anywhere?</summary>
+        <p>Your clusters are only ever talked to directly. The one other request is the licence check: on activation, on each launch and once a day, the app sends your key and five fields about the Mac (a hashed hardware fingerprint, its name, model, macOS version and lemazain version). Never a context, a server, a namespace or a resource name. No analytics, no telemetry.</p>
+      </details>
+      <details>
+        <summary>What happens offline?</summary>
+        <p>It keeps working. A licence check that cannot reach us leaves the app alone for 14 days from the last successful one; only an explicit revocation, such as a refund, locks it.</p>
+      </details>
+      <details>
+        <summary>What does the name mean?</summary>
+        <p>Lemazain is Basque for helmsman, which is what the Greek κυβερνήτης, the root of Kubernetes, means.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="cta-band" aria-labelledby="cta-h"><div class="wrap">
+  <h2 id="cta-h">Stop squinting at kubectl get pods -A.</h2>
+  <p class="lede">€39 once, every update included, nothing to subscribe to. Open the cluster, see what is broken, fix it, and lock the door behind you.</p>
+  <div class="cta-row"><a class="btn btn-ink" href="/lemazain/?early=lemazain" data-early="lemazain">Request early access</a><a class="btn btn-ghost" href="/lemazain/account/">Already bought? Sign in</a></div>
+</div></section>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="cols">
+      <div class="about">
+        <a class="brand" href="/lemazain/" aria-label="lemazain home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#215CCC"/><stop offset="1" stop-color="#732EA8"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#g2)"/><g fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round"><circle cx="32" cy="32" r="11"/><path d="M32 10v11M32 43v11M10 32h11M43 32h11M16.4 16.4l7.8 7.8M39.8 39.8l7.8 7.8M16.4 47.6l7.8-7.8M39.8 24.2l7.8-7.8"/></g><circle cx="32" cy="32" r="3.6" fill="#fff"/></svg> lemazain</a>
+        <p>A native macOS Kubernetes IDE: live tables for every kind, a cluster-wide Problems view, XRay, logs, shell, YAML and Helm.</p>
+      </div>
+      <div><h5>Product</h5><ul>
+        <li><a href="/lemazain/#features">Tour</a></li><li><a href="/lemazain/#scale">Scale</a></li><li><a href="/lemazain/#safety">Safety</a></li>
+      </ul></div>
+      <div><h5>Get lemazain</h5><ul>
+        <li><a href="/lemazain/?early=lemazain" data-early="lemazain">Request early access</a></li><li><a href="/lemazain/account/">Your downloads</a></li><li><a href="/lemazain/pricing/#requirements">Requirements</a></li>
+      </ul></div>
+      <div><h5>Help</h5><ul>
+        <li><a href="/lemazain/support/">Support</a></li><li><a href="/lemazain/#faq">FAQ</a></li><li><a href="https://hirusta.io/taula/">Taula, for databases</a></li>
+      </ul></div>
+    </div>
+    <div class="fine">
+      <span>Lemazain is Basque for helmsman. Requires macOS 14 or later.</span>
+      <span>One licence check, no telemetry: your clusters never leave your Mac.</span>
+    </div>
+  </div>
+</footer>
+<script src="/lemazain/site.js" defer></script>
+<script src="/lemazain/win.js" defer></script>
+<script src="/early-access.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Docs · Taula</title>
+<meta name="description" content="How to install and use Taula, the native macOS database manager for PostgreSQL, SQLite and Cloudflare D1: connections, editing, the query editor, the assistant, the MCP server, shortcuts and files on disk.">
+<link rel="canonical" href="https://hirusta.io/taula/docs/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Taula">
+<meta property="og:title" content="Docs · Taula">
+<meta property="og:description" content="How to install and use Taula, the native macOS database manager for PostgreSQL, SQLite and Cloudflare D1: connections, editing, the query editor, the assistant, the MCP server, shortcuts and files on disk.">
+<meta property="og:url" content="https://hirusta.io/taula/docs/">
+<meta property="og:image" content="https://hirusta.io/taula/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Docs · Taula">
+<meta name="twitter:description" content="How to install and use Taula, the native macOS database manager for PostgreSQL, SQLite and Cloudflare D1: connections, editing, the query editor, the assistant, the MCP server, shortcuts and files on disk.">
+<meta name="twitter:image" content="https://hirusta.io/taula/og.png">
+<meta name="theme-color" content="#F3F4F6">
+<link rel="icon" href="/taula/favicon.svg" type="image/svg+xml">
+<link rel="alternate" type="application/rss+xml" title="Taula release notes" href="https://hirusta.io/taula/changelog.xml">
+<link rel="preload" href="/taula/fonts/bricolage.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/taula/fonts/instrument.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/taula/site.css">
+
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"TechArticle","headline":"Using Taula","description":"How to install and use Taula, the native macOS database manager for PostgreSQL, SQLite and Cloudflare D1.","url":"https://hirusta.io/taula/docs/","author":{"@type":"Organization","name":"Taula"},"dateModified":"2026-09-12"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Taula","item":"https://hirusta.io/taula/"},{"@type":"ListItem","position":2,"name":"Docs","item":"https://hirusta.io/taula/docs/"}]}]</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="brand" href="/taula/" aria-label="Taula home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#215CCC"/><stop offset="1" stop-color="#732EA8"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#g1)"/><rect x="14" y="16" width="36" height="32" rx="3" fill="none" stroke="#fff" stroke-width="2.6"/><rect x="14" y="16" width="36" height="10" rx="3" fill="#fff" fill-opacity=".92"/><path d="M26 26v22M38 26v22M14 37h36" stroke="#fff" stroke-width="2.6"/></svg> taula</a>
+    <nav class="nav-links" aria-label="Site">
+      <div class="menu">
+        <button type="button" aria-haspopup="true" aria-expanded="false">Product <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="m4 6 4 4 4-4"/></svg></button>
+        <div class="drop">
+          <a href="/taula/data-grid/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 10v10M15 10v10"/></svg><b>Data grid</b><span>Browse and edit, with a review step before anything is written.</span></a>
+          <a href="/taula/query-editor/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M14 5l-4 14"/></svg><b>Query editor</b><span>Schema-aware autocomplete, ghost text, plans, a ⌘K bar.</span></a>
+          <a href="/taula/assistant/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></svg><b>Assistant</b><span>A local model that reads freely and writes only with approval.</span></a>
+          <a href="/taula/mcp/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m7 9 3 3-3 3M12 15h5"/></svg><b>For agents</b><span>An MCP server over your saved connections, read-only by default.</span></a>
+          <a href="/taula/safety/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="m9 12 2 2 4-4"/></svg><b>Safety net</b><span>Guardrails, change journal, snapshots, diffs, backups.</span></a>
+          <a href="/taula/databases/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg><b>Databases</b><span>PostgreSQL, SQLite and Cloudflare D1, side by side.</span></a>
+        </div>
+      </div>
+      <a href="/taula/pricing/">Pricing</a>
+      <a href="/taula/docs/" class="here" aria-current="page">Docs</a>
+      <a href="/taula/changelog/">Changelog</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn btn-ghost" href="/taula/account/">Downloads</a>
+      <a class="btn btn-ink" href="/taula/?early=taula" data-early="taula">Early access</a>
+      <details class="mnav">
+        <summary aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg></summary>
+        <nav aria-label="Site">
+          <small>Product</small>
+          <a href="/taula/data-grid/">Data grid</a><a href="/taula/query-editor/">Query editor</a><a href="/taula/assistant/">Assistant</a><a href="/taula/mcp/">For agents</a><a href="/taula/safety/">Safety net</a><a href="/taula/databases/">Databases</a>
+          <small>More</small>
+          <a href="/taula/pricing/">Pricing</a><a href="/taula/compare/">Compare</a><a href="/taula/docs/">Docs</a><a href="/taula/articles/">Articles</a><a href="/taula/changelog/">Changelog</a><a href="/taula/support/">Support</a>
+        </nav>
+      </details>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+<div class="page-head">
+  <div class="wrap">
+    <h1>Using Taula</h1>
+    <p class="lede">Everything from the first launch to wiring your saved connections into a coding agent. Most of it fits on one screen, so this page is long on purpose and short on ceremony.</p>
+    <p class="meta">Applies to Taula on macOS 15 or later.</p>
+  </div>
+</div>
+
+<div class="docs">
+  <div class="wrap">
+    <nav class="toc" id="toc" aria-label="On this page">
+      <a href="#install">Install</a>
+      <a href="#activation">Activation</a>
+      <a href="#connections">Connections</a>
+      <a href="#browsing">Browsing data</a>
+      <a href="#editing">Editing</a>
+      <a href="#query">Query editor</a>
+      <a href="#command-bar">Command bar</a>
+      <a href="#assistant">Assistant</a>
+      <a href="#safety">Safety</a>
+      <a href="#tabs">Structure, Relations, Activity</a>
+      <a href="#mcp">MCP server</a>
+      <a href="#settings">Settings</a>
+      <a href="#shortcuts">Shortcuts</a>
+      <a href="#files">Files on disk</a>
+    </nav>
+
+    <div>
+      <section id="install">
+        <div class="prose">
+          <h2>Install</h2>
+          <p>Taula ships as a disk image. Download it, open it, and drag Taula into your Applications folder. It needs macOS 15 Sequoia or later.</p>
+          <p>The app is signed ad hoc rather than notarized, so the first launch takes one extra step: right-click Taula in Applications and choose Open, then confirm. After that it opens like any other app.</p>
+          <p>The assistant runs on a local llama.cpp server. If you want it, install llama.cpp once with Homebrew. Taula finds the binary, starts the server and downloads the model on first use.</p>
+<pre><code><span class="p">$</span> brew install llama.cpp</code></pre>
+        </div>
+      </section>
+
+      <section id="activation">
+        <div class="prose">
+          <h2>Activation</h2>
+          <p>The first launch asks for the licence key from your receipt. Paste it and press Activate. There is no account and no password — the key is the whole thing, and it is the same key your download page takes.</p>
+          <p>One licence covers three Macs at a time. Settings → Licence shows which key this Mac is using, how many seats are in use and when it last checked in; your <a href="/taula/account/">account page</a> lists every Mac by name and releases any of them. Releasing frees the seat immediately and locks Taula on that Mac until a key is entered again — the connections and settings there are untouched.</p>
+          <p>After activation Taula checks in with us when it launches and about once a day while it runs. If it cannot reach us — no network, a plane, our outage — it keeps working for another fourteen days and says so in a strip at the top of the window. Nothing about your databases is ever part of that check; it carries your key, a name for the computer, its model and the macOS and Taula versions, and nothing else.</p>
+        </div>
+      </section>
+
+      <section id="connections">
+        <div class="prose">
+          <h2>Connections</h2>
+          <p>The first window is the connection list. Add a connection with the plus button or <kbd>⇧⌘N</kbd>, pick the engine, fill in the details and press Test connection before saving.</p>
+          <ul>
+            <li><b>PostgreSQL.</b> Host, port, database, user and password. Typed decoding covers numeric, uuid, jsonb and timestamps.</li>
+            <li><b>SQLite.</b> Pick a file. Attached databases show up in the Objects tab.</li>
+            <li><b>Cloudflare D1.</b> Account, database and an API token. Same grid, same editor, same guardrails.</li>
+          </ul>
+          <p>Passwords and tokens go to the macOS Keychain. The connection itself is saved as JSON on disk without any secret in it.</p>
+          <h3>Connection colors</h3>
+          <p>Give a connection a color to mark it as production. The color shows as a dot in the session tab and a thin bar across the top of the window, and destructive statements on colored connections get an extra warning before they run.</p>
+          <h3>SSH tunnels</h3>
+          <p>For Postgres, turn on SSH in the connection editor and enter the bastion host and user. Taula opens the tunnel in-process, authenticates with your key file or the running SSH agent, and picks a free local port for you. The tunnel closes when the session does.</p>
+        </div>
+      </section>
+
+      <section id="browsing">
+        <div class="prose">
+          <h2>Browsing data</h2>
+          <p>Once connected, the sidebar lists tables and views grouped by schema. Type in the filter box to narrow the list. Click a table to open it in the Data tab.</p>
+          <ul>
+            <li><b>Filter rows.</b> The WHERE box in the toolbar takes a SQL condition, for example <code>status = 'active' AND age &gt; 30</code>. It applies when you press <kbd>⏎</kbd>.</li>
+            <li><b>Sort.</b> Click a column header. The sort runs on the server, so it covers the whole table, not just the loaded rows.</li>
+            <li><b>Load more.</b> Rows load in pages as you scroll toward the bottom. The page size is a setting.</li>
+            <li><b>Search the page.</b> <kbd>⌘F</kbd> filters the rows already loaded and shows a match count in the status bar.</li>
+          </ul>
+          <h3>Foreign keys</h3>
+          <p>Columns that reference another table carry a <code>↗</code> badge in the header, or <code>🔑↗</code> when the column is both primary and foreign key. Right-click a foreign-key cell and choose Jump to referenced row to open the target table filtered to that row.</p>
+          <h3>Cell actions</h3>
+          <p>Right-click any cell for context actions. URLs open in the browser, email addresses open a new message, and Column stats shows row count, non-null count, NULL ratio, distinct values and min and max for that column.</p>
+        </div>
+      </section>
+
+      <section id="editing">
+        <div class="prose">
+          <h2>Editing</h2>
+          <p>Edits in the grid are staged, not written. Change as many cells as you like; each pending cell is highlighted. Nothing reaches the database until you commit.</p>
+          <ul>
+            <li><b>Edit a cell.</b> Double-click or press <kbd>⏎</kbd> on a selected cell. <kbd>⏎</kbd> stages the value and moves down a row, <kbd>Esc</kbd> reverts the cell.</li>
+            <li><b>Set NULL.</b> Available from the cell's context menu.</li>
+            <li><b>Insert a row.</b> The plus button opens a sheet with one field per column, aware of defaults and NULL.</li>
+            <li><b>Delete rows.</b> Select rows and press the minus button. Deletion is staged too, and pressing it again un-stages it.</li>
+            <li><b>Commit.</b> <kbd>⌘S</kbd> writes the staged changes as primary-key-matched UPDATE, INSERT and DELETE statements in one go.</li>
+            <li><b>Review first.</b> Review changes shows the exact SQL Taula is about to run. Deletes are shown struck through and can be toggled off before committing.</li>
+            <li><b>Discard.</b> Throws away everything staged.</li>
+          </ul>
+          <h3>Type-aware editors</h3>
+          <p>Taula reads the declared column type and adapts. Date, time and timestamp columns get a graphical date picker. Booleans flip with one click and accept spellings like on, off, yes and no. UUID columns have a Generate button in the insert sheet, JSON is validated and edited in a pretty-printed sheet, and binary values open in a hex inspector with a copy-as-base64 action. Long text opens in the same editor sheet as JSON.</p>
+          <h3>Tables without a primary key</h3>
+          <p>SQLite tables are matched on <code>rowid</code> and Postgres tables on <code>ctid</code>, so they stay editable. A SQLite table declared WITHOUT ROWID is read-only in the grid; use the Query tab to change it.</p>
+          <h3>Change journal</h3>
+          <p>Every committed grid edit is recorded with the SQL that undoes it, per connection. Open Change Journal from the wrench menu in the sidebar footer or from the command bar. Each entry has an Undo button and a copy action for the undo SQL. The journal keeps the last 500 entries.</p>
+        </div>
+      </section>
+
+      <section id="query">
+        <div class="prose">
+          <h2>Query editor</h2>
+          <p>The Query tab gives you one or more SQL editors per connection, each with its own results.</p>
+          <ul>
+            <li><b>Run.</b> <kbd>⌘⏎</kbd> runs the editor. <kbd>⌘E</kbd> runs only the selected text.</li>
+            <li><b>Tabs.</b> <kbd>⌘T</kbd> opens a new query tab. Each tab keeps its editor and result.</li>
+            <li><b>Several statements.</b> A script with more than one statement returns one result set per statement. The splitter understands quotes, comments and dollar-quoted strings.</li>
+            <li><b>Highlighting and completion.</b> Keywords, strings and numbers are colored. Completions pop up after three characters, or on <kbd>F5</kbd> from two. They know which tables are in your FROM clause and resolve alias.column.</li>
+            <li><b>Explain.</b> EXPLAIN and EXPLAIN ANALYZE render as a tree, for Postgres plans and SQLite query plans.</li>
+            <li><b>Stop.</b> A running query shows a Stop button. Postgres queries are cancelled through a side connection; SQLite queries are interrupted.</li>
+          </ul>
+          <h3>Snippets and history</h3>
+          <p>Save the current editor as a named snippet and open it later from the command bar. Every run is kept in a history per connection, capped at a number you choose in Settings.</p>
+          <h3>Exporting results</h3>
+          <p>Any result set, and any table, can be exported as CSV or JSON. Selected rows can be copied as CSV, JSON or INSERT statements from the context menu.</p>
+        </div>
+      </section>
+
+      <section id="command-bar">
+        <div class="prose">
+          <h2>Command bar</h2>
+          <p><kbd>⌘K</kbd> or <kbd>⌘P</kbd> opens one bar for everything. Start typing and Taula fuzzy-matches across tables, columns, server objects, snippets, query history, databases, connections and actions. Actions depend on what is selected, so a table with staged edits offers Review, Commit and Discard.</p>
+          <ul>
+            <li><b>Jump.</b> Pick a table to open it, a column to open its table, a database to open it in a new session, a connection to switch.</li>
+            <li><b>SQL mode.</b> Start with a SQL keyword and the bar becomes a mini editor with completions. <kbd>⏎</kbd> runs it and shows the rows inline.</li>
+            <li><b>Ask mode.</b> Start with <code>?</code> and describe what you want in plain language. Taula writes the SQL and offers Use SQL or Open in Query Tab.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="assistant">
+        <div class="prose">
+          <h2>Assistant</h2>
+          <p><kbd>⌘L</kbd> or the Assistant pill opens a chat panel for the current connection. The assistant runs on your Mac: Taula starts a llama.cpp server with Qwen3-4B-Instruct-2507 by default and downloads the model the first time. Your schema and your data stay on the machine.</p>
+          <ul>
+            <li><b>Reads run by themselves.</b> Listing tables, describing a table, sampling rows and running a query happen automatically, behind the same read-only gate the MCP server uses.</li>
+            <li><b>Writes are proposals.</b> Anything that would change data comes back as a card with the SQL and any guardrail warnings. Approve it to run it; approved writes land in the change journal.</li>
+            <li><b>SQL in replies</b> has Insert, Run and Copy buttons.</li>
+            <li><b>Ghost text.</b> In the query editor the model suggests the rest of the line as dimmed text. <kbd>Tab</kbd> accepts, <kbd>Esc</kbd> dismisses. It never touches your text on its own.</li>
+            <li><b>Inline edit.</b> <kbd>⌘I</kbd> rewrites the selection, or the whole editor, from an instruction you type. You see a preview before Apply.</li>
+            <li><b>Schema memory.</b> The brain button in the chat header lists facts the assistant has learned about this database, such as units or naming quirks. Add or forget them there; they are included in every future conversation on that connection.</li>
+          </ul>
+          <div class="note"><b>Hosted model.</b> If you would rather use a hosted model, add an Anthropic API key in Settings and pick Haiku or Sonnet. Prompts and schema context then leave your machine. The key is stored in the Keychain.</div>
+        </div>
+      </section>
+
+      <section id="safety">
+        <div class="prose">
+          <h2>Safety</h2>
+          <h3>Guardrails</h3>
+          <p>UPDATE or DELETE without a WHERE clause, TRUNCATE and DROP TABLE each ask for confirmation before running, in query tabs and in the command bar. On colored connections the dialog carries an extra warning. The scan understands strings, comments and dollar quotes, so a keyword inside a string does not trigger it.</p>
+          <h3>Snapshots</h3>
+          <p>Snapshot table creates a frozen copy with CREATE TABLE snapshot_… AS SELECT *. It is in the table's export menu, the command bar and the wrench menu. Take one before a risky change.</p>
+          <h3>Schema diff</h3>
+          <p>Schema Diff in the File menu compares tables, columns, indexes and foreign keys between two connections and shows a color-coded report of what exists only on each side. Comparing Postgres to SQLite works by normalizing the public schema prefix.</p>
+          <h3>Data diff</h3>
+          <p>Data Diff in the wrench menu compares two tables on one connection row by row, keyed on the primary key over the shared columns. Changed cells show old and new values; added and removed rows are colored. With a snapshot open, the snapshot and live table are preselected.</p>
+          <h3>Backup and restore</h3>
+          <p>Backup runs pg_dump in custom format for Postgres and .dump for SQLite. Restore runs pg_restore with --clean, or replays the SQLite dump. Taula looks for the tools in the usual Homebrew locations.</p>
+        </div>
+      </section>
+
+      <section id="tabs">
+        <div class="prose">
+          <h2>Structure, Relations, Activity</h2>
+          <h3>Structure</h3>
+          <p>Columns with type, nullability, default and primary-key flag, plus indexes, foreign keys and triggers, and the table's DDL. Add, rename, retype or drop a column from here; the ALTER statement is previewed before it runs. For Postgres, changing a type uses ALTER … USING.</p>
+          <h3>Objects</h3>
+          <p>Functions, sequences, enums and extensions on Postgres. Attached databases and triggers on SQLite.</p>
+          <h3>Relations</h3>
+          <p>An entity-relationship view of the whole database: one box per table, one edge per foreign key. Click a table to highlight its relations, double-click to open it, and zoom with the controls in the corner.</p>
+          <h3>Activity</h3>
+          <p>On Postgres, a live view of pg_stat_activity with state, duration, wait events and blocking process ids. Cancel a query or terminate a backend from the row; termination asks for confirmation. Auto-refresh runs every three seconds when switched on. On SQLite the tab shows journal mode, file size and the main pragmas.</p>
+        </div>
+      </section>
+
+      <section id="mcp">
+        <div class="prose">
+          <h2>MCP server</h2>
+          <p>Taula ships a second binary, taula-mcp, that speaks the Model Context Protocol over stdio. It reuses the connections you saved in the app and reads passwords from the same Keychain items, so an agent can work with your databases without ever seeing a credential.</p>
+          <p>Wire it into Claude Code:</p>
+<pre><code><span class="p">$</span> claude mcp add taula -- taula-mcp</code></pre>
+          <p>Any other MCP client can point at the binary directly.</p>
+          <h3>Tools</h3>
+          <div class="table-scroll"><table>
+            <thead><tr><th>Tool</th><th>What it does</th></tr></thead>
+            <tbody>
+              <tr><td><code>list_connections</code></td><td>Saved connections by name and engine.</td></tr>
+              <tr><td><code>list_tables</code></td><td>Tables and views for a connection.</td></tr>
+              <tr><td><code>describe_table</code></td><td>Columns, primary key, indexes, foreign keys and DDL.</td></tr>
+              <tr><td><code>sample_rows</code></td><td>A capped sample of rows.</td></tr>
+              <tr><td><code>query</code></td><td>Run a read-only statement.</td></tr>
+              <tr><td><code>explain</code></td><td>Plan for a read-only statement.</td></tr>
+              <tr><td><code>execute</code></td><td>Run a write. Only present when writes are enabled.</td></tr>
+            </tbody>
+          </table></div>
+          <h3>Read-only by default</h3>
+          <p>Every statement passed to query or explain goes through a hard gate: the leading keyword must be a read keyword, and no write keyword may appear at any nesting depth. Data-modifying CTEs are rejected. Results are capped and carry a truncation flag.</p>
+          <p>To allow writes, start the server with the environment variable set. The execute tool then appears and still returns guardrail warnings in its responses.</p>
+<pre><code><span class="p">$</span> TAULA_MCP_ALLOW_WRITES=1 taula-mcp</code></pre>
+        </div>
+      </section>
+
+      <section id="settings">
+        <div class="prose">
+          <h2>Settings</h2>
+          <p><kbd>⌘,</kbd> opens Settings.</p>
+          <ul>
+            <li><b>Rows per fetch.</b> How many rows each page of the grid loads.</li>
+            <li><b>Query history.</b> How many runs to keep per connection.</li>
+            <li><b>Grid font size.</b> Applies to data and result grids.</li>
+            <li><b>Native editors.</b> Turn the date picker and boolean editors off if you prefer typing values.</li>
+            <li><b>AI model.</b> Haiku or Sonnet when an Anthropic key is present.</li>
+            <li><b>Local AI.</b> Server URL, model spec, llama-server binary path, auto-start, ghost text and a global on-off switch for all local AI features.</li>
+          </ul>
+          <p>Settings are stored as JSON and read tolerantly, so an older file still loads after an update.</p>
+        </div>
+      </section>
+
+      <section id="shortcuts">
+        <div class="prose">
+          <h2>Shortcuts</h2>
+          <div class="table-scroll"><table>
+            <thead><tr><th>Keys</th><th>Action</th></tr></thead>
+            <tbody>
+              <tr><td><kbd>⌘K</kbd> or <kbd>⌘P</kbd></td><td>Open the command bar</td></tr>
+              <tr><td><kbd>⌘L</kbd></td><td>Toggle the assistant panel</td></tr>
+              <tr><td><kbd>⇧⌘N</kbd></td><td>New connection</td></tr>
+              <tr><td><kbd>⌘S</kbd></td><td>Commit staged changes</td></tr>
+              <tr><td><kbd>⌘R</kbd></td><td>Reload the current table</td></tr>
+              <tr><td><kbd>⌘F</kbd></td><td>Search the loaded page</td></tr>
+              <tr><td><kbd>⏎</kbd></td><td>Apply the WHERE filter; in a cell, stage and move down</td></tr>
+              <tr><td><kbd>Esc</kbd></td><td>Revert the cell being edited; dismiss ghost text</td></tr>
+              <tr><td><kbd>↑</kbd> <kbd>↓</kbd></td><td>Move cell focus by row</td></tr>
+              <tr><td><kbd>⌘⏎</kbd></td><td>Run the query</td></tr>
+              <tr><td><kbd>⌘E</kbd></td><td>Run the selection only</td></tr>
+              <tr><td><kbd>⌘T</kbd></td><td>New query tab</td></tr>
+              <tr><td><kbd>F5</kbd></td><td>Force completions</td></tr>
+              <tr><td><kbd>Tab</kbd></td><td>Accept the ghost-text suggestion</td></tr>
+              <tr><td><kbd>⌘I</kbd></td><td>Inline AI edit of the selection</td></tr>
+              <tr><td><kbd>⌘,</kbd></td><td>Settings</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </section>
+
+      <section id="files">
+        <div class="prose">
+          <h2>Files on disk</h2>
+          <p>Taula keeps its state in plain files under Application Support/Taula in your home Library folder. Nothing is synced anywhere.</p>
+          <ul>
+            <li><b>Connections</b> as JSON, without secrets. Passwords, tokens and the optional Anthropic key live in the macOS Keychain.</li>
+            <li><b>Query history</b> and <b>saved snippets</b>, per connection.</li>
+            <li><b>Change journal</b> entries with their undo SQL.</li>
+            <li><b>Saved query-builder specs</b>.</li>
+            <li><b>Assistant transcripts</b> and <b>schema memory</b>, per connection.</li>
+            <li><b>Settings</b>.</li>
+          </ul>
+          <p>Delete the folder to reset the app. Remove the Keychain items named after Taula to forget the secrets too.</p>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="cols">
+      <div class="about">
+        <a class="brand" href="/taula/" aria-label="Taula home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#215CCC"/><stop offset="1" stop-color="#732EA8"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#g1)"/><rect x="14" y="16" width="36" height="32" rx="3" fill="none" stroke="#fff" stroke-width="2.6"/><rect x="14" y="16" width="36" height="10" rx="3" fill="#fff" fill-opacity=".92"/><path d="M26 26v22M38 26v22M14 37h36" stroke="#fff" stroke-width="2.6"/></svg> taula</a>
+        <p>A native macOS database manager for PostgreSQL, SQLite and Cloudflare D1, with a local assistant and an MCP server for your coding agent.</p>
+      </div>
+      <div><h5>Product</h5><ul>
+        <li><a href="/taula/data-grid/">Data grid</a></li><li><a href="/taula/query-editor/">Query editor</a></li><li><a href="/taula/assistant/">Assistant</a></li>
+        <li><a href="/taula/mcp/">For agents</a></li><li><a href="/taula/safety/">Safety net</a></li><li><a href="/taula/databases/">Databases</a></li>
+      </ul></div>
+      <div><h5>Resources</h5><ul>
+        <li><a href="/taula/docs/">Documentation</a></li><li><a href="/taula/articles/">Articles</a></li><li><a href="/taula/compare/">How Taula compares</a></li><li><a href="/taula/changelog/">Changelog</a></li>
+        <li><a href="/taula/support/">Support</a></li><li><a href="/taula/privacy/">Privacy</a></li><li><a href="/taula/llms.txt">llms.txt</a></li>
+      </ul></div>
+      <div><h5>Get Taula</h5><ul>
+        <li><a href="/taula/?early=taula" data-early="taula">Request early access</a></li><li><a href="/taula/account/">Your downloads</a></li>
+        <li><a href="/taula/pricing/#requirements">Requirements</a></li><li><a href="/taula/changelog.xml">Release notes RSS</a></li>
+      </ul></div>
+    </div>
+    <div class="fine">
+      <span>Taula is Basque for table. Requires macOS 15 or later.</span>
+      <span>One licence check, no telemetry: your databases never leave your Mac.</span>
+    </div>
+  </div>
+</footer>
+<script src="/taula/site.js" defer></script>
+
+<script src="/early-access.js" defer></script>
+</body>
+</html>

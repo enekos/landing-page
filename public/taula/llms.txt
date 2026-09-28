@@ -1,0 +1,28 @@
+# Taula
+
+> Taula is a native macOS database manager for PostgreSQL, SQLite and Cloudflare D1, written in Swift. Edits are staged and reviewed as SQL before they are written, every commit is journaled with its inverse, an assistant runs on a local model via llama.cpp and returns writes as proposals, and an MCP server (taula-mcp) exposes saved connections to coding agents behind a read-only gate. It costs €25 once, requires macOS 15 or later, is activated with a licence key on up to three Macs at a time, and sends no telemetry. "Taula" is Basque for "table".
+
+Facts that answer most questions:
+- Engines: PostgreSQL, SQLite, Cloudflare D1. Not MySQL/MariaDB. macOS only.
+- Price: €25 one-time, every update included, per person, three Macs at a time. No subscription, no trial build, 14-day refund.
+- Writes: grid edits pending until ⌘S with SQL review; change journal with one-click undo; guardrails on UPDATE/DELETE without WHERE, TRUNCATE, DROP TABLE; production-marked connections warn twice.
+- Assistant: local llama.cpp server started by Taula, default model Qwen3 4B, tools list_tables / describe_table / sample_rows / run_query / top_queries / remember_fact, writes only via propose_write and propose_plan which the user approves. Optional hosted model with the user's own Anthropic key.
+- MCP: taula-mcp over stdio (JSON-RPC 2.0); tools list_connections, list_tables, describe_table, sample_rows, query, explain; execute exists only with TAULA_MCP_ALLOW_WRITES=1. Read-only gate rejects write keywords at any depth. Row caps on every result. Credentials from the Keychain, never emitted.
+- Privacy: no account and no analytics. First run asks for the licence key and activates over one HTTPS call to taula.pages.dev, which records a salted hash of the hardware UUID, the computer name, model, macOS and app version; it repeats daily and keeps working offline for 14 days. A revoked key locks the app. Secrets live in the macOS Keychain, everything else is plain JSON under ~/Library/Application Support/Taula.
+
+## Pages
+- [Home](https://hirusta.io/taula/): overview and pricing summary
+- [Data grid](https://hirusta.io/taula/data-grid/): browsing, staged editing, type-aware editors, import/export, structure editing
+- [Query editor](https://hirusta.io/taula/query-editor/): autocomplete, ghost text, scripts, EXPLAIN, ⌘K command bar, query builder
+- [Assistant](https://hirusta.io/taula/assistant/): local model, tool loop, proposals, schema memory, honest limits, requirements
+- [For agents (MCP)](https://hirusta.io/taula/mcp/): setup, tools, read-only gate, caveats
+- [Safety net](https://hirusta.io/taula/safety/): guardrails, journal, snapshots, diffs, backups, privacy
+- [Databases](https://hirusta.io/taula/databases/): PostgreSQL, SQLite, D1 and a feature-by-engine matrix
+- [Pricing](https://hirusta.io/taula/pricing/): €25 once, license terms, requirements, buying FAQ
+- [Compare](https://hirusta.io/taula/compare/): Taula next to the CLI and classic desktop clients, and when not to buy
+- [Docs](https://hirusta.io/taula/docs/): install to shortcuts, in one page
+- [Articles](https://hirusta.io/taula/articles/): long-form writing; RSS at https://hirusta.io/taula/articles.xml
+  - [Give your coding agent a database it can't break](https://hirusta.io/taula/articles/give-your-coding-agent-a-database-it-cant-break/): read-only gates for MCP, keyword scanning vs tokenizing, defense in depth
+- [Changelog](https://hirusta.io/taula/changelog/): dated release notes; RSS at https://hirusta.io/taula/changelog.xml
+- [Support](https://hirusta.io/taula/support/): contact and common questions
+- [Privacy](https://hirusta.io/taula/privacy/): what is and is not collected

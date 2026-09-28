@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Taula — native database manager for macOS</title>
+<meta name="description" content="Taula is a native macOS database manager for PostgreSQL, SQLite and Cloudflare D1. Staged edits, a schema-aware SQL editor, an assistant that runs on your Mac, and an MCP server for your coding agent. €25, once.">
+<link rel="canonical" href="https://hirusta.io/taula/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Taula">
+<meta property="og:title" content="Taula — native database manager for macOS">
+<meta property="og:description" content="Taula is a native macOS database manager for PostgreSQL, SQLite and Cloudflare D1. Staged edits, a schema-aware SQL editor, an assistant that runs on your Mac, and an MCP server for your coding agent. €25, once.">
+<meta property="og:url" content="https://hirusta.io/taula/">
+<meta property="og:image" content="https://hirusta.io/taula/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Taula — native database manager for macOS">
+<meta name="twitter:description" content="Taula is a native macOS database manager for PostgreSQL, SQLite and Cloudflare D1. Staged edits, a schema-aware SQL editor, an assistant that runs on your Mac, and an MCP server for your coding agent. €25, once.">
+<meta name="twitter:image" content="https://hirusta.io/taula/og.png">
+<meta name="theme-color" content="#F3F4F6">
+<link rel="icon" href="/taula/favicon.svg" type="image/svg+xml">
+<link rel="alternate" type="application/rss+xml" title="Taula release notes" href="https://hirusta.io/taula/changelog.xml">
+<link rel="preload" href="/taula/fonts/bricolage.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/taula/fonts/instrument.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/taula/site.css">
+
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[
+{"@type":"SoftwareApplication","@id":"https://hirusta.io/taula/#app","name":"Taula","operatingSystem":"macOS 15 or later","applicationCategory":"DeveloperApplication","description":"A native macOS database manager for PostgreSQL, SQLite and Cloudflare D1, with staged edits, a schema-aware SQL editor, a local AI assistant and an MCP server for coding agents.","url":"https://hirusta.io/taula/","downloadUrl":"https://hirusta.io/taula/account/","offers":{"@type":"Offer","price":"25","priceCurrency":"EUR","availability":"https://schema.org/InStock","url":"https://hirusta.io/taula/pricing/"},"featureList":["Editable data grid with staged edits and SQL review","SQL editor with schema-aware autocomplete and ghost-text completion","Local AI assistant running on llama.cpp","MCP server for coding agents, read-only by default","Change journal with one-click undo","Inline rewrite of a selection with a diff preview","Write proposals the assistant cannot run without your approval","Guardrails on destructive statements and production-marked connections","Schema diff, data diff, backup and restore","SSH tunnels","ERD relations view","PostgreSQL activity monitor"]},
+{"@type":"Organization","@id":"https://hirusta.io/taula/#org","name":"Taula","url":"https://hirusta.io/taula/","logo":"https://hirusta.io/taula/favicon.svg"},
+{"@type":"WebSite","@id":"https://hirusta.io/taula/#site","url":"https://hirusta.io/taula/","name":"Taula","publisher":{"@id":"https://hirusta.io/taula/#org"}},
+{"@type":"FAQPage","@id":"https://hirusta.io/taula/#faq","mainEntity":[
+  {"@type":"Question","name":"Which databases does Taula support?","acceptedAnswer":{"@type":"Answer","text":"PostgreSQL, SQLite and Cloudflare D1. MySQL and MariaDB are on the list but will not ship until they are tested against a real server."}},
+  {"@type":"Question","name":"Is the assistant really local?","acceptedAnswer":{"@type":"Answer","text":"Yes. Taula starts a llama.cpp server on your Mac and downloads a small open model on first use. Your schema and your data stay on the machine. If you prefer a hosted model, you can add an Anthropic key in Settings and pick one there."}},
+  {"@type":"Question","name":"Can it write to my database without asking?","acceptedAnswer":{"@type":"Answer","text":"No. Grid edits are staged until you commit and review the SQL. The assistant returns writes as proposals you approve. Destructive statements in the query editor get a confirmation first. The MCP server is read-only unless you start it with writes enabled."}},
+  {"@type":"Question","name":"Does it need an account or send telemetry?","acceptedAnswer":{"@type":"Answer","text":"The app has no account, no sign-in and no analytics. Passwords live in the macOS Keychain. Connections, history and settings are plain JSON files in your Application Support folder."}},
+  {"@type":"Question","name":"What does the name mean?","acceptedAnswer":{"@type":"Answer","text":"Taula is Basque for table."}}
+]}
+]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="prog" aria-hidden="true"></div>
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="brand" href="/taula/" aria-label="Taula home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#215CCC"/><stop offset="1" stop-color="#732EA8"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#g1)"/><rect x="14" y="16" width="36" height="32" rx="3" fill="none" stroke="#fff" stroke-width="2.6"/><rect x="14" y="16" width="36" height="10" rx="3" fill="#fff" fill-opacity=".92"/><path d="M26 26v22M38 26v22M14 37h36" stroke="#fff" stroke-width="2.6"/></svg> taula</a>
+    <nav class="nav-links" aria-label="Site">
+      <div class="menu">
+        <button type="button" aria-haspopup="true" aria-expanded="false">Product <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="m4 6 4 4 4-4"/></svg></button>
+        <div class="drop">
+          <a href="/taula/data-grid/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 10v10M15 10v10"/></svg><b>Data grid</b><span>Browse and edit, with a review step before anything is written.</span></a>
+          <a href="/taula/query-editor/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M14 5l-4 14"/></svg><b>Query editor</b><span>Schema-aware autocomplete, ghost text, plans, a ⌘K bar.</span></a>
+          <a href="/taula/assistant/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></svg><b>Assistant</b><span>A local model that reads freely and writes only with approval.</span></a>
+          <a href="/taula/mcp/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m7 9 3 3-3 3M12 15h5"/></svg><b>For agents</b><span>An MCP server over your saved connections, read-only by default.</span></a>
+          <a href="/taula/safety/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="m9 12 2 2 4-4"/></svg><b>Safety net</b><span>Guardrails, change journal, snapshots, diffs, backups.</span></a>
+          <a href="/taula/databases/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg><b>Databases</b><span>PostgreSQL, SQLite and Cloudflare D1, side by side.</span></a>
+        </div>
+      </div>
+      <a href="/taula/pricing/">Pricing</a>
+      <a href="/taula/docs/">Docs</a><a href="/taula/articles/">Articles</a>
+      <a href="/taula/changelog/">Changelog</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn btn-ghost" href="/taula/account/">Downloads</a>
+      <a class="btn btn-ink" href="/taula/?early=taula" data-early="taula">Early access</a>
+      <details class="mnav">
+        <summary aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg></summary>
+        <nav aria-label="Site">
+          <small>Product</small>
+          <a href="/taula/data-grid/">Data grid</a><a href="/taula/query-editor/">Query editor</a><a href="/taula/assistant/">Assistant</a><a href="/taula/mcp/">For agents</a><a href="/taula/safety/">Safety net</a><a href="/taula/databases/">Databases</a>
+          <small>More</small>
+          <a href="/taula/pricing/">Pricing</a><a href="/taula/compare/">Compare</a><a href="/taula/docs/">Docs</a><a href="/taula/articles/">Articles</a><a href="/taula/changelog/">Changelog</a><a href="/taula/support/">Support</a>
+        </nav>
+      </details>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-copy">
+      <h1>Postgres and SQLite, at home on your Mac.</h1>
+      <p class="lede">Taula is a native database manager. Browse tables, edit cells, and read the exact SQL before anything is written. Fast enough that you stop reaching for psql.</p>
+    </div>
+    <div class="hero-aside">
+      <div class="cta-row">
+        
+        <a class="btn btn-ink" href="/taula/?early=taula" data-early="taula">Request early access</a>
+        
+        <a class="btn btn-ghost" href="/taula/account/">Already bought? Sign in</a>
+      </div>
+      <div class="facts">
+        <span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 5.5h12M3 3h10a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/></svg>macOS 15 or later</span>
+        <span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 2v8m0 0 3-3M8 10 5 7M3 13h10"/></svg>Direct download, no app store</span>
+        <span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 1.5"/></svg>Pay once, keep every update</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-stage">
+    <div class="win" data-state="query" data-live data-win role="img" aria-label="Taula, writing a query, streaming its results as they arrive, and handing an approved change to the assistant"></div>
+  </div>
+</section>
+
+
+<section class="video" id="video">
+  <div class="wrap">
+    <div class="head" data-reveal>
+      <h2>Watch a real session.</h2>
+      <p class="lede">Connect, find a table, fix a row, ship the change. No cuts, no narration you have to sit through.</p>
+    </div>
+    <div class="video-frame" data-reveal="scale">
+      <!-- VIDEO: drop taula-demo.mp4 (and optionally poster.jpg) next to this file.
+           The placeholder below hides itself as soon as the video loads. -->
+      <video id="demo" controls playsinline preload="metadata" poster="poster.jpg" hidden>
+        <source src="taula-demo.mp4" type="video/mp4">
+      </video>
+      <div class="video-ph" id="demo-ph" aria-hidden="true">
+        <div class="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4.5v15l13-7.5z"/></svg></div>
+        <p>Product video</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="show" id="features">
+  <div class="wrap">
+    <div class="intro" data-reveal>
+      <h2>One window, most of your day.</h2>
+      <p class="lede">The same grid you already know, with the guardrails you wish it had. Scroll to walk through a normal afternoon.</p>
+    </div>
+    <div class="show-grid">
+      <div class="steps" id="steps">
+        <span class="rail" aria-hidden="true"></span>
+        <article class="step on" data-state="browse">
+          <span class="tag">Data</span>
+          <h3>Open a table and start reading.</h3>
+          <p>Tables grouped by schema in the sidebar. A WHERE box for filters, click a header to sort, scroll for more rows. Foreign keys are marked, and a right-click on one jumps to the row it points at.</p>
+        </article>
+        <article class="step" data-state="edit">
+          <span class="tag">Edits are staged</span>
+          <h3>Nothing is written until you read the SQL.</h3>
+          <p>Change cells, insert rows, delete rows. It all stays pending until you press <kbd>⌘S</kbd> and see the exact statements Taula is about to run. Every commit lands in a journal with its inverse, so one click undoes it.</p>
+        </article>
+        <article class="step" data-state="guard">
+          <span class="tag">Guardrails</span>
+          <h3>A DELETE without a WHERE stops and asks.</h3>
+          <p>Taula knows the statements that end badly — UPDATE or DELETE with no WHERE, TRUNCATE, DROP TABLE — and makes you confirm before one runs. On a connection you marked production it asks twice and snapshots the table first, so there is something to go back to.</p>
+        </article>
+        <article class="step" data-state="command">
+          <span class="tag">⌘K</span>
+          <h3>Everything is one keystroke away.</h3>
+          <p>Tables, columns, snippets, query history, databases, connections, and actions in one fuzzy bar. Type SQL straight into it and get results inline, without opening a tab.</p>
+        </article>
+        <article class="step" data-state="agent">
+          <span class="tag">Assistant</span>
+          <h3>Ask in plain language. It runs on your Mac.</h3>
+          <p>The assistant inspects your schema, writes the query, and shows you the rows. Anything that would write data comes back as a proposal you approve. The model runs locally with llama.cpp, so nothing leaves the machine and there is no key to paste.</p>
+        </article>
+        <article class="step" data-state="journal">
+          <span class="tag">Change journal</span>
+          <h3>Every write is stored with its inverse.</h3>
+          <p>Each commit — from the grid, from a script, from a proposal you approved — is journaled next to the SQL that undoes it. Open it with <kbd>⌘K</kbd>, read what actually happened, and put one entry back without going looking for a backup.</p>
+        </article>
+        <article class="step" data-state="relations">
+          <span class="tag">Relations</span>
+          <h3>See how the tables fit together.</h3>
+          <p>Every foreign key drawn as an edge. Click a table to focus its relations, double-click to open it. Schema diff and data diff live one menu away when two databases have drifted.</p>
+        </article>
+      </div>
+      <div class="stage">
+        <div class="win" data-state="browse" data-win data-narrow id="stage-win" role="img" aria-label="Taula window walking through browsing, staged edits, guardrails, the command bar, the assistant, the change journal and relations"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Product pages -->
+<section class="sec" aria-labelledby="deeper-h">
+  <div class="wrap">
+    <div class="head">
+      <div data-reveal><span class="eyebrow">Product</span><h2 id="deeper-h" style="margin-top:14px">Six things it does, in depth.</h2></div>
+      <p class="lede">Each one has its own page, with the details a paid tool should be willing to write down: what it does, what it does not, and which engines it works on.</p>
+    </div>
+    <div class="cards" data-stagger>
+      <a class="card" data-reveal href="/taula/data-grid/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 10v10M15 10v10"/></svg><h3>Data grid</h3><p>Filter, sort, scroll any row count. Edits stay pending until you commit and read the exact SQL. Every commit is journaled with its inverse.</p><span class="link">Browse and edit</span></a>
+      <a class="card" data-reveal href="/taula/query-editor/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M14 5l-4 14"/></svg><h3>Query editor</h3><p>Context-aware autocomplete, ghost-text completions, several result sets per run, EXPLAIN as a tree, and a ⌘K bar that jumps anywhere.</p><span class="link">Write SQL</span></a>
+      <a class="card" data-reveal href="/taula/assistant/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></svg><h3>Assistant</h3><p>A small model on llama.cpp, launched by Taula, no key to paste. It reads your schema and data freely and returns every write as a proposal.</p><span class="link">Ask in plain language</span></a>
+      <a class="card" data-reveal href="/taula/mcp/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m7 9 3 3-3 3M12 15h5"/></svg><h3>For agents</h3><p>An MCP server that exposes your saved connections to Claude Code or any client, behind a hard read-only gate and row caps.</p><span class="link">Wire up an agent</span></a>
+      <a class="card" data-reveal href="/taula/safety/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="m9 12 2 2 4-4"/></svg><h3>Safety net</h3><p>Confirmations for destructive statements, production tinting, snapshots, schema and data diff, pg_dump and .dump backups.</p><span class="link">What protects you</span></a>
+      <a class="card" data-reveal href="/taula/databases/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg><h3>Databases</h3><p>PostgreSQL over PostgresNIO, SQLite over the system library, Cloudflare D1 over its API. One grid, one editor, one set of guardrails.</p><span class="link">Engine support</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="surfaces" aria-labelledby="surf-h">
+  <div class="wrap">
+    <div class="head">
+      <div data-reveal><span class="eyebrow">Agentic</span><h2 id="surf-h" style="margin-top:14px">The model turns up in three places, and never holds the pen.</h2></div>
+      <p class="lede" data-reveal style="--d:.08s">Taula runs a small open model on your Mac through llama.cpp. It finishes the line you are typing, rewrites the SQL you selected, and answers questions about the database on its own. Anything that would write comes back as a statement you read first.</p>
+    </div>
+    <div class="surf" data-stagger>
+      <div data-reveal>
+        <div class="sh"><kbd>Tab</kbd><h3>Ghost text</h3></div>
+        <p>Keep typing and a completion appears in grey at the caret, built from the schema you are actually in, not from a guess about it. Tab takes it, Esc drops it, and it never runs anything.</p>
+        <div class="demo" id="demo-ghost" aria-hidden="true"></div>
+      </div>
+      <div data-reveal>
+        <div class="sh"><kbd>⌘I</kbd><h3>Inline rewrite</h3></div>
+        <p>Select a statement, say what you want in a sentence, and read the change as a diff before it replaces anything. Apply it and <kbd>⌘Z</kbd> still puts the old text back.</p>
+        <div class="demo" id="demo-rewrite" aria-hidden="true"></div>
+      </div>
+      <div data-reveal>
+        <div class="sh"><kbd>⌘L</kbd><h3>Assistant</h3></div>
+        <p>It inspects tables, samples rows and runs read queries by itself. A change arrives as a <code>propose_write</code> card — the SQL, an Approve and a Decline — and only then touches your data.</p>
+        <div class="demo" id="demo-approve" aria-hidden="true"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="loop" id="loop" aria-labelledby="loop-h">
+  <div class="wrap">
+    <div class="head">
+      <div data-reveal><span class="eyebrow">How the assistant works</span><h2 id="loop-h" style="margin-top:14px">A tool loop, with the pen held back.</h2></div>
+      <p class="lede" data-reveal style="--d:.08s">The model never gets a connection string. It gets a small set of tools that Taula implements, and the read tools are the only ones that touch the database without you in the room.</p>
+    </div>
+
+    <div class="loop-rail" id="looprail" data-stagger>
+      <div class="node on" data-reveal><span class="n">01</span><b>You ask</b><p>A question in plain language, in the sidebar or straight into the ⌘K bar.</p><span class="who you">You</span></div>
+      <div class="node" data-reveal><span class="n">02</span><b>It reads the schema</b><p><code>list_tables</code> and <code>describe_table</code> return real metadata, so relationships are looked up, not invented.</p><span class="who model">Model</span></div>
+      <div class="node" data-reveal><span class="n">03</span><b>It looks at rows</b><p><code>sample_rows</code>, then a capped read-only <code>run_query</code> through the same gate the MCP server uses.</p><span class="who model">Model</span></div>
+      <div class="node" data-reveal><span class="n">04</span><b>It drafts the change</b><p>One statement, or a plan with numbered steps. Nothing has been written yet.</p><span class="who model">Model</span></div>
+      <div class="node" data-reveal><span class="n">05</span><b>You approve</b><p>It arrives as SQL in a card. Approve it, decline it, or edit the statement first.</p><span class="who you">You</span></div>
+      <div class="node" data-reveal><span class="n">06</span><b>Taula journals it</b><p>The commit is stored next to the SQL that undoes it. <kbd>⌘Z</kbd> puts it back.</p><span class="who app">Taula</span></div>
+    </div>
+
+    <div class="tools-two">
+      <div class="toolbox auto" data-reveal>
+        <h3>Runs on its own <span>Read</span></h3>
+        <p>Six tools the assistant may call without asking. They read; they never modify.</p>
+        <div class="chips">
+          <span class="chip">list_tables</span><span class="chip">describe_table</span><span class="chip">sample_rows</span>
+          <span class="chip">run_query</span><span class="chip">top_queries</span><span class="chip">remember_fact</span>
+        </div>
+        <small><code>run_query</code> passes the read-only gate and every result is row-capped, so a curious model cannot pull a whole table. <code>remember_fact</code> stores a durable note about that one connection — “amounts are in cents” — as plain JSON you can edit or delete.</small>
+      </div>
+      <div class="toolbox hold" data-reveal style="--d:.08s">
+        <h3>Waits for you <span>Write</span></h3>
+        <p>Two tools that cannot run themselves. Both surface as a card with the exact SQL.</p>
+        <div class="chips">
+          <span class="chip hold">propose_write</span><span class="chip hold">propose_plan</span>
+        </div>
+        <small>Proposals go through the same guardrails as the query editor, so a DELETE without a WHERE still asks twice, and a production-marked connection asks again. Approved writes land in the change journal with their inverse, exactly like a grid commit.</small>
+      </div>
+    </div>
+
+    <div class="gate" id="gatelist" data-reveal>
+      <div class="gate-row passed"><code>SELECT * FROM orders WHERE status = 'pending'</code><span class="verdict pass">Allowed</span></div>
+      <div class="gate-row passed"><code>SELECT replace_count FROM import_jobs</code><span class="verdict pass">Allowed · tokenized, not substring-matched</span></div>
+      <div class="gate-row blocked"><code>WITH gone AS (DELETE FROM orders RETURNING *) SELECT * FROM gone</code><span class="verdict block">Rejected · write keyword at depth 1</span></div>
+      <div class="gate-row blocked"><code>UPDATE orders SET status = 'shipped'</code><span class="verdict block">Rejected · leading keyword not on the read allowlist</span></div>
+    </div>
+    <p class="gate-note" data-reveal>The same gate guards the assistant's <code>run_query</code> and the MCP server. It is a well-tested keyword scanner, not a parser with a proof — give an agent a database role whose own permissions are the real boundary. The docs say this too, on purpose.</p>
+
+    <div class="strip dark" data-stagger style="margin-top:clamp(32px,4vw,52px)">
+      <div data-reveal><b><span class="count" data-to="8">8</span> tools</b><span>Six the model may call by itself, two it has to hand to you.</span></div>
+      <div data-reveal><b>0 keys</b><span>The default model is a file on your disk, served by llama.cpp. Nothing to paste, nothing to bill.</span></div>
+      <div data-reveal><b>0 bytes</b><span>Your schema, your rows and your questions stay on the Mac.</span></div>
+      <div data-reveal><b><span class="count" data-to="87" data-suffix="%">87%</span></b><span>Ghost-text accuracy on Taula's own execution-graded eval corpus, up from 73%.</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="mcp" id="agents">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow" style="color:#9AA1AF">For agents</span>
+      <h2 style="margin-top:14px">Your saved connections, available to your coding agent.</h2>
+      <p class="lede" style="margin-top:18px">Taula ships an MCP server. Claude Code or any other agent can list tables, describe schemas, sample rows and run queries over the connections you already set up, using the same Keychain credentials. It never sees a password.</p>
+      <ul>
+        <li><b>Read-only by default.</b> Every statement passes a hard gate: only read keywords may lead, and no write keyword may appear at any depth.</li>
+        <li><b>Writes are opt-in.</b> The execute tool only exists when you start the server with writes enabled, and it still returns guardrail warnings.</li>
+        <li><b>Row caps on everything.</b> Results are truncated with a flag, so an agent cannot pull a whole table by accident.</li>
+      </ul>
+      <div class="chips" style="margin-top:24px">
+        <span class="chip">list_connections</span><span class="chip">list_tables</span><span class="chip">describe_table</span>
+        <span class="chip">sample_rows</span><span class="chip">query</span><span class="chip">explain</span>
+        <span class="chip hold">execute</span>
+      </div>
+      <p style="margin-top:14px;color:#8B93A1;font-size:.88rem"><code style="background:#14161B;border-color:#2A2E37;color:#9AA1AF">execute</code> is not registered at all unless you start the server with <code style="background:#14161B;border-color:#2A2E37;color:#9AA1AF">TAULA_MCP_ALLOW_WRITES=1</code>. An agent cannot ask for a tool that does not exist.</p>
+      <p style="margin-top:26px"><a class="link" href="/taula/mcp/" style="color:#9CC4FF">How the MCP server works</a></p>
+    </div>
+    <pre class="term" id="mcpterm"><span class="p">$</span> claude mcp add taula -- taula-mcp
+<span class="g">Added stdio MCP server taula</span>
+
+<span class="p">></span> which tables reference customers?
+<span class="c">  list_connections · list_tables · describe_table</span>
+  orders.customer_id, invoices.customer_id,
+  support_tickets.customer_id → customers.id
+
+<span class="p">></span> how many orders shipped last week?
+<span class="c">  query (read-only gate passed)</span>
+  2,481 rows in orders where status = 'shipped'
+  and shipped_at ≥ 2026-09-01</pre>
+  </div>
+</section>
+
+
+<!-- Native -->
+<section class="sec band" aria-labelledby="native-h">
+  <div class="wrap">
+    <div class="head">
+      <div><span class="eyebrow">Native</span><h2 id="native-h" style="margin-top:14px">Built for the Mac, not ported to it.</h2></div>
+      <p class="lede">Swift and SwiftUI, with an AppKit table view underneath the grid so a million rows scroll like a hundred. No Electron, no web view, no login screen.</p>
+    </div>
+    <div class="strip" data-stagger>
+      <div data-reveal><b>Keychain</b><span>Passwords and API tokens live in the macOS Keychain. Connections are plain JSON you can read.</span></div>
+      <div data-reveal><b>0 bytes</b><span>of telemetry. No analytics, no crash uploads, no sign-in. Nothing leaves your Mac unless you ask.</span></div>
+      <div data-reveal><b>Local model</b><span>The assistant runs on llama.cpp on your machine. A hosted model is optional, never required.</span></div>
+      <div data-reveal><b>One license</b><span>Every Mac you own, every future update, one payment of €25.</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="price-s" id="pricing">
+  <div class="wrap">
+    <div class="price-copy" data-reveal="left">
+      <h2>One price. No subscription, no seats.</h2>
+      <p class="lede">You buy a tool, you own the tool. Every update is included, and the download comes straight from us.</p>
+    </div>
+    <div class="price-card" data-reveal="scale">
+      <div class="big"><b>€25</b><span>once</span></div>
+      <ul class="inc">
+        <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8.5l3 3 7-7"/></svg>All your Macs, one license</li>
+        <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8.5l3 3 7-7"/></svg>Every future update</li>
+        <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8.5l3 3 7-7"/></svg>Postgres, SQLite and Cloudflare D1</li>
+        <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8.5l3 3 7-7"/></svg>Local assistant and MCP server included</li>
+      </ul>
+      <div class="cta-row">
+        
+        <a class="btn btn-blue" href="/taula/?early=taula" data-early="taula">Request early access</a>
+        <a class="btn btn-ghost" href="/taula/account/">Already bought? Sign in</a>
+      </div>
+      <small>Requires macOS 15 or later. Your licence key arrives by email right after payment and unlocks your download page.</small>
+    </div>
+  </div>
+</section>
+
+
+<section class="faq">
+  <div class="wrap">
+    <div><h2>Questions</h2><p class="lede" style="margin-top:14px;font-size:1.05rem">More on the <a href="/taula/support/">support page</a>.</p></div>
+    <div>
+      <details>
+        <summary>Which databases does Taula support?</summary>
+        <p>PostgreSQL, SQLite and Cloudflare D1. MySQL and MariaDB are on the list but will not ship until they are tested against a real server.</p>
+      </details>
+      <details>
+        <summary>Is the assistant really local?</summary>
+        <p>Yes. Taula starts a llama.cpp server on your Mac and downloads a small open model on first use. Your schema and your data stay on the machine. If you prefer a hosted model, you can add an Anthropic key in Settings and pick one there.</p>
+      </details>
+      <details>
+        <summary>Can it write to my database without asking?</summary>
+        <p>No. Grid edits are staged until you commit and review the SQL. The assistant returns writes as proposals you approve. Destructive statements in the query editor get a confirmation first. The MCP server is read-only unless you start it with writes enabled.</p>
+      </details>
+      <details>
+        <summary>Does it need an account or send telemetry?</summary>
+        <p>The app has no account, no sign-in and no analytics. Passwords live in the macOS Keychain. Connections, history and settings are plain JSON files in your Application Support folder.</p>
+      </details>
+      <details>
+        <summary>What does the name mean?</summary>
+        <p>Taula is Basque for table.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="cta-band" aria-labelledby="cta-h"><div class="wrap">
+  <h2 id="cta-h">Stop reaching for psql.</h2>
+  <p class="lede">Taula is €25 once, with every update included and nothing to subscribe to. Download it, add a connection, and read your first table in under a minute.</p>
+  <div class="cta-row"><a class="btn btn-ink" href="/taula/?early=taula" data-early="taula">Request early access</a><a class="btn btn-ghost" href="/taula/account/">Already bought? Sign in</a></div>
+</div></section>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="cols">
+      <div class="about">
+        <a class="brand" href="/taula/" aria-label="Taula home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#215CCC"/><stop offset="1" stop-color="#732EA8"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#g1)"/><rect x="14" y="16" width="36" height="32" rx="3" fill="none" stroke="#fff" stroke-width="2.6"/><rect x="14" y="16" width="36" height="10" rx="3" fill="#fff" fill-opacity=".92"/><path d="M26 26v22M38 26v22M14 37h36" stroke="#fff" stroke-width="2.6"/></svg> taula</a>
+        <p>A native macOS database manager for PostgreSQL, SQLite and Cloudflare D1, with a local assistant and an MCP server for your coding agent.</p>
+      </div>
+      <div><h5>Product</h5><ul>
+        <li><a href="/taula/data-grid/">Data grid</a></li><li><a href="/taula/query-editor/">Query editor</a></li><li><a href="/taula/assistant/">Assistant</a></li>
+        <li><a href="/taula/mcp/">For agents</a></li><li><a href="/taula/safety/">Safety net</a></li><li><a href="/taula/databases/">Databases</a></li>
+      </ul></div>
+      <div><h5>Resources</h5><ul>
+        <li><a href="/taula/docs/">Documentation</a></li><li><a href="/taula/articles/">Articles</a></li><li><a href="/taula/compare/">How Taula compares</a></li><li><a href="/taula/changelog/">Changelog</a></li>
+        <li><a href="/taula/support/">Support</a></li><li><a href="/taula/privacy/">Privacy</a></li><li><a href="/taula/llms.txt">llms.txt</a></li>
+      </ul></div>
+      <div><h5>Get Taula</h5><ul>
+        <li><a href="/taula/?early=taula" data-early="taula">Request early access</a></li><li><a href="/taula/account/">Your downloads</a></li>
+        <li><a href="/taula/pricing/#requirements">Requirements</a></li><li><a href="/taula/changelog.xml">Release notes RSS</a></li>
+      </ul></div>
+    </div>
+    <div class="fine">
+      <span>Taula is Basque for table. Requires macOS 15 or later.</span>
+      <span>One licence check, no telemetry: your databases never leave your Mac.</span>
+    </div>
+  </div>
+</footer>
+<script src="/taula/site.js" defer></script>
+<script src="/taula/win.js" defer></script>
+<script src="/taula/live.js" defer></script>
+<script src="/early-access.js" defer></script>
+</body>
+</html>
