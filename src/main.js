@@ -31,7 +31,7 @@ app.innerHTML = `
     <nav class="nav-links" aria-label="Sections">
       <a href="#apps">Apps</a><a href="#archives">Archives</a><a href="#contact">Contact</a>
     </nav>
-    <a class="btn btn-ink btn-sm" href="#apps">Mac apps</a>
+    <a class="btn btn-ink btn-sm" href="/?early=" data-early="">Early access</a>
   </div>
 </header>
 
@@ -43,16 +43,16 @@ app.innerHTML = `
     <div class="hero-copy">
       <p class="whisper">web / ai / natural language developer · barcelona</p>
       <h1 class="name" id="name" aria-label="${NAME}"></h1>
-      <p class="lede">${node("eneko").lines[0]} And three native Mac apps for the work in between.</p>
+      <p class="lede">${node("eneko").lines[0]} And three native apps for the work in between.</p>
       <div class="cta-row">
-        <a class="btn btn-ink" href="#apps">See the Mac apps ${arrow}</a>
+        <a class="btn btn-ink" href="#apps">See the apps ${arrow}</a>
         <a class="btn btn-ghost" href="#archives">Read the archives</a>
       </div>
       <p class="readout" aria-hidden="true"><span data-vec>vec ⟨0.00, 0.00⟩</span><span data-cluster>cluster self</span></p>
     </div>
 
-    <div class="dock" aria-label="Mac apps">
-      <p class="dock-k">New · native macOS</p>
+    <div class="dock" aria-label="Apps">
+      <p class="dock-k">New</p>
       ${apps.map((a, i) => `
       <a class="dock-app" href="#app-${a.slug}" style="--i:${i}">
         ${a.icon}
@@ -67,7 +67,7 @@ app.innerHTML = `
 <section class="apps" id="apps" aria-labelledby="apps-h">
   <div class="wrap">
     <div class="head" data-reveal>
-      <span class="eyebrow">Mac apps</span>
+      <span class="eyebrow">Apps</span>
       <h2 id="apps-h">Three native tools. Paid once, yours to keep.</h2>
       <p class="lede">Swift, no Electron, no account, no telemetry. Each one replaces a slow app, a browser tab or a subscription you already resent.</p>
     </div>
