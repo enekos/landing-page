@@ -1,5 +1,7 @@
 (() => {
-  const ENDPOINT = "/api/early-access";
+  const ENDPOINT = location.hostname === "localhost"
+    ? "/api/early-access"
+    : "https://hirusta-early-access.begiarenhezurra.workers.dev/api/early-access";
   const APPS = [
     ["lemazain", "lemazain", "Kubernetes IDE"],
     ["taula", "Taula", "Database manager"],
