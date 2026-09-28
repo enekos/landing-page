@@ -832,14 +832,16 @@ footer.site .fine{display:flex;flex-wrap:wrap;justify-content:space-between;gap:
 /* Small screens: scale the whole window uniformly (zoom keeps every px value in proportion),
    drop the sidebar, and lay the body out as two columns so main does not land in a 0px track. */
 @media (max-width:900px){
-  .stage .win,.stage-only .win,.hero-stage .win,.two .win{zoom:.8}
+  .stage .win,.stage-only .win,.hero-stage .win,.two .win,.embed .win{zoom:.8}
   .stage .win .side,.win .side{display:none}
   .stage .win .body,.win .body{grid-template-columns:minmax(0,1fr) 0fr}
   .stage .win[data-state="agent"] .body,.win[data-state="agent"] .body{grid-template-columns:minmax(0,1fr) minmax(0,.9fr)}
 }
 @media (max-width:600px){
   .stage .win,.stage-only .win,.hero-stage .win,.two .win{zoom:.66;font-size:12.5px;--rows:8;aspect-ratio:4/3}
-  .stage .win[data-state="agent"] .body,.win[data-state="agent"] .body{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .embed .win{zoom:.66;--rows:8}
+  .win .assist,.win .ai{display:none}
+  .stage .win[data-state="agent"] .body,.win[data-state="agent"] .body{grid-template-columns:minmax(0,.55fr) minmax(0,1fr)}
   .page-head h1{font-size:2.3rem}
   h1{font-size:2.4rem}
 }

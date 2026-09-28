@@ -252,7 +252,7 @@
 @media (max-width:760px){
   .awin{aspect-ratio:4/5;font-size:11px}
   .awin .a-lights,.awin .a-jump,.awin .a-crumb,.awin .hide-s{display:none}
-  .awin .a-body,.stage .awin .a-body{grid-template-columns:0 0 minmax(0,1fr)}
+  .awin .a-body,.stage .awin .a-body,.awin[data-state="code"] .a-body,.awin[data-state="agent"] .a-body{grid-template-columns:0 0 minmax(0,1fr)}
   .awin .a-side,.awin .a-list{visibility:hidden}
   .awin[data-state="inbox"] .a-body,.stage .awin[data-state="inbox"] .a-body{grid-template-columns:0 minmax(0,1fr) 0}
   .awin[data-state="inbox"] .a-list{visibility:visible}

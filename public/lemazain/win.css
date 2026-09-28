@@ -241,4 +241,11 @@ code,kbd,pre,.kwin{font-variant-ligatures:none}
 .kwin[data-state="inspect"] .hide-s,.kwin[data-state="logs"] .hide-s{display:none}
 .kwin[data-state="inspect"] .k-chip:not(.all),.kwin[data-state="logs"] .k-chip:not(.all){display:none}
 .kwin[data-state="inspect"] .k-pills span:nth-child(n+4),.kwin[data-state="logs"] .k-pills span:nth-child(n+4){display:none}
-@media (max-width:760px){.kwin col:nth-child(5),.kwin th:nth-child(5),.kwin td:nth-child(5){display:none}}
+@media (max-width:760px){
+  .kwin col:nth-child(5),.kwin th:nth-child(5),.kwin td:nth-child(5){display:none}
+  .kwin col:nth-child(1){width:52%!important}
+  .kwin col:nth-child(3){width:13%!important}
+  .kwin col:nth-child(4){width:35%!important}
+  .kwin td,.kwin th{padding-inline:8px}
+  .kwin .pill{display:inline-block;max-width:100%;overflow:hidden;text-overflow:ellipsis;vertical-align:middle}
+}
