@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>adar — a native pull-request client for macOS</title>
+<meta name="description" content="adar is a native macOS client for GitHub pull requests, built on the gh CLI. One inbox for every PR that needs you, the whole diff in one view, checks that tell the truth, blame on both sides of your clone, and an agent terminal on the PR's own checkout. €9 once.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="adar">
+<meta property="og:title" content="adar — a native pull-request client for macOS">
+<meta property="og:description" content="Every PR that needs you in one inbox, diffs and checks without a browser tab, and an agent terminal on the checkout. Native Swift over gh. €9 once.">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#F3F4F6">
+<link rel="icon" href="/adar/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="/adar/fonts/bricolage.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/adar/fonts/instrument.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/adar/site.css">
+<link rel="stylesheet" href="/adar/win.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[
+{"@type":"SoftwareApplication","name":"adar","operatingSystem":"macOS 26 or later","applicationCategory":"DeveloperApplication","offers":{"@type":"Offer","price":"9","priceCurrency":"EUR","url":"https://hirusta.io/adar/pricing/"},"description":"A native macOS client for GitHub pull requests built on the gh CLI: an inbox of review requests and your own PRs, full diffs, graded checks, a code explorer with local and remote blame, notifications, and agent terminals on a worktree at the PR head.","featureList":["Inbox of review requests, your PRs, involvement and recent merges, fetched in parallel from a disk cache first","The whole diff in one native text view","Checks graded per check name, so a re-run that passed is a pass","Conversation rendered from GitHub markdown, including tables, task lists, alerts and private images","Command palette over repositories, pull requests, files and actions","Agent terminal per PR on a detached worktree at the PR head, with the diff, description and metadata written beside it","Code explorer: remote tree beside your local clone, freshness, per-file sync and blame on both sides","Notifications for merges, approvals, requested changes and red checks, with bursts collapsed into one banner"]},
+{"@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"Do I need a GitHub token?","acceptedAnswer":{"@type":"Answer","text":"No. adar runs on the GitHub CLI and uses the login gh already has. If gh auth status works, adar works."}},
+  {"@type":"Question","name":"Does my code go through your servers?","acceptedAnswer":{"@type":"Answer","text":"No. adar talks to GitHub directly through gh. The only request it makes to us is the licence check: your key and five fields about the Mac, never a repository, a branch or a line of code."}},
+  {"@type":"Question","name":"Which agents can it run?","acceptedAnswer":{"@type":"Answer","text":"Claude Code, opencode, Codex and Gemini CLI have profiles out of the box, and any command you can type in a shell can be added as your own."}},
+  {"@type":"Question","name":"What does the name mean?","acceptedAnswer":{"@type":"Answer","text":"Adar is Basque for branch."}}
+]}
+]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="prog" aria-hidden="true"></div>
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="brand" href="/adar/" aria-label="adar home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#215CCC"/><stop offset="1" stop-color="#732EA8"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#g1)"/><g fill="none" stroke="#fff" stroke-width="3.8" stroke-linecap="round"><path d="M24 19v26"/><path d="M41 23c0 13-17 9-17 20"/></g><g fill="#fff"><circle cx="24" cy="15" r="4.8"/><circle cx="24" cy="49" r="4.8"/><circle cx="41" cy="18" r="4.8"/></g></svg> adar</a>
+    <nav class="nav-links" aria-label="Site">
+      <a href="/adar/#features">Tour</a>
+      <a href="/adar/#speed">Speed</a>
+      <a href="/adar/#privacy">Privacy</a>
+      <a href="/adar/pricing/">Pricing</a>
+      <a href="/adar/#faq">FAQ</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn btn-ghost" href="/adar/account/">Downloads</a>
+      <a class="btn btn-ink" href="/adar/?early=adar" data-early="adar">Early access</a>
+      <details class="mnav">
+        <summary aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg></summary>
+        <nav aria-label="Site">
+          <a href="/adar/#features">Tour</a><a href="/adar/#speed">Speed</a><a href="/adar/#privacy">Privacy</a><a href="/adar/pricing/">Pricing</a><a href="/adar/account/">Downloads</a><a href="/adar/support/">Support</a><a href="/adar/#faq">FAQ</a>
+        </nav>
+      </details>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-copy">
+      <h1>Pull requests at the speed of your keyboard.</h1>
+      <p class="lede">adar is a native Mac app for the pull requests you owe a look. One inbox, the whole diff in one view, checks that tell the truth, and an agent terminal already sitting in the PR's checkout.</p>
+    </div>
+    <div class="hero-aside">
+      <div class="cta-row">
+        <a class="btn btn-ink" href="/adar/?early=adar" data-early="adar">Request early access</a>
+        <a class="btn btn-ghost" href="/adar/account/">Already bought? Sign in</a>
+      </div>
+      <div class="facts">
+        <span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 5.5h12M3 3h10a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/></svg>macOS 26 or later</span>
+        <span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m3 5 3 3-3 3M8 11h5"/></svg>Runs on the gh you have</span>
+        <span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 1.5"/></svg>Pay once, keep every update</span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-stage">
+    <div class="awin" data-awin data-cycle data-state="inbox" role="img" aria-label="adar showing the review inbox, a diff, graded checks, an agent reviewing the pull request in a terminal, the command palette and notifications"></div>
+  </div>
+</section>
+
+<section class="show" id="features">
+  <div class="wrap">
+    <div class="intro" data-reveal>
+      <h2>A review, start to finish, without a browser tab.</h2>
+      <p class="lede">GitHub's web UI is built for reading one pull request. adar is built for getting through all of them. Scroll through a normal morning.</p>
+    </div>
+    <div class="show-grid">
+      <div class="steps" id="steps">
+        <span class="rail" aria-hidden="true"></span>
+        <article class="step on" data-state="inbox">
+          <span class="tag">Inbox</span>
+          <h3>Everything that needs you, sorted before you ask.</h3>
+          <p>Review requests, your own PRs, threads you are in and what merged lately, each with its checks and review state on the row. The last inbox comes off disk before the network answers, and <kbd>j</kbd> <kbd>k</kbd> move faster than you can read because a stale fetch is cancelled, not waited for.</p>
+        </article>
+        <article class="step" data-state="diff">
+          <span class="tag">Files</span>
+          <h3>The whole diff in one view, not forty collapsed ones.</h3>
+          <p>Every file in a single native text view with syntax colour, hunk headers and both line numbers, so scrolling a big change is scrolling, not clicking <em>Load diff</em>. The diff and the conversation load in parallel, about a second each.</p>
+        </article>
+        <article class="step" data-state="checks">
+          <span class="tag">Checks</span>
+          <h3>Green means green.</h3>
+          <p>GitHub's rollup stays red after a flaky test passes on re-run. adar grades each check by name, so a failure followed by a success is a pass, a running shard is pending, and the name of what actually broke is right there on the row.</p>
+        </article>
+        <article class="step" data-state="agent">
+          <span class="tag">Agents</span>
+          <h3>An agent already standing in the checkout.</h3>
+          <p><kbd>⇧⌘R</kbd> opens a terminal on a worktree at the PR head, with <code>pr.diff</code>, <code>pr.md</code> and <code>pr.json</code> beside it and <code>ADAR_*</code> in the environment. Claude Code, opencode, Codex, Gemini or your own command. Your working copy is never touched, and a PR title cannot escape the quotes.</p>
+        </article>
+        <article class="step" data-state="code">
+          <span class="tag">Code</span>
+          <h3>What changed around the change.</h3>
+          <p>The repository's remote tree beside your local clone: how far behind you are, which files differ, which exist on one side only. Blame on either side, so you can see who wrote the line the PR is replacing, and when.</p>
+        </article>
+        <article class="step" data-state="palette">
+          <span class="tag">⌘K</span>
+          <h3>Jump to anything.</h3>
+          <p>Repositories, pull requests, files in the diffs you have loaded and actions on the selection, ranked as you type. <kbd>@</kbd> for repos, <kbd>#</kbd> for PRs, <kbd>/</kbd> for files, <kbd>&gt;</kbd> for actions. Paste a GitHub URL and it opens.</p>
+        </article>
+        <article class="step" data-state="notify">
+          <span class="tag">Notifications</span>
+          <h3>Told when it matters, once.</h3>
+          <p>Merged, approved, changes requested, checks red. Three at once become one banner, only the loud ones make a sound, and the PR you are already looking at is marked read instead of announced. Reading it in adar marks the GitHub thread read too.</p>
+        </article>
+      </div>
+      <div class="stage">
+        <div class="awin" data-awin data-state="inbox" id="stage-win" role="img" aria-label="adar walking through the inbox, the diff, checks, an agent terminal, the code explorer, the palette and notifications"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" aria-labelledby="deeper-h">
+  <div class="wrap">
+    <div class="head">
+      <div data-reveal><span class="eyebrow">Details</span><h2 id="deeper-h" style="margin-top:14px">The small things you would otherwise script.</h2></div>
+      <p class="lede">Built in, native, and all of it driven by the same gh login your terminal uses.</p>
+    </div>
+    <div class="cards" data-stagger>
+      <div class="card" data-reveal><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 5h16M4 10h10M4 15h16M4 20h8"/></svg><h3>GitHub markdown</h3><p>Descriptions and comments render the way GitHub renders them: task lists, tables, fenced code, alerts, collapsed details and images from private repositories.</p></div>
+      <div class="card" data-reveal><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><h3>Approve from the keyboard</h3><p><kbd>⇧⌘A</kbd> approves the PR you are on, and is greyed out when it is your own or already closed.</p></div>
+      <div class="card" data-reveal><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 5h7l2 2h9v12H3z"/></svg><h3>Repository view</h3><p>Pick a repository in the palette to see all of its open pull requests, not only the ones that name you.</p></div>
+      <div class="card" data-reveal><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M10 14a4 4 0 0 0 5.6 0l3-3a4 4 0 0 0-5.6-5.6l-1 1M14 10a4 4 0 0 0-5.6 0l-3 3a4 4 0 0 0 5.6 5.6l1-1"/></svg><h3>Open by URL</h3><p><kbd>⌘L</kbd> takes any pull-request link, from Slack or an email, and opens it in place.</p></div>
+      <div class="card" data-reveal><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m7 9 3 3-3 3M12 15h5"/></svg><h3>Terminal drawer</h3><p>Every agent and shell you start lives in a drawer on <kbd>⌘J</kbd>, labelled with its PR, and says when it finishes.</p></div>
+      <div class="card" data-reveal><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"/><path d="M9 12h6"/></svg><h3>A config file, watched</h3><p>Agents, prompts, terminal and checkout settings live in one JSON file. Edit it in your editor and the Settings window follows.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec band" id="speed" aria-labelledby="speed-h">
+  <div class="wrap">
+    <div class="head">
+      <div data-reveal><span class="eyebrow">Speed</span><h2 id="speed-h" style="margin-top:14px">Fast because it refuses to wait.</h2></div>
+      <p class="lede">Every request is a gh process adar can kill. The inbox buckets are fetched side by side and drawn as each one lands; checks and reviews come in one batched query; the next PR is prefetched while you read this one.</p>
+    </div>
+    <div class="strip" data-stagger>
+      <div data-reveal><b><span class="count" data-to="4">4</span> buckets</b><span>fetched in parallel and shown as each arrives, over the inbox from last time.</span></div>
+      <div data-reveal><b>~1 s</b><span>for a whole diff, loaded alongside the conversation rather than after it.</span></div>
+      <div data-reveal><b>0 stale</b><span>requests left running when you press <kbd>j</kbd>. The one you moved away from is cancelled.</span></div>
+      <div data-reveal><b>304</b><span>is what a notifications poll costs when nothing changed. It asks GitHub with If-Modified-Since.</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="term-band" id="privacy" aria-labelledby="privacy-h">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow" style="color:#9AA1AF">Privacy</span>
+      <h2 id="privacy-h" style="margin-top:14px">It runs on gh, so it sees what you see and nothing else.</h2>
+      <p class="lede">No OAuth app to approve, no token to paste, no proxy in the middle.</p>
+      <ul>
+        <li><b>Your login, not ours.</b> adar asks <code>gh</code> for everything, so it has exactly the access your terminal has.</li>
+        <li><b>Straight to GitHub.</b> Pull requests, diffs and code never pass through a server of ours. Private images are fetched with your token and only ever sent to GitHub hosts.</li>
+        <li><b>Worktrees, not your working copy.</b> Agents get a detached checkout at the PR head. Your branch, stash and uncommitted work stay where they are.</li>
+        <li><b>Untrusted text stays quoted.</b> A PR title or body that reaches an agent command is shell-quoted once, so it cannot run anything.</li>
+      </ul>
+    </div>
+    <pre class="term" aria-label="Output of adar probe"><span class="p">$</span> adar probe
+inbox            2.61s
+  review: 6
+    acme/payments#482  <span class="g">green</span>/approved   Retry ledger writes…
+    acme/web#1290      <span class="y">red</span>/changes    ci / e2e
+  mine: 8
+  involved: 11
+  merged: 23
+detail+diff      1.34s
+  acme/payments#482: 14 timeline, 3 threads,
+    5 checks (<span class="g">green</span>), 3 files, merge=CLEAN
+notifications    0.48s
+  22 threads, poll 60s, events 3
+notif 304        0.19s
+  unchanged: true
+<span class="c">read-only — nothing was posted, approved or marked</span></pre>
+  </div>
+</section>
+
+<section class="price-s" id="pricing">
+  <div class="wrap">
+    <div class="price-copy" data-reveal="left">
+      <h2>Nine euros. Once.</h2>
+      <p class="lede">Less than a month of most review tools, and it is yours to keep. Every update is included, and the download comes straight from us.</p>
+    </div>
+    <div class="price-card" data-reveal="scale">
+      <div class="big"><b>€9</b><span>once</span></div>
+      <ul class="inc">
+        <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8.5l3 3 7-7"/></svg>Three Macs, one licence</li>
+        <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8.5l3 3 7-7"/></svg>Every future update</li>
+        <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8.5l3 3 7-7"/></svg>Every repository your gh login can see</li>
+        <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8.5l3 3 7-7"/></svg>Inbox, diffs, checks, code explorer and agents</li>
+      </ul>
+      <div class="cta-row">
+        <a class="btn btn-blue" href="/adar/?early=adar" data-early="adar">Request early access</a>
+        <a class="btn btn-ghost" href="/adar/account/">Already bought? Sign in</a>
+      </div>
+      <small>Requires macOS 26 or later and the GitHub CLI. Payment is handled by Polar. Your licence key arrives by email right after payment and unlocks your download page.</small>
+    </div>
+  </div>
+</section>
+
+<section class="faq" id="faq">
+  <div class="wrap">
+    <div><h2>Questions</h2></div>
+    <div>
+      <details>
+        <summary>Do I need a GitHub token?</summary>
+        <p>No. adar runs on the <a href="https://cli.github.com/">GitHub CLI</a> and uses the login it already has. If <code>gh auth status</code> says you are signed in, adar works.</p>
+      </details>
+      <details>
+        <summary>Can I comment on lines from the diff?</summary>
+        <p>Not yet. Today you read the conversation, review threads and diff in adar, approve from the keyboard, and open the PR on GitHub (<kbd>⌘O</kbd>) to leave inline comments. Inline review comments are the next thing being built.</p>
+      </details>
+      <details>
+        <summary>Which agents can it run?</summary>
+        <p>Claude Code, opencode, Codex and Gemini CLI have profiles out of the box, and any command you can type in a shell can be added as your own, with placeholders for the PR, its diff and a prompt. Profiles whose binary is not installed are greyed out.</p>
+      </details>
+      <details>
+        <summary>Does it work with GitHub Enterprise?</summary>
+        <p>Not today. adar works with github.com, public and private repositories, organisations included.</p>
+      </details>
+      <details>
+        <summary>Does it send anything anywhere?</summary>
+        <p>Everything about your code goes between your Mac and GitHub only. The one other request is the licence check: on activation, on each launch and once a day, the app sends your key and five fields about the Mac (a hashed hardware fingerprint, its name, model, macOS version and adar version). Never a repository, a branch, a pull request or a line of code. No analytics, no telemetry.</p>
+      </details>
+      <details>
+        <summary>What happens offline?</summary>
+        <p>The last inbox and every diff you opened are on disk, so you can keep reading. The licence leaves the app alone for 14 days from the last successful check; only an explicit revocation, such as a refund, locks it.</p>
+      </details>
+      <details>
+        <summary>What does the name mean?</summary>
+        <p>Adar is Basque for branch.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="cta-band" aria-labelledby="cta-h"><div class="wrap">
+  <h2 id="cta-h">Get to inbox zero on pull requests.</h2>
+  <p class="lede">€9 once, every update included, nothing to subscribe to. Open the inbox, read the diff, hand the tedious part to an agent, approve.</p>
+  <div class="cta-row"><a class="btn btn-ink" href="/adar/?early=adar" data-early="adar">Request early access</a><a class="btn btn-ghost" href="/adar/account/">Already bought? Sign in</a></div>
+</div></section>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="cols">
+      <div class="about">
+        <a class="brand" href="/adar/" aria-label="adar home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#215CCC"/><stop offset="1" stop-color="#732EA8"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#g2)"/><g fill="none" stroke="#fff" stroke-width="3.8" stroke-linecap="round"><path d="M24 19v26"/><path d="M41 23c0 13-17 9-17 20"/></g><g fill="#fff"><circle cx="24" cy="15" r="4.8"/><circle cx="24" cy="49" r="4.8"/><circle cx="41" cy="18" r="4.8"/></g></svg> adar</a>
+        <p>A native macOS pull-request client over gh: one inbox for every PR that needs you, diffs, checks, blame and an agent terminal on the checkout.</p>
+      </div>
+      <div><h5>Product</h5><ul>
+        <li><a href="/adar/#features">Tour</a></li><li><a href="/adar/#speed">Speed</a></li><li><a href="/adar/#privacy">Privacy</a></li>
+      </ul></div>
+      <div><h5>Get adar</h5><ul>
+        <li><a href="/adar/?early=adar" data-early="adar">Request early access</a></li><li><a href="/adar/account/">Your downloads</a></li><li><a href="/adar/pricing/#requirements">Requirements</a></li>
+      </ul></div>
+      <div><h5>Help</h5><ul>
+        <li><a href="/adar/support/">Support</a></li><li><a href="/adar/#faq">FAQ</a></li><li><a href="https://hirusta.io/taula/">Taula, for databases</a></li><li><a href="https://hirusta.io/lemazain/">lemazain, for Kubernetes</a></li>
+      </ul></div>
+    </div>
+    <div class="fine">
+      <span>Adar is Basque for branch. Requires macOS 26 or later.</span>
+      <span>One licence check, no telemetry: your code and pull requests never touch our servers.</span>
+    </div>
+  </div>
+</footer>
+<script src="/adar/site.js" defer></script>
+<script src="/adar/win.js" defer></script>
+<script src="/early-access.js" defer></script>
+</body>
+</html>

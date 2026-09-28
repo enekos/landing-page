@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your downloads · lemazain</title>
+<meta name="description" content="Sign in with your lemazain licence key to download the current build and every earlier version.">
+<meta name="theme-color" content="#F3F4F6">
+<link rel="icon" href="/lemazain/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="/lemazain/fonts/bricolage.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/lemazain/fonts/instrument.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/lemazain/site.css">
+<link rel="stylesheet" href="/lemazain/win.css">
+<meta name="robots" content="noindex">
+<style>
+.acct{padding:0 0 clamp(72px,10vw,140px)}
+.acct .wrap{display:grid;gap:16px;max-width:860px}
+.panel{background:#fff;border:1px solid var(--hair);border-radius:16px;padding:clamp(22px,3vw,30px);display:grid;gap:18px}
+.panel.plain{background:transparent;border-style:dashed}
+.panel h2{font-size:1.3rem;line-height:1.15}
+.panel h3{font-size:1.05rem;font-family:var(--body);font-weight:600}
+
+.signin{max-width:520px;margin:0 auto;width:100%}
+.signin.paid{border-color:color-mix(in srgb,var(--green) 45%,#fff);background:color-mix(in srgb,var(--green) 6%,#fff);gap:10px}
+.signin.paid h2{font-size:1.15rem}
+.field{display:grid;gap:9px}
+.field label{font-size:.9rem;font-weight:600}
+.field input{
+  font-family:var(--mono);font-size:1.02rem;letter-spacing:.02em;
+  padding:15px 16px;border-radius:11px;border:1px solid var(--hair);background:var(--fog);color:var(--ink);width:100%;
+}
+.field input::placeholder{color:var(--ink-3);opacity:.7}
+.field input:focus{outline:2px solid var(--blue);outline-offset:1px;background:#fff}
+.hint{font-size:.88rem;color:var(--ink-3);max-width:42em}
+.hint a{color:var(--blue)}
+.msg{font-size:.93rem;padding:11px 14px;border-radius:10px;display:none;line-height:1.45}
+.msg.on{display:block}
+.msg.err{background:color-mix(in srgb,var(--red) 9%,#fff);color:#9B2C24;border:1px solid color-mix(in srgb,var(--red) 28%,#fff)}
+
+.who{display:flex;flex-wrap:wrap;gap:14px 20px;align-items:center;justify-content:space-between}
+.who .id{display:grid;gap:4px;min-width:0}
+.who .key{font-family:var(--mono);font-size:1rem;letter-spacing:.05em}
+.who .sub{font-size:.9rem;color:var(--ink-3)}
+.who .end{display:flex;align-items:center;gap:14px}
+.pill{
+  font-family:var(--mono);font-size:.72rem;font-weight:500;letter-spacing:.05em;text-transform:uppercase;
+  padding:.4em .75em;border-radius:999px;
+  background:color-mix(in srgb,var(--green) 13%,#fff);color:#1C7A45;border:1px solid color-mix(in srgb,var(--green) 30%,#fff);
+}
+.linkish{background:none;border:0;font:inherit;font-size:.9rem;color:var(--ink-3);cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px}
+.linkish:hover{color:var(--ink)}
+
+.rel{display:grid;gap:18px}
+.rel .top{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px 16px}
+.rel .v{font-family:var(--display);font-size:clamp(2.2rem,4vw,3rem);font-weight:800;letter-spacing:-0.04em;line-height:.95;font-variation-settings:"opsz" 72}
+.rel .meta{color:var(--ink-3);font-size:.95rem}
+.sha{font-family:var(--mono);font-size:.74rem;color:var(--ink-3);display:grid;gap:4px;word-break:break-all}
+.sha b{font-weight:500;color:var(--ink-2);letter-spacing:.04em;text-transform:uppercase;font-size:.7rem}
+.expiry{font-size:.88rem;color:var(--ink-3)}
+
+.duo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+@media (max-width:760px){.duo{grid-template-columns:1fr}}
+.feed code{display:block;padding:12px 14px;font-size:.78rem;word-break:break-all;background:var(--fog);border-color:transparent;line-height:1.5}
+.meter{display:grid;gap:8px}
+.meter .bar{height:6px;border-radius:999px;background:var(--fog-2);overflow:hidden}
+.meter .bar i{display:block;height:100%;background:var(--blue);border-radius:999px;transition:width .3s}
+.meter .cap{font-size:.9rem;color:var(--ink-2)}
+
+.macs{display:grid;gap:0;border-top:1px solid var(--hair)}
+.macs .mac{display:flex;gap:12px 16px;justify-content:space-between;align-items:center;flex-wrap:wrap;padding:13px 0;border-bottom:1px solid var(--hair)}
+.macs .who2{display:grid;gap:3px;min-width:0}
+.macs .nm{font-weight:600;font-size:.97rem;display:flex;align-items:center;gap:8px}
+.macs .det{font-size:.86rem;color:var(--ink-3)}
+.seatbar{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.acts{display:grid;gap:0;font-size:.93rem;border-top:1px solid var(--hair)}
+.acts div{display:flex;gap:12px;justify-content:space-between;flex-wrap:wrap;padding:11px 0;border-bottom:1px solid var(--hair);color:var(--ink-2)}
+.acts span:last-child{color:var(--ink-3);font-variant-numeric:tabular-nums;font-size:.88rem}
+.dl-go{font-family:var(--body);font-size:.93rem;font-weight:600;color:var(--blue);background:none;border:0;padding:0;cursor:pointer}
+.dl-go:hover{text-decoration:underline}
+.tbl td.num{font-variant-numeric:tabular-nums}
+.skel{height:200px;border-radius:16px;background:linear-gradient(90deg,var(--fog-2),#fff,var(--fog-2));background-size:200% 100%;animation:sk 1.4s ease-in-out infinite}
+@keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
+@media (prefers-reduced-motion:reduce){.skel{animation:none}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="prog" aria-hidden="true"></div>
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="brand" href="/lemazain/" aria-label="lemazain home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#215CCC"/><stop offset="1" stop-color="#732EA8"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#g1)"/><g fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round"><circle cx="32" cy="32" r="11"/><path d="M32 10v11M32 43v11M10 32h11M43 32h11M16.4 16.4l7.8 7.8M39.8 39.8l7.8 7.8M16.4 47.6l7.8-7.8M39.8 24.2l7.8-7.8"/></g><circle cx="32" cy="32" r="3.6" fill="#fff"/></svg> lemazain</a>
+    <nav class="nav-links" aria-label="Site">
+      <a href="/lemazain/#features">Tour</a>
+      <a href="/lemazain/#scale">Scale</a>
+      <a href="/lemazain/#safety">Safety</a>
+      <a href="/lemazain/pricing/">Pricing</a>
+      <a href="/lemazain/#faq">FAQ</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn btn-ghost" href="/lemazain/account/">Downloads</a>
+      <a class="btn btn-ink" href="/lemazain/?early=lemazain" data-early="lemazain">Early access</a>
+      <details class="mnav">
+        <summary aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg></summary>
+        <nav aria-label="Site">
+          <a href="/lemazain/#features">Tour</a><a href="/lemazain/#scale">Scale</a><a href="/lemazain/#safety">Safety</a><a href="/lemazain/pricing/">Pricing</a><a href="/lemazain/account/">Downloads</a><a href="/lemazain/support/">Support</a><a href="/lemazain/#faq">FAQ</a>
+        </nav>
+      </details>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+<div class="page-head">
+  <div class="wrap">
+    <span class="eyebrow" id="eyebrow">Your licence</span>
+    <h1 id="head">Downloads</h1>
+    <p class="lede" id="sub">Sign in with the licence key from your receipt. There is no password and no sign-up — the key is the account.</p>
+  </div>
+</div>
+
+<section class="acct">
+  <div class="wrap" id="view">
+    <div class="skel" aria-hidden="true"></div>
+  </div>
+</section>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="cols">
+      <div class="about">
+        <a class="brand" href="/lemazain/" aria-label="lemazain home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#215CCC"/><stop offset="1" stop-color="#732EA8"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#g2)"/><g fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round"><circle cx="32" cy="32" r="11"/><path d="M32 10v11M32 43v11M10 32h11M43 32h11M16.4 16.4l7.8 7.8M39.8 39.8l7.8 7.8M16.4 47.6l7.8-7.8M39.8 24.2l7.8-7.8"/></g><circle cx="32" cy="32" r="3.6" fill="#fff"/></svg> lemazain</a>
+        <p>A native macOS Kubernetes IDE: live tables for every kind, a cluster-wide Problems view, XRay, logs, shell, YAML and Helm.</p>
+      </div>
+      <div><h5>Product</h5><ul>
+        <li><a href="/lemazain/#features">Tour</a></li><li><a href="/lemazain/#scale">Scale</a></li><li><a href="/lemazain/#safety">Safety</a></li>
+      </ul></div>
+      <div><h5>Get lemazain</h5><ul>
+        <li><a href="/lemazain/?early=lemazain" data-early="lemazain">Request early access</a></li><li><a href="/lemazain/account/">Your downloads</a></li><li><a href="/lemazain/pricing/#requirements">Requirements</a></li>
+      </ul></div>
+      <div><h5>Help</h5><ul>
+        <li><a href="/lemazain/support/">Support</a></li><li><a href="/lemazain/#faq">FAQ</a></li><li><a href="https://hirusta.io/taula/">Taula, for databases</a></li>
+      </ul></div>
+    </div>
+    <div class="fine">
+      <span>Lemazain is Basque for helmsman. Requires macOS 14 or later.</span>
+      <span>One licence check, no telemetry: your clusters never leave your Mac.</span>
+    </div>
+  </div>
+</footer>
+<script src="/lemazain/site.js" defer></script>
+<script>
+(function(){
+  var view = document.getElementById('view');
+  var head = document.getElementById('head');
+  var sub = document.getElementById('sub');
+  var eyebrow = document.getElementById('eyebrow');
+  var state = null;
+
+  function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function mb(n){ return !n ? '—' : (n / 1048576).toFixed(1).replace(/\.0$/, '') + ' MB'; }
+  function day(ts){ return !ts ? '—' : new Date(ts * 1000).toLocaleDateString(undefined, {year:'numeric', month:'short', day:'numeric'}); }
+  function moment(ts){ return !ts ? '—' : new Date(ts * 1000).toLocaleString(undefined, {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'}); }
+
+  function api(path, options){
+    return fetch(path, Object.assign({headers:{'content-type':'application/json'}, credentials:'same-origin'}, options || {}))
+      .then(function(r){ return r.json().then(function(b){ return {ok:r.ok, status:r.status, body:b}; }, function(){ return {ok:false, status:r.status, body:{}}; }); });
+  }
+
+  function load(){
+    api('/lemazain/api/me').then(function(res){
+      state = res.body || {};
+      render();
+    }).catch(function(){
+      view.innerHTML = '<div class="panel"><h2>The download area is not reachable</h2><p class="hint">Something on our side is down. Try again in a minute, or <a href="/lemazain/support/">write to support</a>.</p></div>';
+    });
+  }
+
+  function portal(text){
+    var url = state && state.polar && state.polar.portalUrl;
+    return url ? '<a href="' + esc(url) + '">' + text + '</a>' : text;
+  }
+
+  function sandboxNote(){
+    if (!state || !state.polar || !state.polar.sandbox) return '';
+    return '<div class="note"><b>Test mode.</b> Payments are running against Polar&rsquo;s sandbox, so checkout takes test cards only and no money moves. Licence keys issued here are real enough to sign in with.</div>';
+  }
+
+  function justPaid(){
+    return /[?&]checkout_id=/.test(location.search);
+  }
+
+  function render(){
+    if (state && state.authenticated) renderAccount(); else renderSignIn();
+    window.scrollTo(0, 0);
+  }
+
+  function renderSignIn(){
+    eyebrow.textContent = 'Your licence';
+    head.textContent = 'Downloads';
+    sub.textContent = 'Sign in with the licence key from your receipt. There is no password and no sign-up — the key is the account.';
+
+    view.innerHTML =
+      sandboxNote() +
+      (justPaid() ? '<div class="panel signin paid"><h2>Payment received</h2><p class="hint">Polar is emailing your licence key now — it usually lands within a minute. Paste it below and your downloads open up. It also waits for you in ' + portal('your customer portal') + '.</p></div>' : '') +
+      '<div class="panel signin">' +
+        '<div class="field">' +
+          '<label for="key">Licence key</label>' +
+          '<input id="key" name="key" inputmode="latin" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Paste your licence key" aria-describedby="keyhint">' +
+          '<p class="hint" id="keyhint">It is in the receipt Polar emailed you the moment you paid, and in ' + portal('your customer portal') + ', where it stays available.</p>' +
+        '</div>' +
+        '<div id="cf"></div>' +
+        '<p class="msg err" id="msg" role="alert"></p>' +
+        '<div><button class="btn btn-ink" id="go" type="button">Sign in</button></div>' +
+        '<p class="hint">Lost your key, or bought lemazain and never got one? Check ' + portal('your customer portal') + ', then <a href="/lemazain/support/">ask support</a> from the address you paid with. No licence yet? <a href="/lemazain/?early=lemazain" data-early="lemazain">Request early access</a>.</p>' +
+      '</div>';
+
+    var input = document.getElementById('key');
+    var button = document.getElementById('go');
+    var msg = document.getElementById('msg');
+
+    input.addEventListener('input', function(){
+      var atEnd = input.selectionStart === input.value.length;
+      var formatted = format(input.value);
+      if (atEnd && formatted !== input.value) input.value = formatted;
+    });
+    input.addEventListener('keydown', function(e){ if (e.key === 'Enter') submit(); });
+    button.addEventListener('click', submit);
+    input.focus();
+
+    if (state && state.turnstileSitekey) mountTurnstile(state.turnstileSitekey);
+
+    function submit(){
+      msg.classList.remove('on');
+      button.disabled = true;
+      button.textContent = 'Checking…';
+      var token = (window.turnstile && window.__cfWidget != null) ? window.turnstile.getResponse(window.__cfWidget) : null;
+      api('/lemazain/api/session', {method:'POST', body: JSON.stringify({key: input.value, turnstileToken: token})})
+        .then(function(res){
+          if (!res.ok){
+            msg.textContent = res.body.message || 'That did not work.';
+            msg.classList.add('on');
+            button.disabled = false;
+            button.textContent = 'Sign in';
+            if (window.turnstile && window.__cfWidget != null) window.turnstile.reset(window.__cfWidget);
+            return;
+          }
+          state = res.body;
+          render();
+        })
+        .catch(function(){
+          msg.textContent = 'Network error. Try again.';
+          msg.classList.add('on');
+          button.disabled = false;
+          button.textContent = 'Sign in';
+        });
+    }
+  }
+
+  function format(value){
+    var raw = String(value);
+    if (raw.indexOf('_') >= 0) return raw.trim();
+    var s = raw.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    if (s.indexOf('LEMAZAIN') === 0) s = s.slice(8);
+    if (s.length > 20) return raw.trim();
+    var groups = s.match(/.{1,5}/g) || [];
+    return s.length ? 'LEMAZAIN-' + groups.join('-') : '';
+  }
+
+  function mountTurnstile(sitekey){
+    var script = document.createElement('script');
+    script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+    script.async = true;
+    script.onload = function(){ window.__cfWidget = window.turnstile.render('#cf', {sitekey: sitekey, theme: 'light'}); };
+    document.head.appendChild(script);
+  }
+
+  function renderAccount(){
+    var lic = state.license;
+    var releases = state.releases || [];
+    var latest = releases[0];
+
+    eyebrow.textContent = lic.kind === 'trial' ? 'Trial licence' : 'Your licence';
+    head.textContent = 'Downloads';
+    sub.textContent = 'Every build your licence covers. Download links are signed to you and expire after five minutes.';
+
+    var html = sandboxNote();
+
+    html += '<div class="panel"><div class="who">' +
+      '<div class="id"><span class="key">' + esc(lic.key) + '</span>' +
+      '<span class="sub">' + esc(lic.email) + ' · since ' + day(lic.createdAt) + '</span></div>' +
+      '<div class="end"><span class="pill">' + esc(lic.status) + '</span><button class="linkish" id="out" type="button">Sign out</button></div>' +
+    '</div>' +
+    (lic.expiresAt ? '<p class="expiry">This licence runs until ' + day(lic.expiresAt) + '.</p>' : '') +
+    '</div>';
+
+    if (latest){
+      html += '<div class="panel rel">' +
+        '<div class="top"><span class="v">' + esc(latest.version) + '</span>' +
+        '<span class="meta">released ' + day(latest.publishedAt) + ' · ' + mb(latest.size) + ' · macOS ' + esc(latest.minOs) + ' or later</span></div>' +
+        '<p class="msg err" id="dlmsg" role="alert"></p>' +
+        '<div class="cta-row">' +
+          '<button class="btn btn-ink" type="button" data-version="' + esc(latest.version) + '" data-dl>Download ' + esc(latest.assetName) + '</button>' +
+          (latest.notesUrl ? '<a class="btn btn-ghost" href="' + esc(latest.notesUrl) + '">What changed</a>' : '') +
+        '</div>' +
+        (latest.sha256 ? '<p class="sha"><b>SHA-256</b><span>' + esc(latest.sha256) + '</span></p>' : '') +
+      '</div>';
+    } else {
+      html += '<div class="panel"><h2>No build published yet</h2>' +
+        '<p class="hint">Your licence is active. The first download appears here the moment a build ships, and you will not need to do anything to get it.</p></div>';
+    }
+
+    if (releases.length > 1){
+      html += '<div class="panel"><h3>Earlier versions</h3>' +
+        '<p class="hint">Kept on purpose, so a bad release is never a dead end.</p>' +
+        '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Version</th><th>Released</th><th>Size</th><th></th></tr></thead><tbody>';
+      releases.slice(1).forEach(function(r){
+        html += '<tr><td>' + esc(r.version) + '</td><td class="num">' + day(r.publishedAt) + '</td><td class="num">' + mb(r.size) + '</td>' +
+          '<td style="text-align:right"><button class="dl-go" type="button" data-version="' + esc(r.version) + '" data-dl>Download</button></td></tr>';
+      });
+      html += '</tbody></table></div></div>';
+    }
+
+    var used = state.quota.used, limits = state.quota.limits;
+    var pct = Math.min(100, Math.round((used.day / Math.max(1, limits.day)) * 100));
+    html += '<div class="duo">' +
+      '<div class="panel"><h3>Updates</h3>' +
+        '<p class="hint">New builds appear on this page the day they ship, and every one is covered by your licence. Download it, replace the app in Applications, and the activation carries over.</p></div>' +
+      '<div class="panel"><h3>Download allowance</h3><div class="meter">' +
+        '<div class="bar"><i style="width:' + pct + '%"></i></div>' +
+        '<p class="cap">' + used.day + ' of ' + limits.day + ' today · ' + used.month + ' of ' + limits.month + ' this month</p>' +
+        '<p class="hint">The cap exists so a leaked key shows up as traffic rather than as a surprise. Need more room, or more Macs? <a href="/lemazain/support/">Just ask</a>.</p>' +
+      '</div></div>' +
+    '</div>';
+
+    html += macsPanel();
+
+    if ((state.downloads || []).length){
+      html += '<div class="panel plain"><h3>Recent downloads</h3><div class="acts">';
+      state.downloads.forEach(function(d){
+        html += '<div><span>' + esc(d.version || '—') + (d.source === 'appcast' ? ' · automatic update' : '') + '</span>' +
+          '<span>' + moment(d.at) + ' · ' + esc(d.where || '—') + (d.country ? ' · ' + esc(d.country) : '') + '</span></div>';
+      });
+      html += '</div><p class="hint">Do not recognise one of these? <button class="linkish" id="outall" type="button">Sign out everywhere</button>, then <a href="/lemazain/support/">tell us</a> and we will issue you a new key.</p></div>';
+    }
+
+    view.innerHTML = html;
+
+    document.getElementById('out').addEventListener('click', function(){ signOut(false); });
+    var outall = document.getElementById('outall');
+    if (outall) outall.addEventListener('click', function(){ signOut(true); });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-dl]'), function(el){
+      el.addEventListener('click', function(){ startDownload(el); });
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-release]'), function(el){
+      el.addEventListener('click', function(){ releaseDevice(el); });
+    });
+  }
+
+  function macsPanel(){
+    var devices = state.devices || [];
+    var seats = state.seats || {used: devices.length, limit: 0};
+    var html = '<div class="panel"><div class="seatbar"><h3>Macs on this licence</h3>' +
+      '<span class="hint">' + seats.used + ' of ' + seats.limit + ' in use</span></div>';
+
+    if (!devices.length){
+      html += '<p class="hint">No Mac has been activated yet. Open lemazain, paste this key on the first run, and the Mac appears here.</p></div>';
+      return html;
+    }
+
+    html += '<div class="macs">';
+    devices.forEach(function(d){
+      var detail = [d.model, d.osVersion, d.appVersion ? 'lemazain ' + d.appVersion : null, d.where, d.country].filter(Boolean).map(esc).join(' · ');
+      html += '<div class="mac"><div class="who2">' +
+        '<span class="nm">' + esc(d.name) + '</span>' +
+        '<span class="det">' + detail + '</span>' +
+        '<span class="det">activated ' + day(d.activatedAt) + ' · last seen ' + moment(d.lastSeenAt) + '</span>' +
+        '</div><button class="linkish" type="button" data-release="' + esc(d.id) + '">Release</button></div>';
+    });
+    html += '</div><p class="hint">Releasing a Mac frees the seat straight away and locks lemazain there until a key is entered again. Your kubeconfig, contexts and settings on that Mac are untouched.</p></div>';
+    return html;
+  }
+
+  function releaseDevice(el){
+    var label = el.textContent;
+    el.disabled = true;
+    el.textContent = 'Releasing…';
+    api('/lemazain/api/devices?id=' + encodeURIComponent(el.getAttribute('data-release')), {method:'DELETE'})
+      .then(function(res){
+        if (!res.ok){
+          el.disabled = false;
+          el.textContent = label;
+          if (res.status === 401) load();
+          return;
+        }
+        state.devices = res.body.devices;
+        state.seats = res.body.seats;
+        render();
+      })
+      .catch(function(){
+        el.disabled = false;
+        el.textContent = label;
+      });
+  }
+
+  function signOut(everywhere){
+    api('/lemazain/api/session' + (everywhere ? '?everywhere=1' : ''), {method:'DELETE'}).then(function(){
+      state = {authenticated:false, turnstileSitekey: state.turnstileSitekey};
+      render();
+    });
+  }
+
+  function startDownload(el){
+    var msg = document.getElementById('dlmsg');
+    var label = el.textContent;
+    el.disabled = true;
+    el.textContent = 'Preparing…';
+    if (msg) msg.classList.remove('on');
+    api('/lemazain/api/download', {method:'POST', body: JSON.stringify({version: el.getAttribute('data-version')})})
+      .then(function(res){
+        el.disabled = false;
+        el.textContent = label;
+        if (!res.ok){
+          if (res.status === 401){ load(); return; }
+          if (msg){ msg.textContent = res.body.message || 'Could not start the download.'; msg.classList.add('on'); }
+          return;
+        }
+        window.location.href = res.body.url;
+        setTimeout(load, 1500);
+      })
+      .catch(function(){
+        el.disabled = false;
+        el.textContent = label;
+        if (msg){ msg.textContent = 'Network error. Try again.'; msg.classList.add('on'); }
+      });
+  }
+
+  load();
+})();
+</script>
+<script src="/early-access.js" defer></script>
+</body>
+</html>

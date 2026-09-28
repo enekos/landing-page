@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Support · adar</title>
+<meta name="description" content="Help with a adar licence, a download or the app.">
+<meta name="theme-color" content="#F3F4F6">
+<link rel="icon" href="/adar/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="/adar/fonts/bricolage.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/adar/fonts/instrument.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/adar/site.css">
+<link rel="stylesheet" href="/adar/win.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="prog" aria-hidden="true"></div>
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="brand" href="/adar/" aria-label="adar home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#215CCC"/><stop offset="1" stop-color="#732EA8"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#g1)"/><g fill="none" stroke="#fff" stroke-width="3.8" stroke-linecap="round"><path d="M24 19v26"/><path d="M41 23c0 13-17 9-17 20"/></g><g fill="#fff"><circle cx="24" cy="15" r="4.8"/><circle cx="24" cy="49" r="4.8"/><circle cx="41" cy="18" r="4.8"/></g></svg> adar</a>
+    <nav class="nav-links" aria-label="Site">
+      <a href="/adar/#features">Tour</a>
+      <a href="/adar/#speed">Speed</a>
+      <a href="/adar/#privacy">Privacy</a>
+      <a href="/adar/pricing/">Pricing</a>
+      <a href="/adar/#faq">FAQ</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn btn-ghost" href="/adar/account/">Downloads</a>
+      <a class="btn btn-ink" href="/adar/?early=adar" data-early="adar">Early access</a>
+      <details class="mnav">
+        <summary aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg></summary>
+        <nav aria-label="Site">
+          <a href="/adar/#features">Tour</a><a href="/adar/#speed">Speed</a><a href="/adar/#privacy">Privacy</a><a href="/adar/pricing/">Pricing</a><a href="/adar/account/">Downloads</a><a href="/adar/support/">Support</a><a href="/adar/#faq">FAQ</a>
+        </nav>
+      </details>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+<div class="page-head">
+  <div class="wrap">
+    <span class="eyebrow">Support</span>
+    <h1>Something wrong? Reply to your receipt.</h1>
+    <p class="lede">Polar's receipt email comes from the shop that sold you adar, and a reply reaches the person who wrote it. Include the last five characters of your key and what you were doing.</p>
+  </div>
+</div>
+<section class="faq" aria-label="Common questions">
+  <div class="wrap">
+    <h2>Before you write</h2>
+    <div>
+      <details open><summary>I lost my licence key</summary><p>It is in Polar's receipt email and in your Polar customer portal, which you can open with the email you paid with. Signing in to your downloads needs nothing else.</p></details>
+      <details><summary>The app says my licence is in use on three Macs</summary><p>Sign in to <a href="/adar/account/">your downloads</a> and release one of the Macs listed there. The seat frees immediately, and the Mac you release asks for the key again the next time it opens.</p></details>
+      <details><summary>The app says it cannot check my licence</summary><p>It keeps working for 14 days without reaching us. Connect the Mac to the internet once and the warning clears on its own; nothing about your repositories is sent.</p></details>
+      <details><summary>I want a refund</summary><p>Reply to the receipt within 14 days. The licence is revoked when the refund goes through, and the app locks on its next launch.</p></details>
+      <details><summary>The inbox stays empty</summary><p>Run <code>gh auth status</code>, then <code>adar probe</code> from a terminal. The probe fetches every inbox bucket, one pull request and your notifications with timings, changes nothing, and its output is the most useful thing you can paste into an email.</p></details>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="cols">
+      <div class="about">
+        <a class="brand" href="/adar/" aria-label="adar home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#215CCC"/><stop offset="1" stop-color="#732EA8"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#g2)"/><g fill="none" stroke="#fff" stroke-width="3.8" stroke-linecap="round"><path d="M24 19v26"/><path d="M41 23c0 13-17 9-17 20"/></g><g fill="#fff"><circle cx="24" cy="15" r="4.8"/><circle cx="24" cy="49" r="4.8"/><circle cx="41" cy="18" r="4.8"/></g></svg> adar</a>
+        <p>A native macOS pull-request client over gh: one inbox for every PR that needs you, diffs, checks, blame and an agent terminal on the checkout.</p>
+      </div>
+      <div><h5>Product</h5><ul>
+        <li><a href="/adar/#features">Tour</a></li><li><a href="/adar/#speed">Speed</a></li><li><a href="/adar/#privacy">Privacy</a></li>
+      </ul></div>
+      <div><h5>Get adar</h5><ul>
+        <li><a href="/adar/?early=adar" data-early="adar">Request early access</a></li><li><a href="/adar/account/">Your downloads</a></li><li><a href="/adar/pricing/#requirements">Requirements</a></li>
+      </ul></div>
+      <div><h5>Help</h5><ul>
+        <li><a href="/adar/support/">Support</a></li><li><a href="/adar/#faq">FAQ</a></li><li><a href="https://hirusta.io/taula/">Taula, for databases</a></li><li><a href="https://hirusta.io/lemazain/">lemazain, for Kubernetes</a></li>
+      </ul></div>
+    </div>
+    <div class="fine">
+      <span>Adar is Basque for branch. Requires macOS 26 or later.</span>
+      <span>One licence check, no telemetry: your code and pull requests never touch our servers.</span>
+    </div>
+  </div>
+</footer>
+<script src="/adar/site.js" defer></script>
+<script src="/early-access.js" defer></script>
+</body>
+</html>

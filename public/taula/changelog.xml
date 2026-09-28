@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel>
+<title>Taula release notes</title><link>https://hirusta.io/taula/changelog/</link><description>What shipped in Taula, the native macOS database manager.</description><language>en</language>
+<atom:link href="https://hirusta.io/taula/changelog.xml" rel="self" type="application/rss+xml"/>
+<item><title>A website, docs, and a matching app chrome</title><link>https://hirusta.io/taula/changelog/#2026-09-12</link><guid isPermaLink="true">https://hirusta.io/taula/changelog/#2026-09-12</guid><pubDate>Sat, 12 Sep 2026 00:00:00 +0000</pubDate><description>&lt;ul&gt;
+        &lt;li&gt;This site: product pages for the grid, the editor, the assistant, the MCP server, the safety net and the engines; pricing, docs and privacy.&lt;/li&gt;
+        &lt;li&gt;The app&#x27;s tab strip, session tabs and sidebar restyled to match the site.&lt;/li&gt;
+      &lt;/ul&gt;</description></item>
+<item><title>Cloudflare D1, schema memory, tunnels in-process</title><link>https://hirusta.io/taula/changelog/#2026-08-05</link><guid isPermaLink="true">https://hirusta.io/taula/changelog/#2026-08-05</guid><pubDate>Wed, 05 Aug 2026 00:00:00 +0000</pubDate><description>&lt;ul&gt;
+        &lt;li&gt;Cloudflare D1 joins Postgres and SQLite: connect with an account id, database id and API token stored in the Keychain.&lt;/li&gt;
+        &lt;li&gt;Schema memory. The assistant can store durable facts per connection with remember_fact and carries them between sessions.&lt;/li&gt;
+        &lt;li&gt;Chat persistence. Conversations, including an undecided proposal, survive restarts.&lt;/li&gt;
+        &lt;li&gt;SSH tunnels open in-process with your key files or ssh agent; no external ssh process.&lt;/li&gt;
+        &lt;li&gt;SQL dump and restore for both engines from the connection menu, with Homebrew tool discovery.&lt;/li&gt;
+        &lt;li&gt;The local model is only spawned when the assistant is turned on.&lt;/li&gt;
+      &lt;/ul&gt;</description></item>
+<item><title>The safety net, the agent, and the MCP server</title><link>https://hirusta.io/taula/changelog/#2026-07-21</link><guid isPermaLink="true">https://hirusta.io/taula/changelog/#2026-07-21</guid><pubDate>Tue, 21 Jul 2026 00:00:00 +0000</pubDate><description>&lt;ul&gt;
+        &lt;li&gt;Change journal. Every committed grid edit recorded with its inverse SQL; one-click undo; 500 entries per connection.&lt;/li&gt;
+        &lt;li&gt;Guardrails. UPDATE and DELETE without WHERE, TRUNCATE and DROP TABLE ask for confirmation in query tabs and the command bar.&lt;/li&gt;
+        &lt;li&gt;Snapshots, FK navigation, column stats, semantic cell actions for URLs and emails.&lt;/li&gt;
+        &lt;li&gt;Visual query builder with FK-suggested joins and saved specs. Relations view with an edge per foreign key.&lt;/li&gt;
+        &lt;li&gt;taula-mcp. An MCP server over saved connections: seven tools, a read-only gate that rejects write keywords at any depth, writes behind TAULA_MCP_ALLOW_WRITES=1, row caps on every result.&lt;/li&gt;
+        &lt;li&gt;Assistant sidebar (⌘L) on a local llama.cpp server: streaming tool loop with read tools and propose_write / propose_plan for anything that writes. Markdown replies with real result grids.&lt;/li&gt;
+        &lt;li&gt;Ghost-text completion in the editor and inline AI edit (⌘I).&lt;/li&gt;
+        &lt;li&gt;Data diff of two tables keyed on the primary key. Activity tab over pg_stat_activity with cancel and terminate.&lt;/li&gt;
+        &lt;li&gt;Settings window and type-aware editors: date pickers, boolean toggles, UUID generation, JSON and hex inspectors, validation hints in the insert sheet.&lt;/li&gt;
+        &lt;li&gt;Execution-graded eval corpus for the model&#x27;s prompts, with a global local-AI toggle. Ghost completions measured at 87% on the corpus after a prompt fix.&lt;/li&gt;
+      &lt;/ul&gt;</description></item>
+<item><title>Daily-driver: the fast grid, the command bar, diffs and tunnels</title><link>https://hirusta.io/taula/changelog/#2026-07-17</link><guid isPermaLink="true">https://hirusta.io/taula/changelog/#2026-07-17</guid><pubDate>Fri, 17 Jul 2026 00:00:00 +0000</pubDate><description>&lt;ul&gt;
+        &lt;li&gt;AppKit grid. The data and result grids moved to NSTableView: any row count, infinite scroll, column widths remembered.&lt;/li&gt;
+        &lt;li&gt;⌘K command bar over tables, columns, objects, snippets, history, databases and actions, with SQL mode. Context-aware completion engine shared with the editor.&lt;/li&gt;
+        &lt;li&gt;Editing without a primary key via rowid and ctid. Staged inserts and deletes with a full change-set preview before commit.&lt;/li&gt;
+        &lt;li&gt;Multiple query tabs, syntax highlighting, autocomplete, run selection, several result sets per script, EXPLAIN visualizer, cancel running query.&lt;/li&gt;
+        &lt;li&gt;SSH tunnels, structure editing with ALTER preview, indexes and foreign keys and triggers listed, CSV import with column mapping, JSON and blob editors.&lt;/li&gt;
+        &lt;li&gt;Schema diff between connections, database-level operations, Objects tab for functions, sequences, enums and extensions, snippets, connection colors, backup and restore, the app bundle and DMG.&lt;/li&gt;
+      &lt;/ul&gt;</description></item>
+<item><title>0.1: a Postgres and SQLite manager in SwiftUI</title><link>https://hirusta.io/taula/changelog/#2026-07-16</link><guid isPermaLink="true">https://hirusta.io/taula/changelog/#2026-07-16</guid><pubDate>Thu, 16 Jul 2026 00:00:00 +0000</pubDate><description>&lt;ul&gt;
+        &lt;li&gt;Connection manager with Keychain passwords, multi-session tabs, a sidebar grouped by schema.&lt;/li&gt;
+        &lt;li&gt;Data grid with WHERE filter, sort and row counts. Deferred-commit editing as primary-key-matched UPDATEs, insert and delete rows.&lt;/li&gt;
+        &lt;li&gt;SQL query editor with results, errors, timing and history. Structure view.&lt;/li&gt;
+      &lt;/ul&gt;</description></item>
+</channel></rss>

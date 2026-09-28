@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+<title>Taula articles</title>
+<link>https://hirusta.io/taula/articles/</link>
+<atom:link href="https://hirusta.io/taula/articles.xml" rel="self" type="application/rss+xml"/>
+<description>Long-form writing from the Taula project: databases, coding agents, local models, and the engineering behind a native macOS database manager.</description>
+<language>en</language>
+<item>
+<title>Give your coding agent a database it can't break</title>
+<link>https://hirusta.io/taula/articles/give-your-coding-agent-a-database-it-cant-break/</link>
+<guid>https://hirusta.io/taula/articles/give-your-coding-agent-a-database-it-cant-break/</guid>
+<pubDate>Mon, 14 Sep 2026 09:00:00 +0000</pubDate>
+<description>Coding agents are good at reading a schema and should never be trusted with one. How Taula's read-only gate works, what keyword scanning catches, what it can't, and why the database role is the boundary that matters.</description>
+</item>
+</channel>
+</rss>

@@ -1,0 +1,17 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "hirusta-early-access",
+  "main": "src/index.js",
+  "compatibility_date": "2026-09-11",
+  "observability": { "enabled": true },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "hirusta-early-access",
+      "database_id": "00000000-0000-0000-0000-000000000000"
+    }
+  ],
+  "vars": {
+    "ALLOWED_ORIGINS": "https://hirusta.io,http://localhost:5188"
+  }
+}

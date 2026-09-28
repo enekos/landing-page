@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Articles · Taula</title>
+<meta name="description" content="Long-form writing from the Taula project: databases, coding agents, local models, and the engineering behind a native macOS database manager.">
+<link rel="canonical" href="https://hirusta.io/taula/articles/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Taula">
+<meta property="og:title" content="Articles · Taula">
+<meta property="og:description" content="Long-form writing from the Taula project: databases, coding agents, local models, and the engineering behind a native macOS database manager.">
+<meta property="og:url" content="https://hirusta.io/taula/articles/">
+<meta property="og:image" content="https://hirusta.io/taula/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Articles · Taula">
+<meta name="twitter:description" content="Long-form writing from the Taula project: databases, coding agents, local models, and the engineering behind a native macOS database manager.">
+<meta name="twitter:image" content="https://hirusta.io/taula/og.png">
+<meta name="theme-color" content="#F3F4F6">
+<link rel="icon" href="/taula/favicon.svg" type="image/svg+xml">
+<link rel="alternate" type="application/rss+xml" title="Taula articles" href="https://hirusta.io/taula/articles.xml">
+<link rel="alternate" type="application/rss+xml" title="Taula release notes" href="https://hirusta.io/taula/changelog.xml">
+<link rel="preload" href="/taula/fonts/bricolage.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/taula/fonts/instrument.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/taula/site.css">
+
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[
+{"@type":"CollectionPage","@id":"https://hirusta.io/taula/articles/#index","url":"https://hirusta.io/taula/articles/","name":"Taula articles","description":"Long-form writing from the Taula project.","isPartOf":{"@id":"https://hirusta.io/taula/#site"},"publisher":{"@id":"https://hirusta.io/taula/#org"}},
+{"@type":"BreadcrumbList","itemListElement":[
+  {"@type":"ListItem","position":1,"name":"Taula","item":"https://hirusta.io/taula/"},
+  {"@type":"ListItem","position":2,"name":"Articles"}
+]},
+{"@type":"ItemList","itemListElement":[
+  {"@type":"ListItem","position":1,"item":{"@type":"Article","headline":"Give your coding agent a database it can't break","url":"https://hirusta.io/taula/articles/give-your-coding-agent-a-database-it-cant-break/","datePublished":"2026-09-14","author":{"@id":"https://hirusta.io/taula/#org"},"publisher":{"@id":"https://hirusta.io/taula/#org"}}}
+]}
+]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="brand" href="/taula/" aria-label="Taula home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#215CCC"/><stop offset="1" stop-color="#732EA8"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#g1)"/><rect x="14" y="16" width="36" height="32" rx="3" fill="none" stroke="#fff" stroke-width="2.6"/><rect x="14" y="16" width="36" height="10" rx="3" fill="#fff" fill-opacity=".92"/><path d="M26 26v22M38 26v22M14 37h36" stroke="#fff" stroke-width="2.6"/></svg> taula</a>
+    <nav class="nav-links" aria-label="Site">
+      <div class="menu">
+        <button type="button" aria-haspopup="true" aria-expanded="false">Product <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="m4 6 4 4 4-4"/></svg></button>
+        <div class="drop">
+          <a href="/taula/data-grid/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 10v10M15 10v10"/></svg><b>Data grid</b><span>Browse and edit, with a review step before anything is written.</span></a>
+          <a href="/taula/query-editor/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M14 5l-4 14"/></svg><b>Query editor</b><span>Schema-aware autocomplete, ghost text, plans, a ⌘K bar.</span></a>
+          <a href="/taula/assistant/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></svg><b>Assistant</b><span>A local model that reads freely and writes only with approval.</span></a>
+          <a href="/taula/mcp/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m7 9 3 3-3 3M12 15h5"/></svg><b>For agents</b><span>An MCP server over your saved connections, read-only by default.</span></a>
+          <a href="/taula/safety/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="m9 12 2 2 4-4"/></svg><b>Safety net</b><span>Guardrails, change journal, snapshots, diffs, backups.</span></a>
+          <a href="/taula/databases/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg><b>Databases</b><span>PostgreSQL, SQLite and Cloudflare D1, side by side.</span></a>
+        </div>
+      </div>
+      <a href="/taula/pricing/">Pricing</a>
+      <a href="/taula/docs/">Docs</a><a href="/taula/articles/">Articles</a>
+      <a href="/taula/changelog/">Changelog</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn btn-ghost" href="/taula/account/">Downloads</a>
+      <a class="btn btn-ink" href="/taula/?early=taula" data-early="taula">Early access</a>
+      <details class="mnav">
+        <summary aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg></summary>
+        <nav aria-label="Site">
+          <small>Product</small>
+          <a href="/taula/data-grid/">Data grid</a><a href="/taula/query-editor/">Query editor</a><a href="/taula/assistant/">Assistant</a><a href="/taula/mcp/">For agents</a><a href="/taula/safety/">Safety net</a><a href="/taula/databases/">Databases</a>
+          <small>More</small>
+          <a href="/taula/pricing/">Pricing</a><a href="/taula/compare/">Compare</a><a href="/taula/docs/">Docs</a><a href="/taula/articles/">Articles</a><a href="/taula/changelog/">Changelog</a><a href="/taula/support/">Support</a>
+        </nav>
+      </details>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+<div class="page-head">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="/taula/">Taula</a><span>Articles</span></nav>
+    <h1>Notes from the workbench.</h1>
+    <p class="lede">Long-form writing from the Taula project: databases, coding agents, local models, and what it takes to build a native database manager in 2026. No growth hacks, no listicles.</p>
+  </div>
+</div>
+
+<div class="post-list">
+  <a href="/taula/articles/give-your-coding-agent-a-database-it-cant-break/">
+    <div class="meta"><time datetime="2026-09-14">14 September 2026</time><span>9 min read</span></div>
+    <h2>Give your coding agent a database it can't break</h2>
+    <p>Coding agents are good at reading a schema and terrible at being trusted with one. What a read-only gate actually has to check, why keyword scanning beats regex, and the one boundary the gate can never replace: the database role.</p>
+    <span class="link">Read the article</span>
+  </a>
+</div>
+
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="cols">
+      <div class="about">
+        <a class="brand" href="/taula/" aria-label="Taula home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#215CCC"/><stop offset="1" stop-color="#732EA8"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#g1)"/><rect x="14" y="16" width="36" height="32" rx="3" fill="none" stroke="#fff" stroke-width="2.6"/><rect x="14" y="16" width="36" height="10" rx="3" fill="#fff" fill-opacity=".92"/><path d="M26 26v22M38 26v22M14 37h36" stroke="#fff" stroke-width="2.6"/></svg> taula</a>
+        <p>A native macOS database manager for PostgreSQL, SQLite and Cloudflare D1, with a local assistant and an MCP server for your coding agent.</p>
+      </div>
+      <div><h5>Product</h5><ul>
+        <li><a href="/taula/data-grid/">Data grid</a></li><li><a href="/taula/query-editor/">Query editor</a></li><li><a href="/taula/assistant/">Assistant</a></li>
+        <li><a href="/taula/mcp/">For agents</a></li><li><a href="/taula/safety/">Safety net</a></li><li><a href="/taula/databases/">Databases</a></li>
+      </ul></div>
+      <div><h5>Resources</h5><ul>
+        <li><a href="/taula/docs/">Documentation</a></li><li><a href="/taula/articles/">Articles</a></li><li><a href="/taula/compare/">How Taula compares</a></li><li><a href="/taula/changelog/">Changelog</a></li>
+        <li><a href="/taula/support/">Support</a></li><li><a href="/taula/privacy/">Privacy</a></li><li><a href="/taula/llms.txt">llms.txt</a></li>
+      </ul></div>
+      <div><h5>Get Taula</h5><ul>
+        <li><a href="/taula/?early=taula" data-early="taula">Request early access</a></li><li><a href="/taula/account/">Your downloads</a></li>
+        <li><a href="/taula/pricing/#requirements">Requirements</a></li><li><a href="/taula/changelog.xml">Release notes RSS</a></li>
+      </ul></div>
+    </div>
+    <div class="fine">
+      <span>Taula is Basque for table. Requires macOS 15 or later.</span>
+      <span>One licence check, no telemetry: your databases never leave your Mac.</span>
+    </div>
+  </div>
+</footer>
+<script src="/taula/site.js" defer></script>
+
+<script src="/early-access.js" defer></script>
+</body>
+</html>

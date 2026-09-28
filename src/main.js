@@ -1,347 +1,497 @@
 import "./style.css";
+import { homeNodes, homeClusters } from "./data.js";
+import { addTask, cipherGlyph, clamp, decode, reducedMotion } from "./engine.js";
+import { dossiers, hasDossier } from "./projects.js";
+import { createDossier } from "./dossier.js";
+import { apps, windowFor } from "./apps.js";
+import { gizaScene, ikusScene, initArchives } from "./archives.js";
 
-const projects = [
-  {
-    name: "mairu",
-    href: "https://github.com/enekos/mairu",
-    description: "autonomous agent framework — context synthesis & tool use in Go",
-  },
-  {
-    name: "marrow",
-    href: "https://github.com/enekos/marrow",
-    description: "local-first hybrid search for Markdown repos — FTS5 + vector similarity in SQLite",
-  },
-  {
-    name: "iratxo",
-    href: "https://github.com/enekos/iratxo",
-    description: "executable NLP rules as WASM plugins — YAML to portable IR, run anywhere",
-  },
-  {
-    name: "tartalo",
-    href: "https://github.com/enekos/tartalo",
-    description: "statically-typed scripting language — compiles to POSIX sh or native binaries",
-  },
-  {
-    name: "gizapedia",
-    href: "https://gizapedia.org",
-    description: "open encyclopedia cataloguing social and behavioral patterns in Basque",
-  },
-  {
-    name: "ikusmira",
-    href: "https://ikusmira.org",
-    description: "cultural observation archive — visual and textual field notes in Spanish",
-  },
-];
+const NAME = "Eneko Sarasola";
+const EMAIL = "enekos@duck.com";
 
-const socials = [
-  { name: "LinkedIn", href: "https://linkedin.com/in/enekosarasola" },
-  { name: "Instagram", href: "https://instagram.com/arcaizante" },
-  { name: "GitHub", href: "https://github.com/enekos" },
-  { name: "X", href: "https://x.com/exocuted" },
-];
+const node = (label) => homeNodes.find((n) => n.label === label);
+const inCluster = (name) => homeNodes.filter((n) => n.clusterName === name);
+const why = node("why").lines;
+const socials = inCluster("signal");
+
+const arrow = `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>`;
+const out = `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5"/></svg>`;
+
+const mark = `<img class="mark" src="/giraffe.png" alt="" width="36" height="36">`;
 
 const app = document.querySelector("#app");
 
 app.innerHTML = `
-  <canvas id="shader-canvas" aria-hidden="true"></canvas>
-  <div id="noise-overlay"></div>
-  <main class="hud">
-    <header class="identity">
-      <p class="whisper">web / ai / natural language developer</p>
-      <h1>Eneko Sarasola</h1>
-      <p class="subtitle">Software engineer and natural language processing enthusiast.</p>
-    </header>
+<a class="skip" href="#main">Skip to content</a>
+<div class="prog" aria-hidden="true"></div>
 
-    <section class="about" aria-label="About me">
-      <h2>About Me</h2>
-      <p>
-        I build software and work with language models. I have over a decade of experience 
-        developing web applications and systems in Barcelona, working across EdTech, FinTech, 
-        and HR tech.
-      </p>
-      <p>
-        I also maintain Gizapedia and Ikusmira, open encyclopedias for Basque and Spanish 
-        speakers, cataloguing social and behavioral patterns.
-      </p>
-      <p>
-        When I'm not coding, I'm usually experimenting with analog photography. 
-        Feel free to reach out.
-      </p>
-      <p>email: <strong>enekos[at]duck.com</strong></p>
-    </section>
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="${NAME}, top of page">${mark}<span>Eneko Sarasola</span></a>
+    <nav class="nav-links" aria-label="Sections">
+      <a href="#apps">Apps</a><a href="#archives">Archives</a><a href="#contact">Contact</a>
+    </nav>
+    <a class="btn btn-ink btn-sm" href="#apps">Mac apps</a>
+  </div>
+</header>
 
-    <section class="project-list" aria-label="Projects">
-      ${projects
-    .map(
-      (project) => `
-          <a class="portal" href="${project.href}" target="_blank" rel="noreferrer">
-            <span class="portal-text">
-              <span class="portal-label">${project.name}</span>
-              <span class="portal-description">${project.description}</span>
-            </span>
-          </a>
-        `,
-    )
-    .join("")}
-    </section>
+<main id="main">
 
-    <section class="social-list" aria-label="Social Links">
-      ${socials
-    .map(
-      (social) => `
-          <a class="social-link" href="${social.href}" target="_blank" rel="noreferrer">
-            ${social.name}
-          </a>
-        `,
-    )
-    .join(`<span class="social-separator">/</span>`)}
-    </section>
+<section class="hero" id="top">
+  <canvas class="field" id="field" aria-hidden="true"></canvas>
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <p class="whisper">web / ai / natural language developer · barcelona</p>
+      <h1 class="name" id="name" aria-label="${NAME}"></h1>
+      <p class="lede">${node("eneko").lines[0]} And three native Mac apps for the work in between.</p>
+      <div class="cta-row">
+        <a class="btn btn-ink" href="#apps">See the Mac apps ${arrow}</a>
+        <a class="btn btn-ghost" href="#archives">Read the archives</a>
+      </div>
+      <p class="readout" aria-hidden="true"><span data-vec>vec ⟨0.00, 0.00⟩</span><span data-cluster>cluster self</span></p>
+    </div>
 
-    <footer class="hint">
-      <p>Observe the flow • <kbd>space</kbd> to breach reality</p>
-    </footer>
-  </main>
+    <div class="dock" aria-label="Mac apps">
+      <p class="dock-k">New · native macOS</p>
+      ${apps.map((a, i) => `
+      <a class="dock-app" href="#app-${a.slug}" style="--i:${i}">
+        ${a.icon}
+        <span class="dock-app__t"><b>${a.name}</b><span>${a.kind}</span></span>
+        <span class="dock-app__p">${a.price}<small>once</small></span>
+      </a>`).join("")}
+    </div>
+  </div>
+  <a class="scroll-cue" href="#apps" aria-label="Scroll to the apps"><span></span></a>
+</section>
+
+<section class="apps" id="apps" aria-labelledby="apps-h">
+  <div class="wrap">
+    <div class="head" data-reveal>
+      <span class="eyebrow">Mac apps</span>
+      <h2 id="apps-h">Three native tools. Paid once, yours to keep.</h2>
+      <p class="lede">Swift, no Electron, no account, no telemetry. Each one replaces a slow app, a browser tab or a subscription you already resent.</p>
+    </div>
+  </div>
+
+  <div class="show">
+      <div class="steps">
+        ${apps.map((a, i) => `
+        <article class="step${i === 0 ? " on" : ""}" id="app-${a.slug}" data-app="${a.slug}">
+          <div class="step-id">${a.icon}<div><h3 class="step-name">${a.name}</h3><span class="tag">${a.kind}</span></div>
+            <span class="step-n">0${i + 1} / 0${apps.length}</span></div>
+          <p class="step-head">${a.headline}</p>
+          <p class="step-lede">${a.lede}</p>
+          <div class="win win--inline" aria-hidden="true">${windowFor(a.slug)}</div>
+          <ul class="points">
+            ${a.points.map(([k, v]) => `<li><b>${k}</b><span>${v}</span></li>`).join("")}
+          </ul>
+          <dl class="facts">
+            <div><dt>Price</dt><dd>${a.price} once</dd></div>
+            <div><dt>Runs on</dt><dd>${a.requires}</dd></div>
+            <div><dt>Instead of</dt><dd>${a.replaces}</dd></div>
+          </dl>
+          <div class="cta-row">
+            <a class="btn btn-ink" href="/?early=${a.slug}" data-early="${a.slug}">Request early access</a>
+            <a class="btn btn-ghost" href="${a.href}">Full tour ${arrow}</a>
+          </div>
+          <p class="etym">${a.etym}</p>
+        </article>`).join("")}
+      </div>
+
+      <div class="stage" aria-hidden="true">
+        <div class="stage-glow"></div>
+        ${apps.map((a, i) => `<div class="win win--stage${i === 0 ? " on" : ""}" data-win="${a.slug}">${windowFor(a.slug)}</div>`).join("")}
+        <div class="stage-dots">${apps.map((a, i) => `<i class="${i === 0 ? "on" : ""}" data-dot="${a.slug}"></i>`).join("")}</div>
+      </div>
+  </div>
+
+  <div class="terms">
+    <div class="wrap">
+      <div class="terms-grid" data-stagger>
+        <div data-reveal><b>Pay once</b><span>No subscription, no renewal. Every future update is included.</span></div>
+        <div data-reveal><b>Three Macs</b><span>One licence runs on three of your machines at a time.</span></div>
+        <div data-reveal><b>No account</b><span>The licence key arrives by email. The key is the whole account.</span></div>
+        <div data-reveal><b>14-day refund</b><span>No trial build to expire on you. If it is not for you, write and get your money back.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="archives" id="archives" aria-labelledby="archives-h">
+  <div class="wrap">
+    <div class="head" data-reveal>
+      <span class="eyebrow">Archives</span>
+      <h2 id="archives-h">Two encyclopedias, written and kept by one person.</h2>
+      <p class="lede">A language without reference works loses arguments it should win. These are the work with readers, not just repositories.</p>
+    </div>
+
+    <article class="arch arch--giza" style="--hue:${node("gizapedia").hue}">
+      <div class="arch-copy" data-reveal>
+        <p class="arch-k"><span class="live"></span>live · in Basque</p>
+        <h3>gizapedia</h3>
+        <p class="arch-tag">${dossiers.gizapedia.tagline}</p>
+        <p class="arch-p">Philosophy, politics, economics, sociology and statistics: long-form, cited articles and a dictionary that grows every day. Hugo builds the site; a Rust pass lints and transforms 21,000 pages before it does.</p>
+        <div class="stats">
+          <div><b class="count" data-to="8099">8,099</b><span>articles</span></div>
+          <div><b class="count" data-to="11012">11,012</b><span>dictionary entries</span></div>
+          <div><b class="count" data-to="21000">21,000</b><span>pages built</span></div>
+        </div>
+        <div class="cta-row">
+          <a class="btn btn-ink" href="https://gizapedia.org" target="_blank" rel="noreferrer">gizapedia.org ${out}</a>
+          <a class="btn btn-ghost" href="#p/gizapedia">How it is built</a>
+        </div>
+      </div>
+
+      <div class="arch-visual">${gizaScene()}</div>
+    </article>
+
+    <article class="arch arch--ikus" style="--hue:${node("ikusmira").hue}">
+      <div class="arch-copy" data-reveal>
+        <p class="arch-k"><span class="live"></span>live · in Spanish</p>
+        <h3>ikusmira</h3>
+        <p class="arch-tag">${dossiers.ikusmira.tagline}</p>
+        <p class="arch-p">An educational archive with study routes, ten-minute book cards and a reading a day. Every article is classified in your own browser by a wasm rule engine: no inference call, no backend, nothing about what you read leaves the page.</p>
+        <div class="stats">
+          <div><b class="count" data-to="4429">4,429</b><span>articles</span></div>
+          <div><b class="count" data-to="25">25</b><span>study routes</span></div>
+          <div><b class="count" data-to="104">104</b><span>essential books</span></div>
+          <div><b>0</b><span>inference calls</span></div>
+        </div>
+        <div class="cta-row">
+          <a class="btn btn-ink" href="https://ikusmira.org" target="_blank" rel="noreferrer">ikusmira.org ${out}</a>
+          <a class="btn btn-ghost" href="#p/ikusmira">How it is built</a>
+        </div>
+      </div>
+
+      <div class="arch-visual">${ikusScene()}</div>
+    </article>
+  </div>
+</section>
+
+<section class="why" id="why" aria-labelledby="why-h">
+  <div class="wrap">
+    <span class="eyebrow" id="why-h">Why it is built this way</span>
+    <div class="why-lines">
+      ${why.map((l) => {
+    const [head, ...rest] = l.split(", because ");
+    return `<p class="why-line">${`<b>${head},</b> because ${rest.join(", because ")}`
+      .split(" ").map((w) => `<span class="w">${w}</span>`).join(" ")}</p>`;
+  }).join("")}
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contact" aria-labelledby="contact-h">
+  <div class="wrap contact-grid">
+    <div data-reveal>
+      <span class="eyebrow">About</span>
+      <h2 id="contact-h">Reach out. I answer.</h2>
+      <p class="lede">${node("barcelona").lines[0]} ${node("analog").lines[0]}</p>
+    </div>
+    <div class="contact-card" data-reveal>
+      <p class="contact-k">email</p>
+      <p class="contact-mail">enekos <span>[at]</span> duck.com</p>
+      <button class="btn btn-ink" type="button" id="copy">Copy address</button>
+      <ul class="socials">
+        ${socials.map((n) => `<li><a href="${n.href}" target="_blank" rel="noreferrer"><b>${n.label}</b><span>${n.lines[0]}</span>${out}</a></li>`).join("")}
+      </ul>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <span>${mark} Eneko Sarasola · Barcelona</span>
+    <span class="foot-apps">${apps.map((a) => `<a href="${a.href}">${a.name}</a>`).join("")}<a href="https://gizapedia.org" target="_blank" rel="noreferrer">gizapedia</a><a href="https://ikusmira.org" target="_blank" rel="noreferrer">ikusmira</a></span>
+  </div>
+</footer>
 `;
 
-const canvas = document.querySelector("#shader-canvas");
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const vh = () => window.innerHeight;
+
+const canvas = $("#field");
 const ctx = canvas.getContext("2d");
+const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
+const dust = Array.from({ length: 70 }, (_, i) => ({
+  x: (Math.sin(i * 91.7) * 0.5 + 0.5) * 1800 - 900,
+  y: (Math.sin(i * 47.3 + 2) * 0.5 + 0.5) * 1500 - 750,
+  r: 0.8 + (i % 3) * 0.5,
+  hue: homeNodes[i % homeNodes.length].hue,
+}));
+let fw = 0;
+let fh = 0;
+let dpr = 1;
+let heroOut = 0;
 
-if (!ctx) {
-  throw new Error("2D canvas is unavailable.");
+function sizeField() {
+  dpr = Math.min(window.devicePixelRatio || 1, 2);
+  fw = canvas.clientWidth;
+  fh = canvas.clientHeight;
+  canvas.width = fw * dpr;
+  canvas.height = fh * dpr;
 }
 
-const glyphs = "░▒▓█▄▀■▲▼●◆★✦✧∞∆∇⍙⍣⍟⍰⍡⍢⍣⍤⍥⍨⍩⍪⍫⍬⍭⍮⍯⍰⍱⍲⍳⍴⍵⍶⍷⍸⍹⍺⍻⍼⍽⍾⍿";
-const esotericWords = [
-  "void", "null", "undefined", "NaN", "infinity", "recursive", "fractal",
-  "entropy", "abyss", "liminal", "nexus", "vertex", "phantom", "echo",
-  "syntax", "cipher", "flux", "ghost", "trace", "sigil", "loop", "prism"
-];
+function drawField(now) {
+  if (heroOut >= 1) return;
+  const t = reducedMotion ? 0 : now * 0.00012;
+  pointer.x += (pointer.tx - pointer.x) * 0.05;
+  pointer.y += (pointer.ty - pointer.y) * 0.05;
 
-const layers = [
-  { fontSize: 32, speed: 440, alpha: 0.35, trail: 35, parallax: 60, depth: 1.8, offset: 0.0, heads: [] },
-  { fontSize: 24, speed: 300, alpha: 0.25, trail: 25, parallax: 45, depth: 1.4, offset: 1.1, heads: [] },
-  { fontSize: 18, speed: 200, alpha: 0.15, trail: 18, parallax: 30, depth: 1.1, offset: 2.3, heads: [] },
-  { fontSize: 14, speed: 120, alpha: 0.10, trail: 12, parallax: 15, depth: 0.8, offset: 3.7, heads: [] },
-  { fontSize: 10, speed: 80, alpha: 0.05, trail: 8, parallax: 5, depth: 0.5, offset: 5.2, heads: [] },
-];
+  const wide = fw > 900;
+  const s = Math.min(fw / (wide ? 2300 : 1500), fh / 1700);
+  const cx = fw * (wide ? 0.66 : 0.5) - pointer.x * 30;
+  const cy = fh * 0.5 - pointer.y * 24;
+  const spread = 1 + heroOut * 0.9;
 
-let jumpCount = 0;
-let lastNow = performance.now();
-let chaosBlend = 0;
-const backdropCycle = {
-  orderedMs: 7000,
-  chaosMs: 7000,
-  maxChaosStrength: 0.42,
-};
-const cycleStartedAt = performance.now();
-const chaosState = { seed: 0 };
+  const at = (n, i) => {
+    const wob = reducedMotion ? 0 : 14;
+    const x = n.x + Math.sin(t * 7 + i * 1.3) * wob;
+    const y = n.y + Math.cos(t * 6 + i * 0.9) * wob;
+    return [cx + x * s * spread, cy + y * s * spread];
+  };
 
-function hash(value) {
-  const x = Math.sin(value * 12.9898) * 43758.5453;
-  return x - Math.floor(x);
-}
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, fw, fh);
+  ctx.globalAlpha = 1 - heroOut;
 
-function randomGlyph(seed) {
-  const index = Math.floor(hash(seed) * glyphs.length) % glyphs.length;
-  return glyphs[index];
-}
-
-function streamGlyph(layerIndex, columnIndex, rowIndex, frameIndex) {
-  const mode = hash(columnIndex * 0.173 + layerIndex * 7.91) > 0.6;
-  if (!mode) {
-    return randomGlyph(columnIndex * 131.0 + rowIndex * 19.0 + layerIndex * 67.0 + frameIndex);
+  for (const d of dust) {
+    const [x, y] = at(d, d.r * 10);
+    ctx.fillStyle = `hsla(${d.hue} 50% 45% / .25)`;
+    ctx.beginPath();
+    ctx.arc(x, y, d.r, 0, Math.PI * 2);
+    ctx.fill();
   }
 
-  const words = esotericWords;
-  const word = words[Math.floor(hash(columnIndex * 1.77 + frameIndex * 0.005 + layerIndex * 0.43) * words.length) % words.length];
-  const cursor = ((rowIndex % (word.length + 2)) + (word.length + 2)) % (word.length + 2);
-  return cursor >= word.length ? "·" : word[cursor].toUpperCase();
+  const pos = homeNodes.map(at);
+  ctx.lineWidth = 1;
+  homeNodes.forEach((n, i) => {
+    for (const nb of n.neighbors) {
+      const [x2, y2] = pos[nb.node.i];
+      ctx.strokeStyle = `hsla(${n.hue} 45% 45% / ${0.08 + nb.sim * 0.14})`;
+      ctx.beginPath();
+      ctx.moveTo(pos[i][0], pos[i][1]);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+    }
+  });
+
+  ctx.font = `500 11px "JetBrains Mono", monospace`;
+  homeNodes.forEach((n, i) => {
+    const [x, y] = pos[i];
+    const r = n.flagship ? 5 : n.kind === "entry" ? 3.4 : 2.6;
+    ctx.fillStyle = `hsla(${n.hue} 60% 50% / .14)`;
+    ctx.beginPath();
+    ctx.arc(x, y, r * 3.2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = `hsl(${n.hue} 55% 44%)`;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fill();
+    if (fw > 700) {
+      ctx.fillStyle = `hsla(${n.hue} 30% 30% / .55)`;
+      ctx.fillText(n.label, x + r + 6, y + 4);
+    }
+  });
+  ctx.globalAlpha = 1;
 }
 
-function triggerChaos() {
-  jumpCount += 1;
-  chaosState.seed += 1;
-  reseedHeads();
-}
+sizeField();
+addTask(drawField);
 
-function smoothstep01(value) {
-  const t = Math.max(0, Math.min(1, value));
-  return t * t * (3 - 2 * t);
-}
-
-function chaosTarget(now) {
-  const cycleLength = backdropCycle.orderedMs + backdropCycle.chaosMs;
-  const omega = (Math.PI * 2) / cycleLength;
-  const time = now - cycleStartedAt;
-
-  // Fully continuous oscillator + soft gate for longer calm phases without hard resets.
-  const baseWave = 0.5 + 0.5 * Math.sin(time * omega - Math.PI / 2);
-  const gatedWave = 0.5 + 0.5 * Math.tanh((baseWave - 0.62) * 8);
-  const shapedWave = smoothstep01(gatedWave);
-  return backdropCycle.maxChaosStrength * shapedWave;
-}
-
-function reseedHeads() {
-  const width = canvas.width;
-  const height = canvas.height;
-  for (const layer of layers) {
-    const columnWidth = Math.max(7, layer.fontSize * 0.85);
-    const columnCount = Math.ceil(width / columnWidth) + 3;
-    const rows = Math.ceil(height / layer.fontSize) + layer.trail + 4;
-    layer.heads = Array.from({ length: columnCount }, (_, idx) => {
-      return -Math.floor(hash(idx * 17.17 + layer.offset * 97.0 + jumpCount * 13.0) * rows);
-    });
+const readVec = $("[data-vec]");
+const readCluster = $("[data-cluster]");
+window.addEventListener("pointermove", (e) => {
+  pointer.tx = e.clientX / window.innerWidth - 0.5;
+  pointer.ty = e.clientY / window.innerHeight - 0.5;
+  if (heroOut > 0.6) return;
+  const x = pointer.tx * 2;
+  const y = pointer.ty * 2;
+  readVec.textContent = `vec ⟨${x.toFixed(2)}, ${y.toFixed(2)}⟩`;
+  let best = homeClusters.self;
+  let bd = Infinity;
+  for (const c of Object.values(homeClusters)) {
+    const d = Math.hypot(c.c[0] / 700 - x, c.c[1] / 700 - y);
+    if (d < bd) { bd = d; best = c; }
   }
-}
+  readCluster.textContent = `cluster ${best.name}`;
+}, { passive: true });
 
-function resize() {
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  const width = Math.floor(window.innerWidth * dpr);
-  const height = Math.floor(window.innerHeight * dpr);
-  canvas.width = width;
-  canvas.height = height;
-  canvas.style.width = "100vw";
-  canvas.style.height = "100vh";
-  reseedHeads();
-}
+const nameEl = $("#name");
+const chars = NAME.split(" ").flatMap((word) => {
+  const w = document.createElement("span");
+  w.className = "name-word";
+  nameEl.appendChild(w);
+  nameEl.appendChild(document.createTextNode(" "));
+  return [...word].map((ch) => {
+    const span = document.createElement("span");
+    span.className = "name-char";
+    span.textContent = ch;
+    w.appendChild(span);
+    return { span, ch, until: 0 };
+  });
+});
+let drift = 0;
 
-function render(now) {
-  const dt = Math.min((now - lastNow) * 0.001, 0.05);
-  lastNow = now;
-  const width = canvas.width;
-  const height = canvas.height;
-  const px = 0;
-  const py = 0;
-  const targetChaos = chaosTarget(now);
-  const blendStep = 1 - Math.exp(-1.4 * dt);
-  chaosBlend += (targetChaos - chaosBlend) * blendStep;
-  const chaos = chaosBlend;
+function startName() {
+  if (reducedMotion) return;
+  const movable = chars;
+  decode(movable.map((c, i) => ({ el: c.span, text: c.ch, delay: 90 + i * 55 })));
 
-  // Trippy feedback loop with global composite operation
-  ctx.globalCompositeOperation = "source-over";
-  ctx.fillStyle = `rgba(5, 0, 10, ${0.15 - chaos * 0.04})`;
-  ctx.fillRect(0, 0, width, height);
-
-  ctx.globalCompositeOperation = chaos > 0.8 ? "lighter" : "screen";
-
-  for (let li = 0; li < layers.length; li += 1) {
-    const layer = layers[li];
-    const columnWidth = Math.max(7, layer.fontSize * 0.85);
-    const rows = Math.ceil(height / layer.fontSize) + layer.trail + 4;
-    const vanishingX = width * 0.5 + px * 120 * layer.depth;
-
-    // Wave distortion over the entire layer
-    const layerWave = Math.sin(now * 0.001 + layer.offset) * 20;
-
-    const xShift = px * layer.parallax + layerWave;
-    const yShift = py * layer.parallax + Math.cos(now * 0.0008 + layer.offset) * 15;
-    const speedScale = 0.5 + hash(li * 21.3 + jumpCount * 0.77) * 1.5;
-    const frameIndex = Math.floor(now * 0.02);
-    const chaosJitter = chaos * (layer.fontSize * 1.3 + layer.parallax * 0.55);
-
-    ctx.font = `${layer.fontSize}px "Courier New", Courier, monospace`;
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-
-    for (let ci = 0; ci < layer.heads.length; ci += 1) {
-      // Fluid-like column movement
-      const colWave = Math.sin(now * 0.002 + ci * 0.1 + li) * 10 * (1 + chaos * 0.55);
-
-      layer.heads[ci] += (layer.speed * speedScale * dt) / layer.fontSize;
-      if (layer.heads[ci] > rows + 2) {
-        layer.heads[ci] = -Math.floor(hash(ci * 91.7 + li * 29.3 + now * 0.0001) * rows);
-      }
-
-      const flatX = ci * columnWidth + xShift + colWave;
-      const x = vanishingX + (flatX - vanishingX) * layer.depth;
-      const headY = Math.floor(layer.heads[ci]) * layer.fontSize + yShift;
-
-      const baseAngle = hash(ci * 1.17 + li * 8.91 + chaosState.seed * 14.0) * Math.PI * 2;
-      const speedWarp = 0.5 + hash(ci * 2.07 + li * 4.37 + chaosState.seed * 3.2) * 2.0;
-
-      const driftX = Math.cos(baseAngle) * chaosJitter * 2.2;
-      const driftY = Math.sin(baseAngle) * chaosJitter * 2.2;
-
-      const pulse = 0.5 + 0.5 * Math.sin(now * 0.00035 + baseAngle * 1.3);
-      const blastDistance = (80 + pulse * 120) * chaos;
-      const blastX = Math.cos(baseAngle + now * 0.001) * blastDistance * speedWarp;
-      const blastY = Math.sin(baseAngle - now * 0.001) * blastDistance * speedWarp;
-
-      for (let t = 0; t < layer.trail; t += 1) {
-        let y = headY - t * layer.fontSize;
-
-        const row = Math.floor(layer.heads[ci]) - t;
-        const intensity = Math.pow(1 - t / layer.trail, 1.5) * layer.alpha;
-
-        // Simpler, pastel colors
-        const hue = (now * 0.01 + li * 20 - t * 2 + chaos * 50) % 360;
-        const saturation = 35 + chaos * 25;
-        const lightness = 65 + intensity * 15 + chaos * 10;
-        const alpha = Math.min(1, intensity * (t === 0 ? 1.5 : 1.0));
-
-        const glyph = streamGlyph(li, ci, row, frameIndex);
-        let drawX = x;
-
-        // Apply distortions
-        const swirl = now * 0.002 * speedWarp + t * 0.2;
-        const rowWave = Math.sin(y * 0.01 + now * 0.003) * 15 * (1 + chaos * 0.8);
-
-        drawX += rowWave;
-
-        if (chaos > 0) {
-          const trailSpread = 1 + t / layer.trail * 2;
-          const orbitX = Math.cos(baseAngle + swirl * 3) * chaosJitter * trailSpread;
-          const orbitY = Math.sin(baseAngle - swirl * 2) * chaosJitter * trailSpread;
-
-          drawX += driftX + orbitX + blastX;
-          y += driftY + orbitY + blastY;
-
-          // Random scale during chaos
-          if (hash(t * 7 + ci) > 0.8) {
-            ctx.font = `${layer.fontSize * (1 + chaos * 0.22)}px "Courier New", Courier, monospace`;
-          } else {
-            ctx.font = `${layer.fontSize}px "Courier New", Courier, monospace`;
-          }
-        }
-
-        if (y < -layer.fontSize * 3 || y > height + layer.fontSize * 3 || drawX < -100 || drawX > width + 100) {
-          continue;
-        }
-
-        ctx.fillStyle = `hsla(${hue}, ${saturation}%, ${lightness}%, ${alpha})`;
-
-        // Chromatic aberration effect on the head character during chaos
-        if (t === 0 && chaos > 0.4) {
-          ctx.fillStyle = `hsla(340, 70%, 70%, ${alpha})`;
-          ctx.fillText(glyph, drawX - chaos * 2, y);
-          ctx.fillStyle = `hsla(200, 70%, 70%, ${alpha})`;
-          ctx.fillText(glyph, drawX + chaos * 2, y);
-          ctx.fillStyle = `hsla(${hue}, ${saturation}%, 90%, ${alpha})`;
-        }
-
-        ctx.fillText(glyph, drawX, y);
+  let next = 0;
+  addTask((now) => {
+    for (const c of chars) {
+      if (c.until && now > c.until) {
+        c.until = 0;
+        c.span.textContent = c.ch;
+        c.span.classList.remove("slipped");
       }
     }
-  }
-
-  // Dark vignette overlay
-  ctx.globalCompositeOperation = "multiply";
-  const grad = ctx.createRadialGradient(width / 2, height / 2, height * 0.2, width / 2, height / 2, height);
-  grad.addColorStop(0, "rgba(0,0,0,0)");
-  grad.addColorStop(1, "rgba(5,0,10,0.8)");
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, width, height);
-
-  requestAnimationFrame(render);
+    if (now < next) return;
+    next = now + 400 + Math.random() * 1100;
+    if (Math.random() > 0.05 + drift * 0.5) return;
+    const c = movable[(Math.random() * movable.length) | 0];
+    if (c.until) return;
+    c.span.textContent = cipherGlyph();
+    c.span.classList.add("slipped");
+    c.until = now + 90 + Math.random() * 220;
+  });
 }
 
-window.addEventListener("resize", resize);
-window.addEventListener("keydown", (event) => {
-  if (event.code === "Space") {
-    event.preventDefault();
-    triggerChaos();
+if (document.fonts?.ready) document.fonts.ready.then(() => { sizeField(); startName(); });
+else window.addEventListener("load", startName);
+
+const prog = $(".prog");
+const nav = $("#nav");
+const hero = $(".hero");
+const whyLines = $(".why-lines");
+const whyWords = $$(".why .w");
+const archScroll = initArchives($("#archives"));
+
+function onScroll() {
+  const y = window.scrollY;
+  const max = document.documentElement.scrollHeight - vh();
+  prog.style.transform = `scaleX(${max > 0 ? y / max : 0})`;
+  nav.classList.toggle("stuck", y > 8);
+
+  heroOut = clamp(y / (hero.offsetHeight * 0.9), 0, 1);
+  hero.style.setProperty("--out", heroOut.toFixed(3));
+  drift = clamp(y / (vh() * 3), 0, 1);
+
+  archScroll(vh());
+
+  const r = whyLines.getBoundingClientRect();
+  const wp = reducedMotion ? 1 : clamp((vh() * 0.8 - r.top) / (r.height + vh() * 0.1), 0, 1);
+  const lit = Math.round(wp * whyWords.length);
+  whyWords.forEach((w, i) => w.classList.toggle("lit", i < lit));
+}
+
+let scrollQueued = false;
+const queue = () => {
+  if (scrollQueued) return;
+  scrollQueued = true;
+  requestAnimationFrame(() => { scrollQueued = false; onScroll(); });
+};
+window.addEventListener("scroll", queue, { passive: true });
+onScroll();
+
+const stage = $(".stage");
+const steps = $$(".step");
+const wins = $$("[data-win]");
+const stageDots = $$("[data-dot]");
+const setApp = (slug) => {
+  steps.forEach((s) => s.classList.toggle("on", s.dataset.app === slug));
+  wins.forEach((w) => w.classList.toggle("on", w.dataset.win === slug));
+  stageDots.forEach((d) => d.classList.toggle("on", d.dataset.dot === slug));
+  stage.dataset.app = slug;
+};
+const stepIO = new IntersectionObserver((entries) => {
+  for (const e of entries) if (e.isIntersecting) setApp(e.target.dataset.app);
+}, { rootMargin: "-45% 0px -45% 0px" });
+steps.forEach((s) => stepIO.observe(s));
+setApp(apps[0].slug);
+
+const fmt = new Intl.NumberFormat("en-US");
+function count(el) {
+  const to = Number(el.dataset.to);
+  if (reducedMotion) return;
+  const t0 = performance.now();
+  const stop = addTask((now) => {
+    const p = clamp((now - t0) / 1400, 0, 1);
+    el.textContent = fmt.format(Math.round(to * (1 - (1 - p) ** 4)));
+    if (p >= 1) stop();
+  });
+}
+
+const revealIO = new IntersectionObserver((entries) => {
+  for (const e of entries) {
+    if (!e.isIntersecting) continue;
+    e.target.classList.add("in");
+    $$(".count", e.target).forEach(count);
+    revealIO.unobserve(e.target);
   }
+}, { rootMargin: "0px 0px -12% 0px" });
+$$("[data-reveal], .arch-visual, .step").forEach((el) => revealIO.observe(el));
+$$("[data-stagger]").forEach((g) => [...g.children].forEach((c, i) => c.style.setProperty("--d", `${i * 90}ms`)));
+
+const copyBtn = $("#copy");
+let copyTimer = 0;
+copyBtn.addEventListener("click", () => {
+  navigator.clipboard?.writeText(EMAIL).then(() => {
+    copyBtn.textContent = "Copied";
+    clearTimeout(copyTimer);
+    copyTimer = setTimeout(() => { copyBtn.textContent = "Copy address"; }, 1800);
+  }).catch(() => { copyBtn.textContent = EMAIL; });
 });
 
-resize();
-requestAnimationFrame(render);
+let returnFocus = null;
+const dossier = createDossier({
+  onOpen: (slug) => setHash(`p/${slug}`),
+  onClose: () => {
+    if (location.hash.slice(1).startsWith("p/")) setHash("");
+    document.documentElement.classList.remove("locked");
+    returnFocus?.focus({ preventScroll: true });
+  },
+});
+
+function openDossier(slug) {
+  if (!hasDossier(slug)) return;
+  if (!dossier.isOpen()) returnFocus = document.activeElement;
+  if (!dossier.open(slug)) return;
+  document.documentElement.classList.add("locked");
+  setHash(`p/${slug}`);
+}
+
+function setHash(value) {
+  if (location.hash.slice(1) === value) return;
+  history.replaceState(null, "", value ? `#${value}` : location.pathname + location.search);
+}
+
+function applyHash() {
+  const h = location.hash.slice(1);
+  if (h.startsWith("p/") && hasDossier(h.slice(2))) openDossier(h.slice(2));
+  else if (dossier.isOpen()) dossier.close();
+}
+
+document.addEventListener("click", (e) => {
+  const a = e.target.closest('a[href^="#p/"]');
+  if (!a) return;
+  e.preventDefault();
+  openDossier(a.getAttribute("href").slice(3));
+});
+window.addEventListener("hashchange", applyHash);
+window.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && dossier.isOpen()) dossier.close();
+});
+
+let lastW = window.innerWidth;
+window.addEventListener("resize", () => {
+  if (window.innerWidth === lastW) return;
+  lastW = window.innerWidth;
+  sizeField();
+  onScroll();
+});
+
+if (location.hash) applyHash();
