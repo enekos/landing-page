@@ -1,20 +1,30 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+/* ---------------------------------------------------------------------------
+   One space, two regions.
+
+   The index and the manifesto are the same instrument: a field of points, a
+   card in the middle, instruments in the corners. Everything below is shared
+   between them; the only thing that changes is what you are standing on.
+   --------------------------------------------------------------------------- */
 
 :root {
-  color: #e0e0ff;
-  background: #000;
-  font-family: 'Space Mono', monospace;
+  --void: #010005;
+  --plate: rgba(8, 6, 22, 0.55);
+  --ink: #d8d6f2;
+  --ink-dim: #6f6c97;
+  --ink-faint: #5f5c86;
+  --line: rgba(136, 170, 255, 0.22);
+
+  color: var(--ink);
+  background: var(--void);
+  font-family: 'Space Mono', ui-monospace, monospace;
   line-height: 1.5;
-  font-weight: 400;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 html,
 body,
@@ -24,323 +34,1146 @@ body,
   margin: 0;
 }
 
+/* Position replaces scroll: the page never moves, the camera does. Holding the
+   document still also stops mobile browsers from firing a resize storm every
+   time the URL bar slides. */
 body {
   overflow: hidden;
-  background-color: #000;
+  overscroll-behavior: none;
+  background: var(--void);
 }
 
-#shader-canvas {
+#home-canvas {
   position: fixed;
   inset: 0;
-  width: 100vw;
-  height: 100vh;
   display: block;
   z-index: 1;
+  cursor: grab;
+  touch-action: none;
 }
 
-#noise-overlay {
+#home-canvas.grabbing { cursor: grabbing; }
+
+/* Film grain, not a mosaic: the tile is pinned to its own 180px square. Left to
+   stretch across the viewport, a 200-unit turbulence field turns into visible
+   7px blocks. At tile size it also hides the banding in the bloom. */
+.grain {
   position: fixed;
   inset: 0;
-  width: 100vw;
-  height: 100vh;
   z-index: 2;
   pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-  opacity: 0.15;
-  mix-blend-mode: overlay;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
 }
 
-.hud {
-  position: relative;
-  z-index: 10;
-  min-height: 100%;
-  padding: clamp(1.5rem, 4vw, 3rem);
-  display: grid;
-  grid-template-rows: auto auto 1fr auto auto;
-  gap: 2rem;
+/* edge vignette, matching the manifesto's */
+.veil {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
   pointer-events: none;
-  text-shadow: 0 0 10px rgba(0, 0, 0, 0.8), 0 2px 4px rgba(0,0,0,0.5);
+  background: radial-gradient(125% 100% at 50% 50%, transparent 52%, rgba(1, 0, 5, 0.88) 100%);
 }
 
-.identity {
-  align-self: start;
-  max-width: 44rem;
-  pointer-events: auto;
+/* The reading plate: a pool of dark under the card so the point of light the
+   camera is sitting on never prints through the prose. */
+.veil-card {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  width: min(58rem, 96vw);
+  height: min(42rem, 70vh);
+  transform: translate(-50%, -50%);
+  z-index: 4;
+  pointer-events: none;
+  background: radial-gradient(closest-side, rgba(2, 0, 8, 0.88), rgba(2, 0, 8, 0.6) 45%, rgba(2, 0, 8, 0) 100%);
 }
+
+.field {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------------------------------
+   Identity
+   --------------------------------------------------------------------------- */
 
 .whisper {
   margin: 0;
-  font-size: 0.7rem;
-  letter-spacing: 0.4em;
+  font-size: 0.62rem;
+  letter-spacing: 0.36em;
   text-transform: uppercase;
-  color: #88aaff;
-  opacity: 0.8;
-  animation: pulse 4s infinite alternate;
+  color: var(--ink-dim);
 }
 
-@keyframes pulse {
-  0% { opacity: 0.4; filter: blur(1px); }
-  100% { opacity: 0.9; filter: blur(0px); text-shadow: 0 0 8px #88aaff; }
-}
-
-h1 {
-  margin: 0.5rem 0 0;
-  font-family: 'Cinzel', serif;
-  font-size: clamp(2.5rem, 8vw, 6.5rem);
-  letter-spacing: -0.05em;
-  line-height: 0.9;
-  text-wrap: balance;
-  color: #fff;
-  text-shadow: 
-    0 0 20px rgba(255, 255, 255, 0.4),
-    -2px -2px 0 #ff00ff,
-    2px 2px 0 #00ffff;
-  position: relative;
-  display: inline-block;
-  transform: scaleY(1.1);
-}
-
-h1::after {
-  content: "Eneko Sarasola";
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: -1;
-  color: transparent;
-  text-shadow: none;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-  -webkit-background-clip: text;
-  background-clip: text;
-  animation: scanline 3s linear infinite;
-}
-
-@keyframes scanline {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-.subtitle {
-  margin: 1rem 0 0;
-  max-width: 32rem;
-  color: #bbccff;
-  font-size: 0.9rem;
-  letter-spacing: 0.05em;
-}
-
-.about {
-  max-width: 48rem;
-  padding: 1.5rem;
-  pointer-events: auto;
-  position: relative;
-}
-
-.about::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-left: 1px solid #fff;
-  border-right: 1px solid #fff;
-  opacity: 0.2;
-  transform: scaleY(0.5);
-  transition: transform 0.5s ease, opacity 0.5s ease;
-}
-
-.about:hover::before {
-  transform: scaleY(1);
-  opacity: 0.6;
-  box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.1);
-}
-
-.about h2 {
-  margin: 0 0 1rem;
-  font-family: 'Cinzel', serif;
-  font-size: 1.2rem;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: #fff;
-  border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
-  padding-bottom: 0.5rem;
-  display: inline-block;
-}
-
-.about p {
-  margin: 0.8rem 0;
-  color: #ddddff;
-  font-size: 0.9rem;
-  line-height: 1.6;
-  text-align: justify;
-}
-
-.project-list {
-  align-self: center;
-  justify-self: center;
-  width: min(65rem, 100%);
-  display: grid;
-  gap: 1.5rem;
-  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
-  pointer-events: auto;
-}
-
-.portal {
-  position: relative;
+.name {
+  --hue: 205;
+  --drift: 0;
+  margin: 0.45rem 0 0.9rem;
+  font-family: 'Space Mono', ui-monospace, monospace;
+  font-size: clamp(1.5rem, 3.4vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  text-transform: lowercase;
+  color: var(--ink);
   display: flex;
-  align-items: center;
-  text-decoration: none;
-  color: #fff;
-  padding: 1.5rem;
-  overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(0, 0, 10, 0.4);
+  flex-wrap: wrap;
 }
 
-.portal::before {
-  content: "";
+.name-char {
+  display: inline-block;
+  white-space: pre;
+  /* The name is set in a monospace face on purpose: a glyph slipping back into
+     cipher must not move the characters beside it. */
+  transition: color 0.5s ease, text-shadow 0.5s ease;
+  text-shadow: 0 0 calc(6px + var(--drift) * 16px)
+    hsla(var(--hue), 80%, 70%, calc(0.12 + var(--drift) * 0.35));
+}
+
+.name-char.dec,
+.name-char.slipped {
+  color: hsl(var(--hue), 70%, 82%);
+  transition: none;
+}
+
+/* ---------------------------------------------------------------------------
+   Instruments
+   --------------------------------------------------------------------------- */
+
+.latent-hud {
   position: absolute;
-  inset: 0;
-  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-  transform: translateX(-100%) translateY(-100%) rotate(45deg);
-  transition: transform 0.6s ease;
+  z-index: 6;
+  pointer-events: none;
+  font-family: 'Space Mono', ui-monospace, monospace;
 }
 
-.portal-label {
-  font-family: 'Cinzel', serif;
-  font-size: 1.1rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  margin-bottom: 0.4rem;
-  color: #aaaaff;
-  transition: color 0.3s ease;
-}
-
-.portal-text {
+.latent-hud--top {
+  top: clamp(1.1rem, 3vw, 2rem);
+  left: clamp(1.1rem, 3vw, 2rem);
   display: flex;
   flex-direction: column;
-  position: relative;
-  z-index: 2;
+  gap: 0.7rem;
+  max-width: min(24rem, 60vw);
 }
 
-.portal-description {
-  font-size: 0.75rem;
-  letter-spacing: 0.05em;
-  line-height: 1.4;
-  color: #9999bb;
-  font-family: 'Space Mono', monospace;
+.latent-title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
 }
 
-.portal:hover,
-.portal:focus-visible {
-  transform: scale(1.05) translateZ(0);
-  border-color: rgba(255, 255, 255, 0.5);
-  box-shadow: 0 10px 30px rgba(0, 50, 255, 0.2), inset 0 0 15px rgba(255, 255, 255, 0.1);
-  background: rgba(10, 10, 30, 0.6);
+.latent-title__k {
+  font-family: 'Cinzel', serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: #e9e6ff;
 }
 
-.portal:hover .portal-label,
-.portal:focus-visible .portal-label {
+.latent-title__v {
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #7d7aa6;
+}
+
+.latent-readout {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  color: var(--ink-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.latent-readout span { text-transform: uppercase; }
+
+/* Narrow screens keep it in the identity column, under the readout — there is
+   no room in the top-right corner beside a 37-character eyebrow. */
+.corner-nav {
+  z-index: 7;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-top: 0.2rem;
+  pointer-events: auto;
+}
+
+@media (min-width: 701px) {
+  .corner-nav {
+    position: fixed;
+    top: clamp(1.1rem, 3vw, 2rem);
+    right: clamp(1.1rem, 3vw, 2rem);
+    margin-top: 0;
+  }
+}
+
+.corner-nav button {
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: 'Space Mono', ui-monospace, monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #9fb8ff;
+  cursor: pointer;
+  opacity: 0.75;
+  transition: opacity 0.3s ease, color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.corner-nav button:hover,
+.corner-nav button:focus-visible {
+  opacity: 1;
   color: #fff;
-  text-shadow: 0 0 8px #fff;
-}
-
-.portal:hover::before,
-.portal:focus-visible::before {
-  transform: translateX(100%) translateY(100%) rotate(45deg);
-}
-
-.portal:focus-visible {
+  text-shadow: 0 0 12px rgba(136, 170, 255, 0.6);
   outline: none;
 }
 
-.social-list {
-  align-self: center;
-  justify-self: center;
-  display: flex;
-  gap: 1.5rem;
-  flex-wrap: wrap;
-  align-items: center;
-  pointer-events: auto;
-  margin-top: -1rem;
+.corner-nav__sep { color: #3d3a5e; }
+
+/* ---------------------------------------------------------------------------
+   The card in the middle
+   --------------------------------------------------------------------------- */
+
+.latent-card {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  width: min(40rem, 90vw);
+  max-height: 78vh;
+  overflow: hidden;
+  text-align: center;
+  pointer-events: none;
+  text-shadow: 0 0 18px rgba(2, 0, 8, 0.95), 0 0 30px rgba(2, 0, 8, 0.7);
 }
 
-.social-separator {
-  color: #555577;
-  font-family: 'Space Mono', monospace;
-  opacity: 0.5;
+.latent-card a,
+.latent-card button { pointer-events: auto; }
+
+.latent-card.in {
+  animation: latent-card-in 0.7s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
-.social-link {
+@keyframes latent-card-in {
+  from { opacity: 0; transform: translate(-50%, calc(-50% + 10px)); }
+  to { opacity: 1; transform: translate(-50%, -50%); }
+}
+
+.latent-card__tag {
+  margin: 0 0 1.4rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: hsl(var(--hue, 220), 60%, 78%);
+}
+
+.latent-card__tag::before { content: "// "; opacity: 0.5; }
+
+.latent-card__body {
+  color: var(--ink);
+  font-size: clamp(1rem, 1.3vw, 1.18rem);
+  line-height: 1.85;
+  letter-spacing: 0.01em;
+}
+
+.latent-card__body p { margin: 0.55rem 0; }
+
+.lx { display: inline; }
+
+.lx.dec {
+  color: hsl(var(--hue, 220), 70%, 80%);
+  opacity: 0.85;
+}
+
+/* per-kind typography — manifesto */
+.k-quote .px-row {
   font-family: 'Cinzel', serif;
-  font-size: 0.9rem;
+  font-size: clamp(1.5rem, 3.6vw, 2.3rem);
+  line-height: 1.3;
+  color: #fff;
+}
+
+.k-lead .px-row {
+  font-size: clamp(1.15rem, 1.9vw, 1.5rem);
+  color: #ece8ff;
+  letter-spacing: 0.02em;
+}
+
+.k-verdict .px-row {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(1.7rem, 4.4vw, 2.8rem);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fff;
+  text-shadow: 0 0 24px hsla(var(--hue, 340), 90%, 65%, 0.55), 0 0 30px rgba(2, 0, 8, 0.9);
+}
+
+.k-stack .sx-row {
+  margin: 0.4rem 0;
+  color: #d6d4f4;
+  line-height: 1.6;
+}
+
+.k-couplets {
+  display: grid;
+  gap: 0.7rem;
+  max-width: 34rem;
+  margin: 0 auto;
+}
+
+.cx-row {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1.4rem;
+  align-items: baseline;
+  text-align: left;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px dashed hsla(var(--hue, 280), 50%, 70%, 0.22);
+}
+
+.cx-a { color: #9b98c4; }
+
+.cx-b {
+  color: #fff;
+  text-align: right;
+}
+
+/* per-kind typography — index */
+.entry-eyebrow {
+  margin: 0 0 0.7rem;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: hsl(var(--hue, 220), 80%, 78%);
+}
+
+.entry-name {
+  margin: 0 0 0.9rem;
+  font-size: clamp(1.6rem, 4.2vw, 2.4rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: #fff;
+}
+
+.entry-mail {
+  font-size: clamp(1.1rem, 3vw, 1.7rem);
+  letter-spacing: -0.01em;
+}
+
+.entry-desc {
+  margin: 0 auto 1.5rem;
+  max-width: 32rem;
+  font-size: 0.92rem;
+  line-height: 1.75;
+  color: #b9b6d8;
+}
+
+.portal-name {
+  margin: 0 0 0.8rem;
+  font-family: 'Cinzel', serif;
+  font-size: clamp(1.7rem, 4.4vw, 2.8rem);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #fff;
+  text-shadow: 0 0 24px hsla(var(--hue, 256), 90%, 65%, 0.45), 0 0 30px rgba(2, 0, 8, 0.9);
+}
+
+.portal-note {
+  margin: 0 auto 1.6rem;
+  max-width: 26rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  line-height: 1.8;
+  color: var(--ink-faint);
+}
+
+.entry-link {
+  display: inline-block;
+  margin: 0;
+  padding: 0.5rem 1.1rem;
+  font-family: 'Space Mono', ui-monospace, monospace;
+  font-size: 0.68rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #aaaaff;
   text-decoration: none;
-  transition: all 0.3s ease;
-  position: relative;
+  color: hsl(var(--hue, 220), 65%, 82%);
+  background: rgba(6, 4, 18, 0.55);
+  border: 1px solid hsla(var(--hue, 220), 60%, 70%, 0.28);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
 }
 
-.social-link::after {
-  content: '';
-  position: absolute;
-  width: 100%;
-  transform: scaleX(0);
-  height: 1px;
-  bottom: -4px;
-  left: 0;
-  background-color: #fff;
-  transform-origin: bottom right;
-  transition: transform 0.25s ease-out;
-}
-
-.social-link:hover,
-.social-link:focus-visible {
+.entry-link:hover,
+.entry-link:focus-visible {
   color: #fff;
-  text-shadow: 0 0 8px #fff, 0 0 15px #aaaaff;
+  border-color: hsla(var(--hue, 220), 70%, 75%, 0.75);
+  background: hsla(var(--hue, 220), 60%, 40%, 0.18);
+  box-shadow: 0 0 20px hsla(var(--hue, 220), 70%, 60%, 0.25);
+  outline: none;
 }
 
-.social-link:hover::after,
-.social-link:focus-visible::after {
-  transform: scaleX(1);
-  transform-origin: bottom left;
-  box-shadow: 0 0 8px #fff;
+.latent-card__near {
+  margin: 1.6rem 0 0;
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  color: var(--ink-faint);
+  text-transform: uppercase;
 }
 
-.hint {
-  justify-self: end;
-  align-self: end;
-  font-size: 0.75rem;
-  color: #777799;
-  letter-spacing: 0.1em;
+.latent-card__near .near-sim { color: #b6a6e8; }
+.latent-card__near .near-dot { margin: 0 0.4rem; opacity: 0.5; }
+.latent-card__near::before { content: "≈ "; opacity: 0.5; }
+
+/* Wide screens split the composition: the lit point on the left, the card
+   ranged against it on the right. Nothing overlaps, and the eye travels from
+   the light to the words. */
+@media (min-width: 900px) {
+  #home-card {
+    left: auto;
+    right: clamp(2rem, 7vw, 7rem);
+    width: min(32rem, 42vw);
+    max-height: 70vh;
+    transform: translateY(-50%);
+    text-align: left;
+  }
+
+  #home-card.in { animation-name: card-in-ranged; }
+
+  #home-card .entry-desc,
+  #home-card .portal-note { margin-left: 0; }
+
+  .veil-card {
+    left: auto;
+    right: 0;
+    width: min(52rem, 62vw);
+    transform: translateY(-50%);
+    background: radial-gradient(closest-side, rgba(2, 0, 8, 0.9), rgba(2, 0, 8, 0.62) 50%, rgba(2, 0, 8, 0) 100%);
+  }
+}
+
+@keyframes card-in-ranged {
+  from { opacity: 0; transform: translateY(calc(-50% + 10px)); }
+  to { opacity: 1; transform: translateY(-50%); }
+}
+
+/* ---------------------------------------------------------------------------
+   Thread nav, minimap, hint
+   --------------------------------------------------------------------------- */
+
+.latent-nav {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(1.4rem, 4vw, 2.6rem);
+  transform: translateX(-50%);
+  z-index: 7;
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  pointer-events: auto;
+}
+
+.latent-nav button {
+  /* flex: none keeps them perfect circles — without it the row squishes
+     them horizontally on narrow screens and they render as ovals. */
+  flex: 0 0 auto;
+  width: 2.6rem;
+  height: 2.6rem;
+  aspect-ratio: 1 / 1;
+  display: grid;
+  place-items: center;
+  position: relative;
+  font-size: 1rem;
+  color: #aab0ff;
+  background: var(--plate);
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease,
+    transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* a hairline ring that quietly draws inward on hover — restrained, not loud */
+.latent-nav button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(170, 140, 255, 0);
+  transition: inset 0.5s ease, border-color 0.5s ease;
   pointer-events: none;
-  opacity: 0.7;
+}
+
+.latent-nav button:hover,
+.latent-nav button:focus-visible {
+  color: #f2f0ff;
+  border-color: rgba(170, 140, 255, 0.55);
+  box-shadow: 0 0 22px rgba(136, 170, 255, 0.25);
+  transform: scale(1.06);
+  outline: none;
+}
+
+.latent-nav button:hover::before,
+.latent-nav button:focus-visible::before {
+  inset: 4px;
+  border-color: rgba(190, 165, 255, 0.4);
+}
+
+.latent-nav__thread {
+  font-size: 0.6rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+
+.latent-map {
+  position: absolute;
+  right: clamp(1rem, 3vw, 2rem);
+  bottom: clamp(1rem, 3vw, 2rem);
+  z-index: 6;
+  width: 130px;
+  height: 130px;
+  border: 1px solid rgba(136, 170, 255, 0.18);
+  border-radius: 6px;
+  background: rgba(3, 2, 12, 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  pointer-events: none;
+}
+
+.latent-hint {
+  position: absolute;
+  left: clamp(1rem, 3vw, 2rem);
+  bottom: clamp(1rem, 3vw, 2rem);
+  z-index: 6;
+  margin: 0;
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  color: var(--ink-faint);
+  pointer-events: none;
 }
 
 kbd {
-  border: 1px solid #555577;
+  border: 1px solid #3c3a5c;
   border-radius: 2px;
   padding: 0.1rem 0.4rem;
   font-family: inherit;
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   background: transparent;
-  color: #9999bb;
+  color: #8a87b0;
+}
+
+/* ---------------------------------------------------------------------------
+   Manifesto overlay
+   --------------------------------------------------------------------------- */
+
+.latent {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  overflow: hidden;
+  background:
+    radial-gradient(120% 120% at 50% 40%, rgba(10, 6, 26, 0.4), rgba(1, 0, 5, 0.96) 70%),
+    #010005;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.latent.is-open { opacity: 1; }
+.latent[hidden] { display: none; }
+
+.latent::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background: radial-gradient(125% 100% at 50% 50%, transparent 52%, rgba(1, 0, 5, 0.88) 100%);
+}
+
+#latent-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: grab;
+  touch-action: none;
+}
+
+#latent-canvas.grabbing { cursor: grabbing; }
+
+.latent-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}
+
+/* a soft veil so the focused fragment text stays legible over the cloud */
+.latent-card-glow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(58rem, 96vw);
+  height: min(42rem, 70vh);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 3;
+  background: radial-gradient(closest-side, rgba(2, 0, 8, 0.88), rgba(2, 0, 8, 0.6) 45%, rgba(2, 0, 8, 0) 100%);
+}
+
+.latent-close {
+  position: absolute;
+  top: clamp(1rem, 3vw, 2rem);
+  right: clamp(1rem, 3vw, 2rem);
+  z-index: 7;
+  width: 2.25rem;
+  height: 2.25rem;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  font-family: 'Space Mono', ui-monospace, monospace;
+  font-size: 0.95rem;
+  color: #aaaaff;
+  background: rgba(0, 0, 10, 0.5);
+  border: 1px solid rgba(170, 140, 255, 0.3);
+  border-radius: 50%;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.latent-close:hover,
+.latent-close:focus-visible {
+  color: #fff;
+  border-color: rgba(170, 140, 255, 0.8);
+  box-shadow: 0 0 14px rgba(136, 170, 255, 0.45);
+  transform: rotate(90deg);
+  outline: none;
+}
+
+/* ---------------------------------------------------------------------------
+   Index sheet — the flattened projection
+   --------------------------------------------------------------------------- */
+
+.sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: rgba(1, 0, 5, 0.86);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.sheet.is-open { opacity: 1; }
+.sheet[hidden] { display: none; }
+
+.sheet-inner {
+  width: min(52rem, 100%);
+  margin: 0 auto;
+  padding: clamp(1.5rem, 5vw, 4rem) clamp(1.2rem, 4vw, 2.5rem) 6rem;
+}
+
+.sheet-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.8rem;
+  padding-bottom: 1.2rem;
+  border-bottom: 1px solid rgba(136, 170, 255, 0.14);
+}
+
+.sheet-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: #e9e6ff;
+}
+
+.sheet-sub {
+  flex: 1;
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #7d7aa6;
+}
+
+.sheet-close {
+  flex: 0 0 auto;
+  width: 2rem;
+  height: 2rem;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  font-family: inherit;
+  font-size: 0.9rem;
+  color: #aaaaff;
+  background: none;
+  border: 1px solid rgba(170, 140, 255, 0.3);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+}
+
+.sheet-close:hover,
+.sheet-close:focus-visible {
+  color: #fff;
+  border-color: rgba(170, 140, 255, 0.8);
+  transform: rotate(90deg);
+  outline: none;
+}
+
+.sheet-group { margin: 2.4rem 0 0; }
+
+.sheet-group h2 {
+  margin: 0 0 0.9rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: hsl(var(--hue), 60%, 74%);
+}
+
+.sheet-group ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid rgba(136, 170, 255, 0.1);
+}
+
+.sheet-group li { border-bottom: 1px solid rgba(136, 170, 255, 0.1); }
+
+.sheet-row {
+  display: grid;
+  grid-template-columns: 9rem 1fr;
+  gap: 1.2rem;
+  align-items: baseline;
+  padding: 0.85rem 0.4rem;
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.25s ease;
+}
+
+.sheet-group a:hover,
+.sheet-group a:focus-visible {
+  background: hsla(var(--hue), 60%, 50%, 0.08);
+  outline: none;
+}
+
+.sheet-key {
+  font-size: 0.88rem;
+  color: hsl(var(--hue), 55%, 80%);
+  letter-spacing: -0.01em;
+}
+
+.sheet-val {
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: #a5a2c6;
+}
+
+.sheet-group a .sheet-key::after {
+  content: " ↗";
+  opacity: 0.45;
+  font-size: 0.7em;
+}
+
+/* ---------------------------------------------------------------------------
+   Dossier — the one surface here that is a reading problem, not a camera one.
+
+   It borrows the sheet's plate and transition, then narrows the column and
+   slows everything down. Each project's cluster hue runs through the headings,
+   the spine and the chips, so a page reached cold from a README still belongs
+   to the same space.
+   --------------------------------------------------------------------------- */
+
+/* The index sheet is a glance, so it can afford to let the field ghost through
+   at 0.86. A dossier is a long read, and the HUD printing faintly behind the
+   prose — a name, a readout, the card you left behind — is just noise you
+   cannot switch off. This one goes opaque. */
+/* Two classes on purpose. The coarse-pointer block below drops `.sheet` back to
+   a translucent plate, and a single-class rule here would lose to it — taking
+   the wash with it and letting the field ghost through on exactly the devices
+   where reading is hardest. */
+.sheet.dossier {
+  --hue: 220;
+  /* A wash of the project's own hue at the top edge, so the page has a cast
+     before you have read a word of it. */
+  background:
+    radial-gradient(130% 70% at 50% 0%, hsla(var(--hue), 60%, 32%, 0.15), transparent 62%),
+    #010005;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* The grain is a fixed layer elsewhere on the page and an opaque sheet covers
+   it, so the dossier carries its own. Fixed inside the scroller means it does
+   not move with the text and never repaints. */
+.dossier::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}
+
+.dossier-inner {
+  position: relative;
+  z-index: 1;
+  width: min(46rem, 100%);
+  padding-bottom: 5rem;
+}
+
+.dossier-tagline {
+  margin: 2.2rem 0 0;
+  font-size: clamp(1.15rem, 2.4vw, 1.5rem);
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  color: #fff;
+  text-wrap: balance;
+}
+
+.dossier-etym {
+  margin: 0.7rem 0 0;
+  font-size: 0.66rem;
+  letter-spacing: 0.2em;
+  text-transform: lowercase;
+  color: hsl(var(--hue), 45%, 68%);
+}
+
+.dossier-etym::before { content: "— "; opacity: 0.5; }
+
+/* Two columns on anything wider than a phone: the key sets its own width and
+   the values line up, which is the whole point of a spec table. */
+.dossier-meta {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.35rem 1.4rem;
+  margin: 1.8rem 0 0;
+  font-size: 0.72rem;
+  line-height: 1.6;
+}
+
+.dossier-meta dt {
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.dossier-meta dd {
+  margin: 0;
+  color: #b9b6d8;
+}
+
+.dossier-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 1.9rem 0 0;
+}
+
+.dossier-block {
+  margin: 2.9rem 0 0;
+  padding-left: 1.4rem;
+  border-left: 1px solid hsla(var(--hue), 55%, 65%, 0.22);
+}
+
+.dossier-block h2 {
+  margin: 0 0 1rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: hsl(var(--hue), 60%, 74%);
+}
+
+.dossier-p {
+  margin: 0;
+  max-width: 38rem;
+  font-size: 0.86rem;
+  line-height: 1.95;
+  color: #c2bfe2;
+}
+
+/* Each decision is a small labelled unit — the label carries the idea, the
+   paragraph carries the reason. Skimming the labels alone should work. */
+.dossier-points {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 1.6rem;
+}
+
+.dossier-points h3 {
+  margin: 0 0 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: hsl(var(--hue), 50%, 84%);
+}
+
+.dossier-points p {
+  margin: 0;
+  max-width: 38rem;
+  font-size: 0.82rem;
+  line-height: 1.9;
+  color: #a8a5cb;
+}
+
+.dossier-code {
+  margin: 0;
+  padding: 1.1rem 1.2rem;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  background: rgba(5, 3, 16, 0.75);
+  border: 1px solid hsla(var(--hue), 50%, 65%, 0.2);
+  border-radius: 4px;
+  font-size: 0.74rem;
+  line-height: 1.8;
+  color: #b6b3d6;
+  -webkit-overflow-scrolling: touch;
+}
+
+.dossier-code code {
+  font-family: 'Space Mono', ui-monospace, monospace;
+  white-space: pre;
+}
+
+/* Neighbours keep their own hue, not the host page's — a link out of the
+   systems cluster should already look like it lands somewhere else. */
+.dossier-related {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.dossier-chip {
+  --hue: 220;
+  padding: 0.35rem 0.85rem;
+  font-family: 'Space Mono', ui-monospace, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  color: hsl(var(--hue), 55%, 80%);
+  background: none;
+  border: 1px solid hsla(var(--hue), 50%, 65%, 0.28);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+}
+
+.dossier-chip::before { content: "→ "; opacity: 0.5; }
+
+.dossier-chip:hover,
+.dossier-chip:focus-visible {
+  color: #fff;
+  border-color: hsla(var(--hue), 60%, 70%, 0.7);
+  background: hsla(var(--hue), 60%, 45%, 0.14);
+  outline: none;
+}
+
+.dossier-thread {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 4rem 0 0;
+  padding-top: 1.4rem;
+  border-top: 1px solid rgba(136, 170, 255, 0.12);
+}
+
+.dossier-step {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  padding: 0.4rem 0;
+  font-family: 'Space Mono', ui-monospace, monospace;
+  font-size: 0.78rem;
+  color: var(--ink-dim);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.dossier-step--next { flex-direction: row-reverse; }
+
+.dossier-step:hover,
+.dossier-step:focus-visible {
+  color: #fff;
+  outline: none;
+}
+
+.dossier-step__g { opacity: 0.6; }
+
+/* Internal rows go deeper into the site rather than out of it, so they must
+   not wear the outbound arrow. */
+.sheet-group a.sheet-row--in .sheet-key::after {
+  content: " →";
+  opacity: 0.4;
+}
+
+.entry-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin: 0;
+}
+
+/* Two pills side by side need a primary. The repo link steps back. */
+.entry-link--quiet {
+  color: var(--ink-dim);
+  border-color: rgba(136, 170, 255, 0.16);
+  background: none;
+}
+
+@media (min-width: 900px) {
+  #home-card .entry-actions { justify-content: flex-start; }
+}
+
+@media (max-width: 899px) {
+  .entry-actions { justify-content: center; }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------------------------------------------------------------------------
+   Phones
+   --------------------------------------------------------------------------- */
+
+/* Blurring behind an element that sits over an animating canvas forces the
+   compositor to re-blur the region every single frame. On a phone that is the
+   single most expensive thing on the page — trade it for opaque plates. */
+@media (max-width: 760px), (pointer: coarse) {
+  .latent-close,
+  .latent-nav button,
+  .latent-map,
+  .sheet {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .latent-close { background: rgba(5, 3, 16, 0.85); }
+  .latent-nav button { background: rgba(8, 6, 22, 0.85); }
+  .latent-map { background: rgba(3, 2, 12, 0.85); }
+  .sheet { background: rgba(1, 0, 5, 0.97); }
+
+  .latent-grain,
+  .dossier::before,
+  .grain { display: none; }
+
+  /* One shadow instead of two. The card repaints on every step of the decode;
+     each blurred shadow is another full-text repaint at that size. */
+  .latent-card { text-shadow: 0 0 14px rgba(2, 0, 8, 0.95); }
 }
 
 @media (max-width: 700px) {
-  .hud {
-    grid-template-rows: auto auto auto auto 1fr;
-    gap: 2rem;
+  .latent-card {
+    width: 92vw;
+    max-height: 60vh;
   }
 
-  .project-list {
-    align-self: end;
-  }
-  
-  .social-list {
-    margin-top: 0;
+  .latent-hud--top { max-width: 70vw; }
+
+  .whisper {
+    font-size: 0.55rem;
+    letter-spacing: 0.26em;
   }
 
-  .hint {
-    justify-self: center;
-    align-self: end;
+  .name { margin-bottom: 0.6rem; }
+
+  .cx-row {
+    grid-template-columns: 1fr;
+    gap: 0.15rem;
   }
+
+  .cx-b { text-align: left; }
+
+  .latent-map {
+    width: 84px;
+    height: 84px;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 1rem);
+  }
+
+  .latent-readout { font-size: 0.56rem; }
+
+  .latent-hint { display: none; }
+
+  .latent-nav { bottom: calc(env(safe-area-inset-bottom, 0px) + 1rem); }
+
+  /* the arrows are self-evident, and the label pushed the row into the minimap */
+  .latent-nav__thread { display: none; }
+
+  .latent-card__body { overflow-wrap: break-word; }
+
+  .k-lead .px-row { font-size: 1.05rem; }
+
+  /* the card clips at 78vh, and the home field's stack is five full sentences */
+  #home-card .k-stack .sx-row { font-size: 0.88rem; line-height: 1.5; }
+
+  .entry-desc { font-size: 0.85rem; }
+
+  .sheet-row {
+    grid-template-columns: 1fr;
+    gap: 0.2rem;
+  }
+
+  /* A 9rem key column and a two-column spec table both stop working here. */
+  .dossier-meta {
+    grid-template-columns: 1fr;
+    gap: 0.1rem 0;
+  }
+
+  .dossier-meta dd { margin-bottom: 0.7rem; }
+
+  .dossier-block {
+    padding-left: 0.9rem;
+  }
+
+  .dossier-code { font-size: 0.68rem; }
+
+  /* Tracked-out lowercase over three wrapped lines is unreadable at this width. */
+  .dossier-etym { letter-spacing: 0.1em; }
+
+  .dossier-step__n { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .latent-card.in { animation: none; }
+  .latent-close:hover { transform: none; }
+  .latent-nav button:hover,
+  .latent-nav button:focus-visible { transform: scale(1.04); }
+  .name-char { transition: none; }
 }
