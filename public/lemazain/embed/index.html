@@ -15,7 +15,18 @@
 </style>
 </head>
 <body>
-<div class="embed"><div class="kwin" data-kwin data-cycle data-state="pods" role="img" aria-label="lemazain showing a live pod table, a filter for problems, the inspector, streaming logs, the command palette and the Problems view"></div></div>
+<div class="embed"><div class="kwin" data-kwin data-state="pods" id="stage-win" role="img" aria-label="lemazain walking through live tables, filters, problems, the inspector, logs, the palette and the production guard"></div></div>
+<script>
+  const embed = document.querySelector(".embed");
+  const fit = () => {
+    const s = innerWidth < 600 ? 1 : Math.min(1, innerWidth / 1080);
+    embed.style.zoom = s;
+    embed.style.width = `${innerWidth / s}px`;
+    embed.style.height = `${innerHeight / s}px`;
+  };
+  fit();
+  addEventListener("resize", fit);
+</script>
 <script src="/lemazain/win.js" defer></script>
 </body>
 </html>

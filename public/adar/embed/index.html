@@ -15,7 +15,18 @@
 </style>
 </head>
 <body>
-<div class="embed"><div class="awin" data-awin data-cycle data-state="inbox" role="img" aria-label="adar showing the review inbox, a diff, graded checks, an agent reviewing the pull request in a terminal, the command palette and notifications"></div></div>
+<div class="embed"><div class="awin" data-awin data-state="inbox" id="stage-win" role="img" aria-label="adar walking through the inbox, the diff, checks, an agent terminal, the code explorer, the palette and notifications"></div></div>
+<script>
+  const embed = document.querySelector(".embed");
+  const fit = () => {
+    const s = innerWidth < 600 ? 1 : Math.min(1, innerWidth / 1080);
+    embed.style.zoom = s;
+    embed.style.width = `${innerWidth / s}px`;
+    embed.style.height = `${innerHeight / s}px`;
+  };
+  fit();
+  addEventListener("resize", fit);
+</script>
 <script src="/adar/win.js" defer></script>
 </body>
 </html>

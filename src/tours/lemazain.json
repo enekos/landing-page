@@ -1,0 +1,44 @@
+[
+  {
+    "state": "pods",
+    "tag": "Live tables",
+    "head": "Every kind, including the CRDs you forgot you had.",
+    "body": "The sidebar is built from the cluster's own discovery, and rows come from the API server's Table projection, so a Kafka topic or a cert-manager Certificate gets the same columns kubectl get shows. A watch updates rows in place as pods come and go."
+  },
+  {
+    "state": "filter",
+    "tag": "Filter",
+    "head": "Ask for exactly the rows you mean.",
+    "body": "ns:payments, app=web, tier!=db, node:pool-b, is:problem, -job. Terms combine, the counts on the health chips follow along, and a single keystroke narrows twelve thousand pods to the three that matter."
+  },
+  {
+    "state": "problems",
+    "tag": "Problems",
+    "head": "What is broken, across every namespace, on one screen.",
+    "body": "Crash loops, image pull failures, OOM kills, pods stuck pending or terminating, rollouts past their deadline, unready or pressured nodes, failed jobs and unbound claims, grouped by cause with a sentence on what usually fixes each one. Every row opens the object."
+  },
+  {
+    "state": "inspect",
+    "tag": "Inspector",
+    "head": "Follow the chain without typing a name.",
+    "body": "Containers with live usage, conditions, rollout state, decoded Secrets, the pods behind a Service. The owner is a link: pod to ReplicaSet to Deployment, and a node opens the pods scheduled on it."
+  },
+  {
+    "state": "logs",
+    "tag": "Logs",
+    "head": "All containers, interleaved, with the errors in red.",
+    "body": "Stream one container or every container of the pod in time order, filter by text or level, and see matches highlighted. Follow pauses the moment you scroll up and resumes with one click. Previous shows the run that crashed."
+  },
+  {
+    "state": "palette",
+    "tag": "⌘K",
+    "head": "Jump to anything.",
+    "body": "Kinds, loaded objects, namespaces, contexts, problems and actions on the selection, ranked as you type. > for actions, # for namespaces, @ for contexts, ! for problems, and : for k9s-style commands like :deploy payments app=web @eu-prod."
+  },
+  {
+    "state": "guard",
+    "tag": "Guardrails",
+    "head": "Production is read-only until you unlock it.",
+    "body": "Contexts that look like production open locked, tinted red, and ask before they unlock. Deleting on production, or more than three objects anywhere, makes you type what you are about to do."
+  }
+]

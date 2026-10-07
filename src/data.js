@@ -72,17 +72,17 @@ const homeItems = [
   {
     cluster: "self", label: "eneko", kind: "lead",
     lines: [
-      "I build software and work with language models. Mostly reference archives, and the small tools that keep them standing.",
+      "Hi, I'm Eneko. I write software for a living, and in my spare time I look after two online encyclopedias and build the small Mac apps I wanted for my own work.",
     ],
   },
   {
     cluster: "self", label: "why", kind: "stack",
     lines: [
-      "Encyclopedias, because a language without reference works loses arguments it should win.",
-      "No dependencies, because I want to understand every line I ship.",
-      "Single binaries, because software should still run in ten years, on someone else's machine.",
-      "Everything on the reader's own device, because nobody should be profiled for reading.",
-      "And built for agents, because the next reader will not be a person.",
+      "Encyclopedias, because a language needs good reference works, and I can write some of them.",
+      "No dependencies, because I like understanding every line I ship.",
+      "Single binaries, because I'd like these to still run in ten years, on someone else's machine.",
+      "Everything on your own device, because what you read is nobody's business but yours.",
+      "And easy for AI agents to read, because more and more of the readers are programs.",
     ],
   },
 
@@ -90,7 +90,7 @@ const homeItems = [
     cluster: "archive", label: "gizapedia", kind: "entry", flagship: true,
     href: "https://gizapedia.org",
     eyebrow: "live · ~21,000 pages",
-    lines: ["Open encyclopedia of the human and social sciences, in Basque. Long-form articles and an 11,000-entry dictionary, written and maintained by one person."],
+    lines: ["Open encyclopedia of the human and social sciences, in Basque. Long-form articles and an 11,000-entry dictionary, written and maintained by me."],
   },
   {
     cluster: "archive", label: "ikusmira", kind: "entry", flagship: true,
@@ -102,17 +102,17 @@ const homeItems = [
   {
     cluster: "self", label: "barcelona", kind: "p",
     lines: [
-      "Over a decade developing web applications and systems in Barcelona, across EdTech, FinTech and HR tech.",
+      "I've been building web apps and backends in Barcelona for over ten years, in education, finance and HR software.",
     ],
   },
   {
     cluster: "self", label: "analog", kind: "p",
-    lines: ["Away from the keyboard I shoot and develop analog film."],
+    lines: ["Away from the keyboard, I shoot analog film and develop it myself."],
   },
   {
     cluster: "self", label: "contact", kind: "contact",
     lines: ["enekos [at] duck.com"],
-    note: "Reach out — I answer.",
+    note: "Say hi. I reply.",
   },
 
   {
@@ -178,6 +178,22 @@ const homeItems = [
 ];
 
 export const homeNodes = build(homeClusters, homeItems, 0);
+
+const hue = (cluster) => homeClusters[cluster].hue;
+export const basqueNames = [
+  { word: "lemazain", gloss: "helmsman", what: "a Kubernetes app", href: "#app-lemazain", x: -300, y: -540, big: true, hue: hue("self") },
+  { word: "taula", gloss: "table", what: "a Postgres & SQLite app", href: "#app-taula", x: 330, y: -500, big: true, hue: hue("self") },
+  { word: "adar", gloss: "branch", what: "a pull-request app", href: "#app-adar", x: -80, y: -330, big: true, hue: hue("self") },
+  { word: "arrano", gloss: "eagle", what: "pull requests in the terminal", href: "#docs/arrano", x: 440, y: -290, hue: hue("tooling") },
+  { word: "gizapedia", gloss: "giza: human, of people", what: "an encyclopedia in Basque", href: "#p/gizapedia", x: -150, y: -100, big: true, hue: hue("archive") },
+  { word: "bidali", gloss: "to send", what: "an HTTP client", href: "#app-bidali", x: 320, y: -120, big: true, hue: hue("self") },
+  { word: "bikote", gloss: "pair, couple", what: "a data workspace, in beta", href: "#bikote", x: -230, y: 150, big: true, hue: hue("systems") },
+  { word: "aatxe", gloss: "the red bull of the caves", what: "a benchmark harness", href: "#p/aatxe", x: 60, y: 100, hue: hue("tooling") },
+  { word: "artzain", gloss: "shepherd", what: "a small orchestrator", href: "#p/artzain", x: 450, y: 130, hue: hue("systems") },
+  { word: "ikusmira", gloss: "outlook, perspective", what: "an archive in Spanish", href: "#p/ikusmira", x: -60, y: 430, big: true, hue: hue("archive") },
+  { word: "sutegi", gloss: "forge", what: "a Rust web framework", href: "#p/sutegi", x: 360, y: 400, hue: hue("systems") },
+];
+
 
 // The self cluster is the origin the name is measured against — drift away from
 // it and the identity in the corner starts to come apart.

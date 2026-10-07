@@ -1,6 +1,6 @@
 # hirusta-early-access
 
-Early-access sign-ups for lemazain, Taula and adar. One Worker, one D1 table.
+Early-access sign-ups for lemazain, Taula, adar and bidali, and bikote beta invites. One Worker, one D1 table.
 
 - `POST /api/early-access` `{email, apps: ["taula", …], source, company}`. `company` is a honeypot: when it's filled in, the Worker answers 200 and stores nothing.
 - `GET /api/early-access/export` with `Authorization: Bearer $ADMIN_TOKEN` returns every sign-up as a CSV.
@@ -24,6 +24,13 @@ Deployed on 2026-09-28 to https://hirusta-early-access.begiarenhezurra.workers.d
 npx wrangler deploy
 npx wrangler d1 execute hirusta-early-access --remote --command "SELECT * FROM signups ORDER BY created_at"
 curl -H "Authorization: Bearer $ADMIN_TOKEN" https://hirusta-early-access.begiarenhezurra.workers.dev/api/early-access/export
+```
+
+Adding an app means widening the `CHECK` on `signups.app`, which SQLite can only do by rebuilding the table: apply the migration before deploying the Worker that accepts the new name.
+
+```sh
+npx wrangler d1 execute hirusta-early-access --remote --file migrations/0001-allow-bidali.sql
+npx wrangler d1 execute hirusta-early-access --remote --file migrations/0002-allow-bikote.sql
 ```
 
 `PROXY_TOKEN` is only needed if Apache ever proxies `/api/early-access` on hirusta.io. In that case Apache has to send `X-Real-IP` and `X-Proxy-Token`, because behind a proxy `cf-connecting-ip` is the droplet's own address.

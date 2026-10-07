@@ -1,0 +1,44 @@
+[
+  {
+    "state": "browse",
+    "tag": "Data",
+    "head": "Open a table and start reading.",
+    "body": "Tables grouped by schema in the sidebar. A WHERE box for filters, click a header to sort, scroll for more rows. Foreign keys are marked, and a right-click on one jumps to the row it points at."
+  },
+  {
+    "state": "edit",
+    "tag": "Edits are staged",
+    "head": "Nothing is written until you read the SQL.",
+    "body": "Change cells, insert rows, delete rows. It all stays pending until you press ⌘S and see the exact statements Taula is about to run. Every commit lands in a journal with its inverse, so one click undoes it."
+  },
+  {
+    "state": "guard",
+    "tag": "Guardrails",
+    "head": "A DELETE without a WHERE stops and asks.",
+    "body": "Taula knows the statements that end badly — UPDATE or DELETE with no WHERE, TRUNCATE, DROP TABLE — and makes you confirm before one runs. On a connection you marked production it asks twice and snapshots the table first, so there is something to go back to."
+  },
+  {
+    "state": "command",
+    "tag": "⌘K",
+    "head": "Everything is one keystroke away.",
+    "body": "Tables, columns, snippets, query history, databases, connections, and actions in one fuzzy bar. Type SQL straight into it and get results inline, without opening a tab."
+  },
+  {
+    "state": "agent",
+    "tag": "Assistant",
+    "head": "Ask in plain language. It runs on your Mac.",
+    "body": "The assistant inspects your schema, writes the query, and shows you the rows. Anything that would write data comes back as a proposal you approve. The model runs locally with llama.cpp, so nothing leaves the machine and there is no key to paste."
+  },
+  {
+    "state": "journal",
+    "tag": "Change journal",
+    "head": "Every write is stored with its inverse.",
+    "body": "Each commit — from the grid, from a script, from a proposal you approved — is journaled next to the SQL that undoes it. Open it with ⌘K, read what actually happened, and put one entry back without going looking for a backup."
+  },
+  {
+    "state": "relations",
+    "tag": "Relations",
+    "head": "See how the tables fit together.",
+    "body": "Every foreign key drawn as an edge. Click a table to focus its relations, double-click to open it. Schema diff and data diff live one menu away when two databases have drifted."
+  }
+]

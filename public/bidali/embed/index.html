@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>taula window</title>
-<link rel="stylesheet" href="/taula/site.css">
+<title>bidali window</title>
+<link rel="stylesheet" href="/bidali/win.css">
 <style>
   html,body{margin:0;background:transparent;overflow:hidden}
   body{padding:0}
@@ -14,7 +14,7 @@
 </style>
 </head>
 <body>
-<div class="embed"><div class="win" data-state="browse" data-win id="stage-win" role="img" aria-label="Taula window walking through browsing, staged edits, guardrails, the command bar, the assistant, the change journal and relations"></div></div>
+<div class="embed"><div class="bwin" data-bwin data-state="request" id="stage-win" role="img" aria-label="bidali walking through a request and its response, scripts and tests, the timing timeline, the collection runner, environments, the command palette and pasting a curl command"></div></div>
 <script>
   const embed = document.querySelector(".embed");
   const fit = () => {
@@ -26,7 +26,6 @@
   fit();
   addEventListener("resize", fit);
 </script>
-<script src="/taula/win.js" defer></script>
-<script src="/taula/live.js" defer></script>
+<script src="/bidali/win.js" defer></script>
 </body>
 </html>

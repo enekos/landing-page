@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { defineConfig } from "vite";
 
 const APPS = ["lemazain", "taula", "adar"];
+const FOLDERS = [...APPS, "bidali"];
 
 const BACKEND = Object.fromEntries(APPS.map((a) => [a, `https://${a}.pages.dev`]));
 
@@ -11,7 +12,7 @@ const folderIndex = () => ({
   configureServer(server) {
     server.middlewares.use((req, _res, next) => {
       const [path, query = ""] = req.url.split("?");
-      const app = APPS.find((a) => path === `/${a}` || path.startsWith(`/${a}/`));
+      const app = FOLDERS.find((a) => path === `/${a}` || path.startsWith(`/${a}/`));
       if (app) {
         const dir = path.endsWith("/") ? path : `${path}/`;
         if (existsSync(join(server.config.publicDir, dir, "index.html"))) {
