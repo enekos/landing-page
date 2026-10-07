@@ -19,6 +19,9 @@ const socials = inCluster("signal");
 const arrow = `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>`;
 const out = `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5"/></svg>`;
 
+const expand = `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M10 2.5h3.5V6M6 13.5H2.5V10M13.5 2.5 9 7M2.5 13.5 7 9"/></svg>`;
+const chevron = (d) => `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="${d}"/></svg>`;
+
 const mark = `<img class="mark" src="/giraffe.png" alt="" width="36" height="36">`;
 
 const app = document.querySelector("#app");
@@ -85,7 +88,10 @@ app.innerHTML = `
             <span class="step-n">0${i + 1} / 0${apps.length}</span></div>
           <p class="step-head">${a.headline}</p>
           <p class="step-lede">${a.lede}</p>
-          <div class="win win--inline" aria-hidden="true" data-win="${a.slug}">${windowFor(a.slug)}</div>
+          <div class="player">
+            <div class="win win--inline" aria-hidden="true" data-win="${a.slug}" data-open="${a.slug}">${windowFor(a.slug)}</div>
+            <button type="button" class="win-x" data-open="${a.slug}" aria-label="Watch the ${a.name} tour full screen">${expand}<span>Full screen</span></button>
+          </div>
           <ol class="tour" aria-label="${a.name}, a tour of ${a.tour.length} views">
             ${a.tour.map((t, j) => `
             <li class="tour-i${j === 0 ? " on" : ""}" data-state="${t.state}">
@@ -98,6 +104,9 @@ app.innerHTML = `
               <i class="tour-bar" aria-hidden="true"></i>
             </li>`).join("")}
           </ol>
+          <div class="tour-cap" aria-hidden="true">
+            ${a.tour.map((t, j) => `<p class="${j === 0 ? "on" : ""}"><b>${t.head}</b> ${t.body}</p>`).join("")}
+          </div>
           <dl class="facts">
             <div><dt>Price</dt><dd>${a.free ? "Free" : `${a.price} once`}</dd></div>
             <div><dt>Runs on</dt><dd>${a.requires}</dd></div>
@@ -257,6 +266,20 @@ app.innerHTML = `
     <span class="foot-apps">${apps.map((a) => `<a href="${a.href ?? `#app-${a.slug}`}">${a.name}</a>`).join("")}<a href="#bikote">bikote</a><a href="https://gizapedia.org" target="_blank" rel="noreferrer">gizapedia</a><a href="https://ikusmira.org" target="_blank" rel="noreferrer">ikusmira</a></span>
   </div>
 </footer>
+
+<div class="wx" role="dialog" aria-modal="true" aria-labelledby="wx-name" hidden>
+  <div class="wx-frame">
+    <div class="wx-top">
+      <span class="wx-id"><b id="wx-name"></b><span class="wx-n"></span></span>
+      <span class="wx-k"><b></b><span></span></span>
+      <button type="button" class="wx-b" data-wx="-1" aria-label="Previous view">${chevron("m10 3-5 5 5 5")}</button>
+      <button type="button" class="wx-b" data-wx="1" aria-label="Next view">${chevron("m6 3 5 5-5 5")}</button>
+      <button type="button" class="wx-b wx-close" aria-label="Close">${chevron("M3.5 3.5l9 9M12.5 3.5l-9 9")}</button>
+    </div>
+    <div class="wx-dots" aria-hidden="true"></div>
+    <div class="wx-stage"><div class="win wx-win" aria-hidden="true"></div></div>
+  </div>
+</div>
 `;
 
 const $ = (s, r = document) => r.querySelector(s);
@@ -487,9 +510,17 @@ const capN = $("[data-cap-n]");
 let activeApp = apps[0].slug;
 let appsInView = false;
 
+const mobile = window.matchMedia("(max-width: 900px)");
+const VW = 1080;
+let expanded = null;
+
 const tours = new Map(apps.map((a) => {
   const step = $(`#app-${a.slug}`);
-  return [a.slug, { slug: a.slug, tour: a.tour, step, items: $$(".tour-i", step), index: 0, elapsed: 0, dur: 0, hold: 0 }];
+  return [a.slug, {
+    slug: a.slug, name: a.name, tour: a.tour, step,
+    items: $$(".tour-i", step), caps: $$(".tour-cap p", step), list: $(".tour", step),
+    index: 0, elapsed: 0, dur: 0, hold: 0, seen: false,
+  }];
 }));
 
 const frameState = (iframe, state) => {
@@ -499,6 +530,8 @@ const frameState = (iframe, state) => {
 
 function showScene(slug, index) {
   const t = tours.get(slug);
+  const n = t.tour.length;
+  index = (index + n) % n;
   t.index = index;
   t.elapsed = 0;
   const { state, tag, body } = t.tour[index];
@@ -508,8 +541,14 @@ function showScene(slug, index) {
     li.querySelector(".tour-b").setAttribute("aria-expanded", String(i === index));
     li.querySelector(".tour-bar").style.transform = "scaleX(0)";
   });
+  t.caps.forEach((p, i) => p.classList.toggle("on", i === index));
+  if (mobile.matches) {
+    const li = t.items[index];
+    t.list.scrollTo({ left: li.offsetLeft - (t.list.clientWidth - li.offsetWidth) / 2, behavior: reducedMotion ? "auto" : "smooth" });
+  }
   $$(`[data-win="${slug}"] iframe`).forEach((f) => frameState(f, state));
   if (slug === activeApp) caption(t, tag);
+  if (slug === expanded) wxCaption(t);
 }
 
 function caption(t, tag = t.tour[t.index].tag) {
@@ -517,26 +556,146 @@ function caption(t, tag = t.tour[t.index].tag) {
   capN.textContent = `${String(t.index + 1).padStart(2, "0")} / ${String(t.tour.length).padStart(2, "0")}`;
 }
 
+function onSwipe(el, turned, step, tap) {
+  let x0 = 0;
+  let y0 = 0;
+  let down = false;
+  el.addEventListener("pointerdown", (e) => { down = true; x0 = e.clientX; y0 = e.clientY; });
+  el.addEventListener("pointercancel", () => { down = false; });
+  el.addEventListener("pointerup", (e) => {
+    if (!down) return;
+    down = false;
+    let dx = e.clientX - x0;
+    let dy = e.clientY - y0;
+    if (turned()) [dx, dy] = [dy, -dx];
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.2) step(dx < 0 ? 1 : -1);
+    else if (Math.hypot(dx, dy) < 10) tap?.();
+  });
+}
+
+const fitInline = new ResizeObserver((entries) => {
+  for (const e of entries) e.target.style.setProperty("--k", (e.contentRect.width / VW).toFixed(4));
+});
+
 for (const t of tours.values()) {
   $$(`[data-win="${t.slug}"] iframe`).forEach((f) => f.addEventListener("load", () => frameState(f, t.tour[t.index].state)));
   t.items.forEach((li, i) => li.querySelector(".tour-b").addEventListener("click", () => showScene(t.slug, i)));
-  const tourEl = $(".tour", t.step);
-  tourEl.addEventListener("pointerenter", () => { t.hold |= 1; });
-  tourEl.addEventListener("pointerleave", () => { t.hold &= ~1; });
-  tourEl.addEventListener("focusin", () => { t.hold |= 2; });
-  tourEl.addEventListener("focusout", (e) => { if (!tourEl.contains(e.relatedTarget)) t.hold &= ~2; });
+  t.list.addEventListener("pointerenter", (e) => { if (e.pointerType === "mouse") t.hold |= 1; });
+  t.list.addEventListener("pointerleave", () => { t.hold &= ~1; });
+  t.list.addEventListener("focusin", (e) => { if (e.target.matches(":focus-visible")) t.hold |= 2; });
+  t.list.addEventListener("focusout", (e) => { if (!t.list.contains(e.relatedTarget)) t.hold &= ~2; });
+  const inline = $(".win--inline", t.step);
+  fitInline.observe(inline);
+  onSwipe(inline, () => false, (d) => showScene(t.slug, t.index + d), () => openWx(t.slug));
   showScene(t.slug, 0);
 }
+
+const playerIO = new IntersectionObserver((entries) => {
+  for (const e of entries) tours.get(e.target.closest(".step").dataset.app).seen = e.isIntersecting;
+}, { threshold: 0.5 });
+$$(".player").forEach((p) => playerIO.observe(p));
+
+const playing = (t) => {
+  if (t.hold) return false;
+  if (expanded) return t.slug === expanded;
+  return mobile.matches ? t.seen : appsInView && t.slug === activeApp;
+};
 
 let lastTick = 0;
 if (!reducedMotion) addTask((now) => {
   const dt = lastTick ? Math.min(now - lastTick, 100) : 0;
   lastTick = now;
-  const t = tours.get(activeApp);
-  if (!appsInView || !t || t.hold) return;
-  t.elapsed += dt;
-  t.items[t.index].querySelector(".tour-bar").style.transform = `scaleX(${Math.min(t.elapsed / t.dur, 1)})`;
-  if (t.elapsed >= t.dur) showScene(t.slug, (t.index + 1) % t.tour.length);
+  for (const t of tours.values()) {
+    if (!playing(t)) continue;
+    t.elapsed += dt;
+    const p = Math.min(t.elapsed / t.dur, 1);
+    t.items[t.index].querySelector(".tour-bar").style.transform = `scaleX(${p})`;
+    if (t.slug === expanded) wxDots[t.index]?.style.setProperty("--p", p.toFixed(3));
+    if (t.elapsed >= t.dur) showScene(t.slug, t.index + 1);
+  }
+});
+
+const wx = $(".wx");
+const wxFrame = $(".wx-frame", wx);
+const wxStage = $(".wx-stage", wx);
+const wxWin = $(".wx-win", wx);
+const wxDotsEl = $(".wx-dots", wx);
+let wxDots = [];
+let wxReturn = null;
+
+function fitWx() {
+  const turn = mobile.matches && window.innerHeight > window.innerWidth;
+  const fw = turn ? window.innerHeight : window.innerWidth;
+  const fh = turn ? window.innerWidth : window.innerHeight;
+  wxFrame.classList.toggle("turned", turn);
+  wxFrame.style.width = `${fw}px`;
+  wxFrame.style.height = `${fh}px`;
+  const sw = wxStage.clientWidth;
+  const sh = wxStage.clientHeight;
+  const vh = clamp((VW * sh) / sw, 540, 760);
+  const k = Math.min(sw / VW, sh / vh);
+  wxWin.style.setProperty("--k", k.toFixed(4));
+  wxWin.style.setProperty("--vh", `${Math.round(vh)}px`);
+}
+
+function wxCaption(t) {
+  const { tag, head } = t.tour[t.index];
+  $(".wx-n", wx).textContent = `${String(t.index + 1).padStart(2, "0")} / ${String(t.tour.length).padStart(2, "0")}`;
+  $(".wx-k b", wx).textContent = tag;
+  $(".wx-k span", wx).textContent = head;
+  wxDots.forEach((d, i) => {
+    d.classList.toggle("on", i === t.index);
+    d.classList.toggle("done", i < t.index);
+    d.style.setProperty("--p", "0");
+  });
+}
+
+function openWx(slug) {
+  const t = tours.get(slug);
+  expanded = slug;
+  wxReturn = document.activeElement;
+  $("#wx-name").textContent = t.name;
+  wxDotsEl.innerHTML = t.tour.map(() => "<i></i>").join("");
+  wxDots = [...wxDotsEl.children];
+  wxWin.dataset.win = slug;
+  wxWin.innerHTML = windowFor(slug).replace(' loading="lazy"', "");
+  const f = $("iframe", wxWin);
+  f.addEventListener("load", () => frameState(f, t.tour[t.index].state));
+  wx.hidden = false;
+  document.documentElement.classList.add("locked");
+  fitWx();
+  showScene(slug, t.index);
+  $(".wx-close", wx).focus({ preventScroll: true });
+}
+
+function closeWx() {
+  if (!expanded) return;
+  expanded = null;
+  wx.hidden = true;
+  wxWin.innerHTML = "";
+  delete wxWin.dataset.win;
+  if (!dossier.isOpen()) document.documentElement.classList.remove("locked");
+  wxReturn?.focus({ preventScroll: true });
+}
+
+$$("button[data-open]").forEach((b) => b.addEventListener("click", () => openWx(b.dataset.open)));
+$$("[data-wx]", wx).forEach((b) => b.addEventListener("click", () => {
+  const t = tours.get(expanded);
+  showScene(t.slug, t.index + Number(b.dataset.wx));
+}));
+$(".wx-close", wx).addEventListener("click", closeWx);
+onSwipe(wxStage, () => wxFrame.classList.contains("turned"), (d) => {
+  const t = tours.get(expanded);
+  if (t) showScene(t.slug, t.index + d);
+});
+window.addEventListener("resize", () => { if (expanded) fitWx(); });
+window.addEventListener("keydown", (e) => {
+  if (!expanded) return;
+  if (e.key === "Escape") closeWx();
+  else if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+    const t = tours.get(expanded);
+    showScene(t.slug, t.index + (e.key === "ArrowRight" ? 1 : -1));
+  }
 });
 
 const setApp = (slug) => {
