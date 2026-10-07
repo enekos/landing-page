@@ -97,13 +97,16 @@ function sync(slug) {
   console.log(`${slug}: ${files.length} files from ${ref} @ ${sha} → public/${slug}/`);
 }
 
+const FIT_WIDTH = 1080;
+const FIT_MIN = 600;
+
 function writeEmbed(slug, dest) {
   const index = readFileSync(join(dest, "index.html"), "utf8");
   const styles = [...index.matchAll(/<link rel="stylesheet" href="([^"]+)">/g)].map((m) => m[1]);
   const scripts = [...index.matchAll(/<script src="([^"]+)" defer><\/script>/g)].map((m) => m[1])
     .filter((s) => !s.endsWith("/site.js") && s !== "/early-access.js");
-  const win = index.match(/<div class="hero-stage">\s*(<div [^>]*>)/);
-  if (!win) throw new Error(`${slug}: no hero window found in index.html`);
+  const win = index.match(/<div [^>]*id="stage-win"[^>]*>/);
+  if (!win) throw new Error(`${slug}: no tour window (#stage-win) found in index.html`);
 
   const html = `<!doctype html>
 <html lang="en">
@@ -121,14 +124,45 @@ ${styles.map((s) => `<link rel="stylesheet" href="${s}">`).join("\n")}
 </style>
 </head>
 <body>
-<div class="embed">${win[1]}</div></div>
+<div class="embed">${win[0].replace(/ data-narrow/, "")}</div></div>
+<script>
+  const embed = document.querySelector(".embed");
+  const fit = () => {
+    const s = innerWidth < ${FIT_MIN} ? 1 : Math.min(1, innerWidth / ${FIT_WIDTH});
+    embed.style.zoom = s;
+    embed.style.width = \`\${innerWidth / s}px\`;
+    embed.style.height = \`\${innerHeight / s}px\`;
+  };
+  fit();
+  addEventListener("resize", fit);
+</script>
 ${scripts.map((s) => `<script src="${s}" defer></script>`).join("\n")}
 </body>
 </html>
 `;
   mkdirSync(join(dest, "embed"), { recursive: true });
   writeFileSync(join(dest, "embed", "index.html"), html);
+  writeTour(slug, index);
 }
 
-const only = process.argv.slice(2);
-for (const slug of only.length ? only : APPS) sync(slug);
+const text = (html) => html.replace(/<[^>]+>/g, "").replace(/&gt;/g, ">").replace(/&lt;/g, "<").replace(/&amp;/g, "&").replace(/\s+/g, " ").trim();
+
+function writeTour(slug, index) {
+  const tour = [...index.matchAll(/<article class="step[^"]*" data-state="([a-z]+)">([\s\S]*?)<\/article>/g)].map(([, state, body]) => ({
+    state,
+    tag: text(body.match(/<span class="tag">([\s\S]*?)<\/span>/)?.[1] ?? state),
+    head: text(body.match(/<h3>([\s\S]*?)<\/h3>/)?.[1] ?? ""),
+    body: text(body.match(/<p>([\s\S]*?)<\/p>/)?.[1] ?? ""),
+  }));
+  if (!tour.length) throw new Error(`${slug}: no tour steps found in index.html`);
+  mkdirSync(join(ROOT, "src", "tours"), { recursive: true });
+  writeFileSync(join(ROOT, "src", "tours", `${slug}.json`), `${JSON.stringify(tour, null, 2)}\n`);
+}
+
+const args = process.argv.slice(2);
+const embedsOnly = args.includes("--embeds");
+const only = args.filter((a) => !a.startsWith("--"));
+for (const slug of only.length ? only : APPS) {
+  if (embedsOnly) writeEmbed(slug, join(ROOT, "public", slug));
+  else sync(slug);
+}

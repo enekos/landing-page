@@ -1,0 +1,44 @@
+[
+  {
+    "state": "inbox",
+    "tag": "Inbox",
+    "head": "Everything that needs you, sorted before you ask.",
+    "body": "Review requests, your own PRs, threads you are in and what merged lately, each with its checks and review state on the row. The last inbox comes off disk before the network answers, and j k move faster than you can read because a stale fetch is cancelled, not waited for."
+  },
+  {
+    "state": "diff",
+    "tag": "Files",
+    "head": "The whole diff in one view, not forty collapsed ones.",
+    "body": "Every file in a single native text view with syntax colour, hunk headers and both line numbers, so scrolling a big change is scrolling, not clicking Load diff. The diff and the conversation load in parallel, about a second each."
+  },
+  {
+    "state": "checks",
+    "tag": "Checks",
+    "head": "Green means green.",
+    "body": "GitHub's rollup stays red after a flaky test passes on re-run. adar grades each check by name, so a failure followed by a success is a pass, a running shard is pending, and the name of what actually broke is right there on the row."
+  },
+  {
+    "state": "agent",
+    "tag": "Agents",
+    "head": "An agent already standing in the checkout.",
+    "body": "⇧⌘R opens a terminal on a worktree at the PR head, with pr.diff, pr.md and pr.json beside it and ADAR_* in the environment. Claude Code, opencode, Codex, Gemini or your own command. Your working copy is never touched, and a PR title cannot escape the quotes."
+  },
+  {
+    "state": "code",
+    "tag": "Code",
+    "head": "What changed around the change.",
+    "body": "The repository's remote tree beside your local clone: how far behind you are, which files differ, which exist on one side only. Blame on either side, so you can see who wrote the line the PR is replacing, and when."
+  },
+  {
+    "state": "palette",
+    "tag": "⌘K",
+    "head": "Jump to anything.",
+    "body": "Repositories, pull requests, files in the diffs you have loaded and actions on the selection, ranked as you type. @ for repos, # for PRs, / for files, > for actions. Paste a GitHub URL and it opens."
+  },
+  {
+    "state": "notify",
+    "tag": "Notifications",
+    "head": "Told when it matters, once.",
+    "body": "Merged, approved, changes requested, checks red. Three at once become one banner, only the loud ones make a sound, and the PR you are already looking at is marked read instead of announced. Reading it in adar marks the GitHub thread read too."
+  }
+]

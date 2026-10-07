@@ -1,0 +1,44 @@
+[
+  {
+    "state": "request",
+    "tag": "Requests",
+    "head": "A request is a file you can commit.",
+    "body": "Every request is a .bru file in a plain folder, byte for byte what Bruno writes, so a collection made in Bruno opens here and a diff reads like code. {{variables}} are highlighted, path params get their own table, and the response comes back pretty, raw or as a preview."
+  },
+  {
+    "state": "scripts",
+    "tag": "Scripts & tests",
+    "head": "Bruno's script API, without Node.",
+    "body": "bru, req, res, test and a chai-style expect run on JavaScriptCore. Chain requests with bru.setVar, jump with setNextRequest, and add declarative asserts — all 29 of Bruno's operators — next to the tests. A script that loops is stopped at 60 seconds instead of wedging the app."
+  },
+  {
+    "state": "timeline",
+    "tag": "Timeline",
+    "head": "Where the 100 ms actually went.",
+    "body": "DNS, connect, TLS, waiting and download, measured by the system's own task metrics. Below it, the request exactly as it went out, the redirect chain and the cookie jar."
+  },
+  {
+    "state": "runner",
+    "tag": "Runner",
+    "head": "Run the whole collection, here or in CI.",
+    "body": "Sequence order, setNextRequest jumps, tag filters, delay and bail. The same engine runs headless: bidali run . --env staging --reporter junit, from the same binary."
+  },
+  {
+    "state": "env",
+    "tag": "Environments",
+    "head": "Secrets stay out of the repo.",
+    "body": "Environments are .bru files too, with Bruno's precedence from runtime down to global, .env values as process.env and 35 {{$dynamic}} generators. Secret values live in a 0600 file under your home folder, never in the collection."
+  },
+  {
+    "state": "palette",
+    "tag": "⌘K",
+    "head": "Every request, one keystroke away.",
+    "body": "Requests, actions, environments and collections in one palette, with recents first. > for actions, @ for environments, : for collections, and ⌘↩ opens a request and sends it."
+  },
+  {
+    "state": "curl",
+    "tag": "curl & imports",
+    "head": "Paste a curl, get a request.",
+    "body": "Paste a curl command into the URL bar and it becomes a request with its headers and body. ⌘⇧C copies one back out, resolved or with {{variables}} kept. Postman, OpenAPI, Insomnia, HAR and .http files import too."
+  }
+]

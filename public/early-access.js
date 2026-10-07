@@ -6,6 +6,8 @@
     ["lemazain", "lemazain", "Kubernetes IDE"],
     ["taula", "Taula", "Database manager"],
     ["adar", "adar", "Pull-request client"],
+    ["bidali", "bidali", "HTTP client · free"],
+    ["bikote", "bikote", "Data workspace · beta"],
   ];
 
   const css = `
@@ -121,7 +123,7 @@
   }
 
   function fail(msg, text) {
-    msg.className = "ea-msg err";
+    msg.classList.add("err");
     msg.textContent = text;
   }
 
@@ -149,6 +151,35 @@
     dialog.showModal();
     form.email.focus();
   }
+
+  document.addEventListener("submit", async (e) => {
+    const form = e.target.closest("[data-early-form]");
+    if (!form) return;
+    e.preventDefault();
+    const msg = form.querySelector("[role=status]");
+    const go = form.querySelector("[type=submit]");
+    const email = form.email.value.trim();
+    msg.classList.remove("err");
+    if (!email || !form.email.checkValidity()) return fail(msg, ERRORS.bad_email);
+    go.disabled = true;
+    msg.textContent = "Sending…";
+    try {
+      const res = await fetch(ENDPOINT, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ email, apps: [form.dataset.earlyForm], company: form.company?.value || "", source: location.pathname }),
+      });
+      const out = await res.json().catch(() => ({}));
+      if (!res.ok || !out.ok) return fail(msg, ERRORS[out.error] || "Something went wrong. Try again in a minute.");
+      form.classList.add("done");
+      msg.textContent = `Thanks! I'll write to ${email} when your invite is ready.`;
+      form.email.value = "";
+    } catch {
+      fail(msg, "Couldn't reach the server. Check your connection and try again.");
+    } finally {
+      go.disabled = false;
+    }
+  });
 
   document.addEventListener("click", (e) => {
     const trigger = e.target.closest("[data-early]");

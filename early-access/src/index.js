@@ -1,4 +1,4 @@
-const APPS = new Set(["lemazain", "taula", "adar"]);
+const APPS = new Set(["lemazain", "taula", "adar", "bidali", "bikote"]);
 const EMAIL = /^[^\s@]{1,64}@[^\s@]{1,255}\.[^\s@]{2,}$/;
 const PER_IP_PER_HOUR = 8;
 
